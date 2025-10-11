@@ -1,0 +1,229 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  CARGO_TERM_COLOR: always
+  FLUTTER_VERSION: '3.16.0'
+  RUST_VERSION: '1.75.0'
+
+jobs:
+  # Rust Core Tests
+  rust-test:
+    name: Rust Core Tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: ${{ env.RUST_VERSION }}
+        components: rustfmt, clippy
+    
+    - name: Cache Rust dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          core/target/
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+    
+    - name: Check Rust formatting
+      run: cargo fmt --all -- --check
+      working-directory: ./core
+    
+    - name: Run Clippy
+      run: cargo clippy --all-targets --all-features -- -D warnings
+      working-directory: ./core
+    
+    - name: Run Rust tests
+      run: cargo test --verbose
+      working-directory: ./core
+    
+    - name: Build Rust release
+      run: cargo build --release
+      working-directory: ./core
+
+  # Flutter App Tests
+  flutter-test:
+    name: Flutter App Tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: ${{ env.FLUTTER_VERSION }}
+        cache: true
+    
+    - name: Install Flutter dependencies
+      run: flutter pub get
+      working-directory: ./app
+    
+    - name: Verify Flutter installation
+      run: flutter doctor -v
+    
+    - name: Check Flutter formatting
+      run: dart format --output=none --set-exit-if-changed .
+      working-directory: ./app
+    
+    - name: Analyze Flutter code
+      run: flutter analyze
+      working-directory: ./app
+    
+    - name: Run Flutter tests
+      run: flutter test
+      working-directory: ./app
+    
+    - name: Build Flutter app (Android)
+      if: matrix.os == 'ubuntu-latest'
+      run: flutter build apk --debug
+      working-directory: ./app
+    
+    - name: Build Flutter app (iOS)
+      if: matrix.os == 'macos-latest'
+      run: flutter build ios --debug --no-codesign
+      working-directory: ./app
+    
+    - name: Build Flutter app (Windows)
+      if: matrix.os == 'windows-latest'
+      run: flutter build windows --debug
+      working-directory: ./app
+    
+    - name: Build Flutter app (macOS)
+      if: matrix.os == 'macos-latest'
+      run: flutter build macos --debug
+      working-directory: ./app
+    
+    - name: Build Flutter app (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y ninja-build libgtk-3-dev
+        flutter build linux --debug
+      working-directory: ./app
+
+  # Security Audit
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: ${{ env.RUST_VERSION }}
+    
+    - name: Install cargo-audit
+      run: cargo install cargo-audit
+    
+    - name: Run security audit
+      run: cargo audit
+      working-directory: ./core
+
+  # Code Coverage
+  coverage:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: ${{ env.RUST_VERSION }}
+        components: llvm-tools-preview
+    
+    - name: Install cargo-llvm-cov
+      uses: taiki-e/install-action@cargo-llvm-cov
+    
+    - name: Generate code coverage
+      run: cargo llvm-cov --all-features --workspace --lcov --output-path lcov.info
+      working-directory: ./core
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./core/lcov.info
+        fail_ci_if_error: true
+
+  # Build Release Artifacts
+  build-release:
+    name: Build Release Artifacts
+    if: github.ref == 'refs/heads/main'
+    needs: [rust-test, flutter-test]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            flutter-target: linux
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            flutter-target: windows
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            flutter-target: macos
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: ${{ env.RUST_VERSION }}
+        targets: ${{ matrix.target }}
+    
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: ${{ env.FLUTTER_VERSION }}
+        cache: true
+    
+    - name: Install Linux dependencies
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y ninja-build libgtk-3-dev
+    
+    - name: Build Rust release
+      run: cargo build --release --target ${{ matrix.target }}
+      working-directory: ./core
+    
+    - name: Install Flutter dependencies
+      run: flutter pub get
+      working-directory: ./app
+    
+    - name: Build Flutter release
+      run: flutter build ${{ matrix.flutter-target }} --release
+      working-directory: ./app
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: v8ray-${{ matrix.target }}
+        path: |
+          core/target/${{ matrix.target }}/release/
+          app/build/
+        retention-days: 30

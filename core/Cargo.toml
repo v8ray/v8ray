@@ -1,0 +1,149 @@
+[package]
+name = "v8ray-core"
+version = "0.1.0"
+edition = "2021"
+authors = ["V8Ray Team <team@v8ray.com>"]
+description = "V8Ray Core - Rust backend for V8Ray cross-platform proxy client"
+license = "MIT"
+repository = "https://github.com/v8ray/v8ray"
+homepage = "https://github.com/v8ray/v8ray"
+keywords = ["proxy", "xray", "vpn", "network", "cross-platform"]
+categories = ["network-programming", "command-line-utilities"]
+
+[lib]
+name = "v8ray_core"
+crate-type = ["cdylib", "staticlib", "rlib"]
+
+[[bin]]
+name = "v8ray-core"
+path = "src/main.rs"
+
+[dependencies]
+# Async runtime
+tokio = { version = "1.35", features = ["full"] }
+tokio-util = "0.7"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9"
+toml = "0.8"
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tracing-appender = "0.2"
+
+# HTTP client
+reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }
+
+# Crypto
+aes-gcm = "0.10"
+base64 = "0.21"
+uuid = { version = "1.6", features = ["v4", "serde"] }
+
+# Configuration
+config = "0.13"
+
+# Database
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "sqlite", "chrono", "uuid"] }
+
+# Time handling
+chrono = { version = "0.4", features = ["serde"] }
+
+# URL parsing
+url = "2.4"
+
+# Process management
+subprocess = "0.2"
+
+# Platform specific
+[target.'cfg(windows)'.dependencies]
+winapi = { version = "0.3", features = ["winuser", "winreg", "processthreadsapi"] }
+
+[target.'cfg(unix)'.dependencies]
+nix = "0.27"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+core-foundation = "0.9"
+system-configuration = "0.5"
+
+# Flutter Rust Bridge (TODO: Configure properly)
+# flutter_rust_bridge = "2.0"
+
+# CLI
+clap = { version = "4.4", features = ["derive"] }
+
+# Development dependencies
+[dev-dependencies]
+tokio-test = "0.4"
+tempfile = "3.8"
+mockall = "0.12"
+criterion = "0.5"
+
+# Build dependencies
+[build-dependencies]
+# flutter_rust_bridge_codegen = "2.0"
+
+# Features
+[features]
+default = ["xray-integration"]
+xray-integration = []
+debug-logging = []
+
+# Profile configurations
+[profile.dev]
+opt-level = 0
+debug = true
+split-debuginfo = "unpacked"
+debug-assertions = true
+overflow-checks = true
+lto = false
+panic = "unwind"
+incremental = true
+codegen-units = 256
+rpath = false
+
+[profile.release]
+opt-level = 3
+debug = false
+split-debuginfo = "packed"
+debug-assertions = false
+overflow-checks = false
+lto = true
+panic = "abort"
+incremental = false
+codegen-units = 1
+rpath = false
+
+[profile.test]
+opt-level = 0
+debug = 2
+debug-assertions = true
+overflow-checks = true
+incremental = true
+codegen-units = 256
+
+[profile.bench]
+opt-level = 3
+debug = false
+debug-assertions = false
+overflow-checks = false
+lto = true
+incremental = false
+codegen-units = 1
+
+# Workspace configuration
+[workspace]
+members = [
+    ".",
+]
+
+# Metadata for docs.rs
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]

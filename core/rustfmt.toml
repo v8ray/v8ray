@@ -1,0 +1,43 @@
+# Rustfmt configuration for V8Ray Core
+
+# Edition
+edition = "2021"
+
+# Basic formatting
+max_width = 100
+hard_tabs = false
+tab_spaces = 4
+
+# Imports
+imports_granularity = "Crate"
+reorder_imports = true
+group_imports = "StdExternalCrate"
+
+# Functions
+fn_args_layout = "Tall"
+brace_style = "SameLineWhere"
+
+# Control flow
+control_brace_style = "AlwaysSameLine"
+
+# Comments and documentation
+comment_width = 80
+wrap_comments = true
+format_code_in_doc_comments = true
+doc_comment_code_block_width = 80
+
+# Strings
+format_strings = true
+
+# Macros
+format_macro_matchers = true
+format_macro_bodies = true
+
+# Misc
+remove_nested_parens = true
+use_small_heuristics = "Default"
+newline_style = "Unix"
+
+# Unstable features (require nightly)
+# unstable_features = true
+# format_generated_files = false

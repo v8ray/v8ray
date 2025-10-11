@@ -1,0 +1,87 @@
+name: v8ray_app
+description: V8Ray - Cross-platform Xray Core client built with Flutter and Rust
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+  flutter: ">=3.16.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State Management
+  flutter_riverpod: ^2.4.9
+
+  # UI Components
+  cupertino_icons: ^1.0.6
+
+  # Networking
+  dio: ^5.4.0
+
+  # Storage
+  shared_preferences: ^2.2.2
+
+  # Utilities
+  path_provider: ^2.1.2
+
+  # Internationalization
+  flutter_localizations:
+    sdk: flutter
+  intl: any
+
+  # JSON
+  json_annotation: ^4.8.1
+
+  # Logging
+  logger: ^2.0.2+1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+
+  # Linting
+  flutter_lints: ^3.0.1
+
+  # Code Generation
+  build_runner: ^2.4.7
+  json_serializable: ^6.7.1
+
+flutter:
+  uses-material-design: true
+  
+  # Assets
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/config/
+  
+  # Fonts will be added later
+  # fonts:
+
+# Platform specific configurations
+flutter_native_splash:
+  color: "#2196F3"
+  image: assets/images/splash_logo.png
+  android_12:
+    image: assets/images/splash_logo_android12.png
+    color: "#2196F3"
+
+# App icons
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/app_icon.png"
+  min_sdk_android: 24
+  web:
+    generate: true
+    image_path: "assets/images/app_icon.png"
+  windows:
+    generate: true
+    image_path: "assets/images/app_icon.png"
+  macos:
+    generate: true
+    image_path: "assets/images/app_icon.png"
