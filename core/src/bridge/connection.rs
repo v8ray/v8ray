@@ -1,4 +1,4 @@
-/// 连接管理 Bridge 模块
+//! 连接管理 Bridge 模块
 
 use anyhow::{anyhow, Result};
 use std::sync::Arc;

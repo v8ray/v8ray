@@ -1,43 +1,33 @@
-# Flutter Rust Bridge 配置文件
+# Flutter Rust Bridge 配置文件 (v2.11+)
 # 用于配置代码生成
 
-# Rust 输入文件
-rust_input:
-  - core/src/bridge/api.rs
+# Rust 输入文件 (使用 crate 路径)
+rust_input: crate::bridge::api
 
 # Dart 输出目录
-dart_output:
-  - app/lib/core/ffi/
+dart_output: app/lib/core/ffi/
 
 # C 头文件输出（用于 FFI）
-c_output:
-  - app/ios/Runner/bridge_generated.h
+c_output: app/ios/Runner/bridge_generated.h
+
+# 额外的 C 头文件输出
+duplicated_c_output:
   - app/macos/Runner/bridge_generated.h
+  - app/windows/runner/bridge_generated.h
+  - app/linux/runner/bridge_generated.h
 
 # Rust 输出文件
 rust_output: core/src/bridge/bridge_generated.rs
 
+# Rust 项目根目录
+rust_root: core
+
+# Dart 项目根目录
+dart_root: app
+
 # 类名前缀
-class_name: V8RayBridge
+dart_entrypoint_class_name: V8RayBridge
 
 # Dart 格式化
 dart_format_line_length: 120
-
-# 日志级别
-log_level: info
-
-# 额外配置
-extra_c_output_path:
-  - app/windows/runner/bridge_generated.h
-  - app/linux/runner/bridge_generated.h
-
-# LLVM 路径（可选，如果系统中有多个 LLVM 版本）
-# llvm_path:
-#   - /usr/lib/llvm-14
-
-# 跳过依赖检查（开发时可以启用）
-skip_deps_check: false
-
-# 启用详细日志
-verbose: false
 

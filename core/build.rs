@@ -11,7 +11,8 @@ fn main() {
     // flutter_rust_bridge_codegen generate
 
     // 设置环境变量
-    let out_dir = env::var("OUT_DIR").unwrap();
-    println!("cargo:warning=OUT_DIR: {}", out_dir);
+    if let Ok(out_dir) = env::var("OUT_DIR") {
+        println!("cargo:warning=OUT_DIR: {}", out_dir);
+    }
 }
 

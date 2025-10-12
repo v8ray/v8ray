@@ -1,7 +1,7 @@
-/// 事件流 Bridge 模块
+//! 事件流 Bridge 模块
 
 use anyhow::Result;
-use futures::stream::Stream;
+use futures::stream::{Stream, StreamExt};
 use std::sync::Arc;
 use tokio::sync::{broadcast, RwLock};
 
@@ -50,7 +50,13 @@ pub fn shutdown() -> Result<()> {
 pub fn create_event_stream() -> impl Stream<Item = V8RayEvent> {
     let receiver = {
         // 使用 try_read 避免在异步上下文中阻塞
-        let manager = EVENT_MANAGER.try_read().expect("Failed to acquire event manager lock");
+        let manager = match EVENT_MANAGER.try_read() {
+            Ok(m) => m,
+            Err(_) => {
+                // 如果无法获取锁,返回空流
+                return futures::stream::empty().boxed();
+            }
+        };
         manager.subscribe()
     };
 
@@ -59,7 +65,7 @@ pub fn create_event_stream() -> impl Stream<Item = V8RayEvent> {
             Ok(event) => Some((event, rx)),
             Err(_) => None,
         }
-    })
+    }).boxed()
 }
 
 /// 发送事件（内部使用）

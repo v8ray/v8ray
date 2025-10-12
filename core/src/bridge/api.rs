@@ -1,7 +1,7 @@
-/// Flutter Rust Bridge API 定义
-///
-/// 这个文件定义了 Rust 和 Flutter 之间的 FFI 接口
-/// 使用 flutter_rust_bridge 自动生成绑定代码
+//! Flutter Rust Bridge API 定义
+//!
+//! 这个文件定义了 Rust 和 Flutter 之间的 FFI 接口
+//! 使用 flutter_rust_bridge 自动生成绑定代码
 
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
