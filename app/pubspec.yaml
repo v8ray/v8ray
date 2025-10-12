@@ -36,6 +36,9 @@ dependencies:
 
   # Logging
   logger: ^2.0.2+1
+  go_router: ^16.2.4
+  freezed_annotation: ^3.1.0
+  riverpod_annotation: ^2.6.1
 
 dev_dependencies:
   flutter_test:
@@ -49,39 +52,50 @@ dev_dependencies:
   # Code Generation
   build_runner: ^2.4.7
   json_serializable: ^6.7.1
+  freezed: ^3.1.0
+  riverpod_generator: ^2.6.5
+  riverpod_lint: ^2.6.5
+  custom_lint: ^0.7.6
+
+  # Icon Generation
+  flutter_launcher_icons: ^0.13.1
 
 flutter:
   uses-material-design: true
-  
+  generate: true
+
   # Assets
   assets:
     - assets/images/
     - assets/icons/
     - assets/config/
-  
+
   # Fonts will be added later
   # fonts:
 
 # Platform specific configurations
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app_icon.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: "assets/images/app_icon.png"
+    background_color: "#2196F3"
+    theme_color: "#2196F3"
+  windows:
+    generate: true
+    image_path: "assets/images/app_icon.png"
+    icon_size: 48
+  macos:
+    generate: true
+    image_path: "assets/images/app_icon.png"
+
 flutter_native_splash:
   color: "#2196F3"
   image: assets/images/splash_logo.png
   android_12:
     image: assets/images/splash_logo_android12.png
     color: "#2196F3"
-
-# App icons
-flutter_launcher_icons:
-  android: "launcher_icon"
-  ios: true
-  image_path: "assets/images/app_icon.png"
-  min_sdk_android: 24
-  web:
-    generate: true
-    image_path: "assets/images/app_icon.png"
-  windows:
-    generate: true
-    image_path: "assets/images/app_icon.png"
-  macos:
-    generate: true
-    image_path: "assets/images/app_icon.png"

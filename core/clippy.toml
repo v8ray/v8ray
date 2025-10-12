@@ -23,12 +23,6 @@ too-many-arguments-threshold = 7
 # Too many lines threshold
 too-many-lines-threshold = 100
 
-# Trivially copy pastes threshold
-trivially-copy-pastes-threshold = 50
-
-# Single char lifetime names threshold
-single-char-lifetime-names-threshold = 4
-
 # Avoid breaking exported API
 avoid-breaking-exported-api = true
 

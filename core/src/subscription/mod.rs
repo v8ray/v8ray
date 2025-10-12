@@ -113,7 +113,7 @@ impl SubscriptionManager {
         let subscription = self.subscriptions
             .iter_mut()
             .find(|s| s.id == id)
-            .ok_or_else(|| anyhow::anyhow!("Subscription not found"))?;
+            .ok_or_else(|| crate::error::V8RayError::Generic("Subscription not found".to_string()))?;
 
         subscription.status = SubscriptionStatus::Updating;
 

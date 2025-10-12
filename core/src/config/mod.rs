@@ -3,22 +3,15 @@
 //! This module handles all configuration-related functionality including
 //! loading, saving, validation, and conversion of configuration data.
 
-use serde::{Deserialize, Serialize};
-use std::path::Path;
-use thiserror::Error;
+pub mod manager;
+pub mod parser;
+pub mod validator;
 
-/// Configuration errors
-#[derive(Error, Debug)]
-pub enum ConfigError {
-    #[error("IO error: {0}")]
-    Io(#[from] std::io::Error),
-    #[error("Serialization error: {0}")]
-    Serialization(#[from] serde_json::Error),
-    #[error("Validation error: {0}")]
-    Validation(String),
-    #[error("Invalid URL: {0}")]
-    InvalidUrl(String),
-}
+use crate::error::ConfigError;
+use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::path::Path;
 
 /// Main configuration structure
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -89,6 +82,101 @@ pub struct SubscriptionConfig {
     pub user_agent: String,
     /// Request timeout in seconds
     pub timeout: u32,
+}
+
+/// Proxy server configuration
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProxyServerConfig {
+    /// Unique identifier
+    pub id: String,
+    /// Display name
+    pub name: String,
+    /// Server address
+    pub server: String,
+    /// Server port
+    pub port: u16,
+    /// Protocol type
+    pub protocol: ProxyProtocol,
+    /// Protocol-specific settings
+    pub settings: HashMap<String, serde_json::Value>,
+    /// Stream settings (transport)
+    pub stream_settings: Option<StreamSettings>,
+    /// Tags for categorization
+    pub tags: Vec<String>,
+    /// Creation timestamp
+    pub created_at: DateTime<Utc>,
+    /// Last update timestamp
+    pub updated_at: DateTime<Utc>,
+}
+
+/// Proxy protocol types
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+pub enum ProxyProtocol {
+    /// VLESS protocol
+    Vless,
+    /// VMess protocol
+    Vmess,
+    /// Trojan protocol
+    Trojan,
+    /// Shadowsocks protocol
+    Shadowsocks,
+    /// HTTP proxy
+    Http,
+    /// SOCKS proxy
+    Socks,
+}
+
+/// Stream settings for transport
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct StreamSettings {
+    /// Network type (tcp, kcp, ws, http, quic, grpc)
+    pub network: String,
+    /// Security type (none, tls, reality)
+    pub security: String,
+    /// TLS settings
+    pub tls_settings: Option<TlsSettings>,
+    /// TCP settings
+    pub tcp_settings: Option<serde_json::Value>,
+    /// WebSocket settings
+    pub ws_settings: Option<WsSettings>,
+    /// HTTP/2 settings
+    pub http_settings: Option<serde_json::Value>,
+    /// QUIC settings
+    pub quic_settings: Option<serde_json::Value>,
+    /// gRPC settings
+    pub grpc_settings: Option<GrpcSettings>,
+}
+
+/// TLS settings
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TlsSettings {
+    /// Server name indication
+    pub server_name: Option<String>,
+    /// Allow insecure connections
+    pub allow_insecure: bool,
+    /// ALPN protocols
+    pub alpn: Vec<String>,
+    /// Fingerprint
+    pub fingerprint: Option<String>,
+}
+
+/// WebSocket settings
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct WsSettings {
+    /// WebSocket path
+    pub path: String,
+    /// Custom headers
+    pub headers: HashMap<String, String>,
+}
+
+/// gRPC settings
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GrpcSettings {
+    /// Service name
+    pub service_name: String,
+    /// Multi mode
+    pub multi_mode: bool,
 }
 
 impl Default for Config {

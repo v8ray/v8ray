@@ -6,7 +6,7 @@
 use anyhow::Result;
 // TODO: Enable when clap is properly configured
 // use clap::{Arg, Command};
-use tracing::{info, warn};
+use tracing::info;
 use v8ray_core::{init, version};
 
 #[tokio::main]
@@ -36,7 +36,7 @@ async fn main() -> Result<()> {
     */
 
     // Initialize the core library
-    init()?;
+    init(None)?;
 
     // TODO: Parse command line arguments properly
     info!("V8Ray Core v{} started", version());

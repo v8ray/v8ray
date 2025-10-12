@@ -1,0 +1,274 @@
+{
+  "@@locale": "en",
+  
+  "appName": "V8Ray",
+  "@appName": {
+    "description": "Application name"
+  },
+  
+  "simpleMode": "Simple Mode",
+  "@simpleMode": {
+    "description": "Simple mode label"
+  },
+  
+  "advancedMode": "Advanced Mode",
+  "@advancedMode": {
+    "description": "Advanced mode label"
+  },
+  
+  "connect": "Connect",
+  "@connect": {
+    "description": "Connect button"
+  },
+  
+  "disconnect": "Disconnect",
+  "@disconnect": {
+    "description": "Disconnect button"
+  },
+  
+  "connectionStatus": "Connection Status",
+  "@connectionStatus": {
+    "description": "Connection status label"
+  },
+  
+  "connected": "Connected",
+  "@connected": {
+    "description": "Connected status"
+  },
+  
+  "connecting": "Connecting",
+  "@connecting": {
+    "description": "Connecting status"
+  },
+  
+  "disconnected": "Disconnected",
+  "@disconnected": {
+    "description": "Disconnected status"
+  },
+  
+  "disconnecting": "Disconnecting",
+  "@disconnecting": {
+    "description": "Disconnecting status"
+  },
+  
+  "error": "Error",
+  "@error": {
+    "description": "Error status"
+  },
+  
+  "subscriptionUrl": "Subscription URL",
+  "@subscriptionUrl": {
+    "description": "Subscription URL input label"
+  },
+  
+  "subscriptionUrlHint": "Paste your subscription URL here",
+  "@subscriptionUrlHint": {
+    "description": "Subscription URL input hint"
+  },
+  
+  "updateSubscription": "Update Subscription",
+  "@updateSubscription": {
+    "description": "Update subscription button"
+  },
+  
+  "addSubscription": "Add Subscription",
+  "@addSubscription": {
+    "description": "Add subscription button"
+  },
+  
+  "proxyMode": "Proxy Mode",
+  "@proxyMode": {
+    "description": "Proxy mode label"
+  },
+  
+  "globalMode": "Global",
+  "@globalMode": {
+    "description": "Global proxy mode"
+  },
+  
+  "smartMode": "Smart Routing",
+  "@smartMode": {
+    "description": "Smart routing mode"
+  },
+  
+  "directMode": "Direct",
+  "@directMode": {
+    "description": "Direct connection mode"
+  },
+  
+  "currentNode": "Current Node",
+  "@currentNode": {
+    "description": "Current node label"
+  },
+  
+  "latency": "Latency",
+  "@latency": {
+    "description": "Latency label"
+  },
+  
+  "speed": "Speed",
+  "@speed": {
+    "description": "Speed label"
+  },
+  
+  "uploadSpeed": "Upload",
+  "@uploadSpeed": {
+    "description": "Upload speed label"
+  },
+  
+  "downloadSpeed": "Download",
+  "@downloadSpeed": {
+    "description": "Download speed label"
+  },
+  
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings menu"
+  },
+  
+  "language": "Language",
+  "@language": {
+    "description": "Language setting"
+  },
+  
+  "theme": "Theme",
+  "@theme": {
+    "description": "Theme setting"
+  },
+  
+  "lightTheme": "Light",
+  "@lightTheme": {
+    "description": "Light theme"
+  },
+  
+  "darkTheme": "Dark",
+  "@darkTheme": {
+    "description": "Dark theme"
+  },
+  
+  "systemTheme": "System",
+  "@systemTheme": {
+    "description": "System theme"
+  },
+  
+  "about": "About",
+  "@about": {
+    "description": "About menu"
+  },
+  
+  "version": "Version",
+  "@version": {
+    "description": "Version label"
+  },
+  
+  "checkUpdate": "Check for Updates",
+  "@checkUpdate": {
+    "description": "Check update button"
+  },
+  
+  "switchToSimpleMode": "Switch to Simple Mode",
+  "@switchToSimpleMode": {
+    "description": "Switch to simple mode button"
+  },
+  
+  "switchToAdvancedMode": "Switch to Advanced Mode",
+  "@switchToAdvancedMode": {
+    "description": "Switch to advanced mode button"
+  },
+  
+  "invalidUrl": "Invalid URL",
+  "@invalidUrl": {
+    "description": "Invalid URL error message"
+  },
+  
+  "pleaseEnterUrl": "Please enter a subscription URL",
+  "@pleaseEnterUrl": {
+    "description": "Empty URL error message"
+  },
+  
+  "updateSuccess": "Update successful",
+  "@updateSuccess": {
+    "description": "Update success message"
+  },
+  
+  "updateFailed": "Update failed",
+  "@updateFailed": {
+    "description": "Update failed message"
+  },
+  
+  "connectSuccess": "Connected successfully",
+  "@connectSuccess": {
+    "description": "Connect success message"
+  },
+  
+  "connectFailed": "Connection failed",
+  "@connectFailed": {
+    "description": "Connect failed message"
+  },
+  
+  "disconnectSuccess": "Disconnected successfully",
+  "@disconnectSuccess": {
+    "description": "Disconnect success message"
+  },
+  
+  "noAvailableNode": "No available node",
+  "@noAvailableNode": {
+    "description": "No available node error"
+  },
+  
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button"
+  },
+  
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Confirm button"
+  },
+  
+  "ok": "OK",
+  "@ok": {
+    "description": "OK button"
+  },
+  
+  "clear": "Clear",
+  "@clear": {
+    "description": "Clear button"
+  },
+  
+  "paste": "Paste",
+  "@paste": {
+    "description": "Paste button"
+  },
+
+  "globalModeDescription": "All traffic goes through proxy",
+  "@globalModeDescription": {
+    "description": "Global mode description"
+  },
+
+  "smartModeDescription": "Foreign sites use proxy, domestic sites direct",
+  "@smartModeDescription": {
+    "description": "Smart mode description"
+  },
+
+  "directModeDescription": "All traffic goes direct",
+  "@directModeDescription": {
+    "description": "Direct mode description"
+  },
+
+  "subscriptionConfig": "Subscription Config",
+  "@subscriptionConfig": {
+    "description": "Subscription configuration button"
+  },
+
+  "save": "Save",
+  "@save": {
+    "description": "Save button"
+  },
+
+  "saveSuccess": "Saved successfully",
+  "@saveSuccess": {
+    "description": "Save success message"
+  }
+}
+
