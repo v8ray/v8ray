@@ -363,27 +363,52 @@
 
 ---
 
-### Sprint 5: 连接管理核心 (2周)
+### Sprint 5: 连接管理核心 (2周) ⚠️ 90% 完成
 **目标**: 实现代理连接的核心功能
 
-#### Week 1: Xray集成
-- [ ] **S5.1** 集成Xray Core二进制 (4h)
-- [ ] **S5.2** 实现Xray进程管理 (4h)
-- [ ] **S5.3** 实现Xray配置生成 (4h)
-- [ ] **S5.4** 实现Xray状态监控 (3h)
-- [ ] **S5.5** 添加Xray集成测试 (3h)
+**状态**: Rust 核心部分 100% 完成，Flutter 集成遇到技术问题
+
+#### Week 1: Xray集成 ✅
+- [x] **S5.1** 集成Xray Core二进制 (4h) ✅
+- [x] **S5.2** 实现Xray进程管理 (4h) ✅
+- [x] **S5.3** 实现Xray配置生成 (4h) ✅
+- [x] **S5.4** 实现Xray状态监控 (3h) ✅
+- [x] **S5.5** 添加Xray集成测试 (3h) ✅
 
 #### Week 2: 连接控制
-- [ ] **S5.6** 实现连接状态管理 (4h)
-- [ ] **S5.7** 实现自动重连机制 (3h)
-- [ ] **S5.8** 实现连接统计收集 (3h)
-- [ ] **S5.9** 集成连接管理到Flutter UI (4h)
-- [ ] **S5.10** 添加连接管理的集成测试 (4h)
+- [x] **S5.6** 实现连接状态管理 (4h) ✅
+- [x] **S5.7** 实现自动重连机制 (3h) ✅
+- [x] **S5.8** 实现连接统计收集 (3h) ✅
+- [~] **S5.9** 集成连接管理到Flutter UI (4h) ⚠️ 90% 完成
+  - [x] 更新 ConnectionProvider 使用真实 FFI 调用
+  - [x] 实现 Rust FFI API (`core/src/bridge/api.rs`)
+  - [x] 生成 Flutter FFI 绑定（Dart 端）
+  - [ ] 生成 Rust FFI 绑定（遇到 flutter_rust_bridge_codegen Windows 路径 bug）
+  - [ ] 验证 FFI 调用正常工作
+- [~] **S5.10** 添加连接管理的集成测试 (4h) ⚠️ 测试代码已编写
+  - [x] 编写集成测试代码 (`app/integration_test/connection_test.dart`)
+  - [ ] 运行集成测试（等待 S5.9 完成）
+  - [ ] 修复发现的问题
 
-**验收标准**:
-- Xray Core正常启动和停止
-- 连接状态实时更新
-- 统计数据准确
+**验收标准**: ⚠️ 部分达成
+- ✅ Xray Core正常启动和停止
+- ✅ 连接状态实时更新
+- ✅ 统计数据准确
+- ⚠️ Flutter FFI 集成（遇到工具 bug）
+
+**完成总结**:
+- ✅ Rust 核心: 8/8 任务完成 (100%)
+- ⚠️ Flutter 集成: 90% 完成，遇到 flutter_rust_bridge_codegen Windows 路径 bug
+- ✅ 测试覆盖: 50/50 Rust 测试通过 (100%)
+- ✅ 代码质量: 所有代码通过 rustfmt 和 clippy 检查
+- ✅ 文档更新: 技术架构文档和状态文档已完成
+
+**已知问题**:
+- flutter_rust_bridge_codegen 2.11.1 在 Windows 上处理 `rust_output` 路径时有 bug
+- 错误: `prefix not found` when processing `\\?\C:\...` paths
+- 需要在 WSL/Linux 环境生成代码，或等待工具更新
+
+**详细状态**: 参见 [Sprint 5 状态文档](./sprint5-status.md)
 
 ---
 

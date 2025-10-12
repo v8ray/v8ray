@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="v8ray_app"
+        android:label="v8ray"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

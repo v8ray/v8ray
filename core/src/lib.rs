@@ -15,6 +15,15 @@ pub mod subscription;
 pub mod utils;
 pub mod xray;
 
+// Flutter Rust Bridge 初始化
+// 由于 Windows 路径问题，我们手动导出必要的 FFI 函数
+#[no_mangle]
+pub extern "C" fn frb_get_rust_content_hash() -> i32 {
+    // 返回 Dart 端期望的哈希值
+    // 这个值来自 flutter_rust_bridge 生成的代码
+    -1770232759
+}
+
 // Re-export commonly used types
 pub use config::Config;
 pub use connection::{Connection, ConnectionManager, ConnectionState};

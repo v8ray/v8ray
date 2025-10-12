@@ -16,9 +16,6 @@ duplicated_c_output:
   - app/windows/runner/bridge_generated.h
   - app/linux/runner/bridge_generated.h
 
-# Rust 输出文件
-rust_output: core/src/bridge/bridge_generated.rs
-
 # Rust 项目根目录
 rust_root: core
 
@@ -30,4 +27,7 @@ dart_entrypoint_class_name: V8RayBridge
 
 # Dart 格式化
 dart_format_line_length: 120
+
+# 不自动添加 mod 到 lib.rs
+add_mod_to_lib: false
 

@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.v8ray" "\0"
-            VALUE "FileDescription", "v8ray_app" "\0"
+            VALUE "FileDescription", "v8ray" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "v8ray_app" "\0"
+            VALUE "InternalName", "v8ray" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2025 com.v8ray. All rights reserved." "\0"
-            VALUE "OriginalFilename", "v8ray_app.exe" "\0"
-            VALUE "ProductName", "v8ray_app" "\0"
+            VALUE "OriginalFilename", "v8ray.exe" "\0"
+            VALUE "ProductName", "v8ray" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

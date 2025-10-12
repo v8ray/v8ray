@@ -1,6 +1,6 @@
 {
-    "name": "v8ray_app",
-    "short_name": "v8ray_app",
+    "name": "v8ray",
+    "short_name": "v8ray",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#2196F3",

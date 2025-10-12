@@ -93,8 +93,6 @@ pub fn reset_traffic_stats() -> Result<()> {
 pub(crate) fn update_traffic(upload: u64, download: u64) {
     if let Ok(mut manager) = TRAFFIC_MANAGER.try_write() {
         manager.update(upload, download);
-        // 同时更新连接管理器的流量
-        super::connection::update_traffic(upload, download);
     }
 }
 

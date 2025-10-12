@@ -1,4 +1,4 @@
-package com.v8ray.v8ray_app
+package com.v8ray.v8ray
 
 import io.flutter.embedding.android.FlutterActivity
 

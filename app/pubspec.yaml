@@ -1,4 +1,4 @@
-name: v8ray_app
+name: v8ray
 description: V8Ray - Cross-platform Xray Core client built with Flutter and Rust
 publish_to: 'none'
 version: 0.1.0+1

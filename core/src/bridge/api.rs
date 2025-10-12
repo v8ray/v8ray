@@ -229,6 +229,19 @@ pub fn validate_config(config: ConfigInfo) -> Result<bool> {
 // 连接管理 API
 // ============================================================================
 
+/// 缓存代理配置（在连接前调用）
+///
+/// # 参数
+/// - `config_id`: 配置 ID
+/// - `config`: 代理服务器配置
+///
+/// # 返回
+/// - `Ok(())`: 缓存成功
+/// - `Err(e)`: 缓存失败
+pub fn cache_proxy_config(config_id: String, config: crate::config::ProxyServerConfig) -> Result<()> {
+    crate::bridge::connection::cache_proxy_config(config_id, config)
+}
+
 /// 连接到服务器
 ///
 /// # 参数

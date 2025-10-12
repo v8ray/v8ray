@@ -2,9 +2,12 @@
 ///
 /// 管理代理连接状态
 
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../constants/app_constants.dart';
+import '../ffi/bridge/api.dart' as api;
 import '../utils/logger.dart';
 
 /// 连接状态数据模型
@@ -99,6 +102,8 @@ final connectionProvider =
 class ConnectionNotifier extends StateNotifier<ProxyConnectionState> {
   ConnectionNotifier() : super(const ProxyConnectionState());
 
+  Timer? _statsTimer;
+
   /// 开始连接
   Future<void> connect(String nodeName) async {
     try {
@@ -110,15 +115,16 @@ class ConnectionNotifier extends StateNotifier<ProxyConnectionState> {
         errorMessage: null,
       );
 
-      // TODO: 实际的连接逻辑将在后续Sprint中实现
-      // 这里只是模拟状态变化
-      await Future<void>.delayed(const Duration(seconds: 2));
+      // 调用 Rust FFI 连接函数
+      await api.connect(configId: nodeName);
 
       state = state.copyWith(
         status: ConnectionStatus.connected,
-        latency: 45,
         connectedDuration: Duration.zero,
       );
+
+      // 启动统计数据定时更新
+      _startStatsTimer();
 
       appLogger.info('Connected to node: $nodeName');
     } catch (e, stackTrace) {
@@ -138,11 +144,13 @@ class ConnectionNotifier extends StateNotifier<ProxyConnectionState> {
 
       state = state.copyWith(
         status: ConnectionStatus.disconnecting,
-        errorMessage: null,
       );
 
-      // TODO: 实际的断开逻辑将在后续Sprint中实现
-      await Future<void>.delayed(const Duration(seconds: 1));
+      // 停止统计数据定时器
+      _stopStatsTimer();
+
+      // 调用 Rust FFI 断开函数
+      await api.disconnect();
 
       state = const ProxyConnectionState(
         status: ConnectionStatus.disconnected,
@@ -157,6 +165,39 @@ class ConnectionNotifier extends StateNotifier<ProxyConnectionState> {
         errorMessage: e.toString(),
       );
     }
+  }
+
+  /// 启动统计数据定时器
+  void _startStatsTimer() {
+    _stopStatsTimer();
+    _statsTimer = Timer.periodic(const Duration(seconds: 1), (_) async {
+      try {
+        final info = await api.getConnectionInfo();
+        final stats = await api.getTrafficStats();
+
+        state = state.copyWith(
+          uploadSpeed: stats.uploadSpeed.toInt(),
+          downloadSpeed: stats.downloadSpeed.toInt(),
+          uploadedBytes: stats.totalUpload.toInt(),
+          downloadedBytes: stats.totalDownload.toInt(),
+          connectedDuration: Duration(seconds: info.duration.toInt()),
+        );
+      } catch (e) {
+        appLogger.error('Failed to update stats', e);
+      }
+    });
+  }
+
+  /// 停止统计数据定时器
+  void _stopStatsTimer() {
+    _statsTimer?.cancel();
+    _statsTimer = null;
+  }
+
+  @override
+  void dispose() {
+    _stopStatsTimer();
+    super.dispose();
   }
 
   /// 更新统计数据

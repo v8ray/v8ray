@@ -1,4 +1,4 @@
-# v8ray_app
+# v8ray
 
 A new Flutter project.
 
