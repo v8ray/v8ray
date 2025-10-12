@@ -61,9 +61,11 @@ pubspec.lock
 
 # macOS
 **/macos/Flutter/GeneratedPluginRegistrant.swift
-**/macos/Flutter/Flutter-Debug.xcconfig
-**/macos/Flutter/Flutter-Release.xcconfig
-**/macos/Flutter/Flutter-Profile.xcconfig
+# 注释掉这些配置文件，CI 需要它们
+# **/macos/Flutter/Flutter-Debug.xcconfig
+# **/macos/Flutter/Flutter-Release.xcconfig
+# **/macos/Flutter/Flutter-Profile.xcconfig
+**/macos/Flutter/ephemeral/
 
 # Windows
 **/windows/flutter/generated_plugin_registrant.cc

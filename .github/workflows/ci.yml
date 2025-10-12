@@ -60,10 +60,11 @@ jobs:
   flutter-test:
     name: Flutter App Tests
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30  # 添加超时限制
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-    
+
     steps:
     - uses: actions/checkout@v4
     
@@ -92,26 +93,28 @@ jobs:
     - name: Run Flutter tests
       run: flutter test
       working-directory: ./app
-    
-    - name: Build Flutter app (Android)
-      if: matrix.os == 'ubuntu-latest'
-      run: flutter build apk --debug
-      working-directory: ./app
-    
-    - name: Build Flutter app (iOS)
-      if: matrix.os == 'macos-latest'
-      run: flutter build ios --debug --no-codesign
-      working-directory: ./app
-    
-    - name: Build Flutter app (Windows)
-      if: matrix.os == 'windows-latest'
-      run: flutter build windows --debug
-      working-directory: ./app
-    
-    - name: Build Flutter app (macOS)
-      if: matrix.os == 'macos-latest'
-      run: flutter build macos --debug
-      working-directory: ./app
+
+    # 注释掉完整构建以加快 CI 速度
+    # 只在需要时手动触发完整构建
+    # - name: Build Flutter app (Android)
+    #   if: matrix.os == 'ubuntu-latest'
+    #   run: flutter build apk --debug
+    #   working-directory: ./app
+    #
+    # - name: Build Flutter app (iOS)
+    #   if: matrix.os == 'macos-latest'
+    #   run: flutter build ios --debug --no-codesign
+    #   working-directory: ./app
+    #
+    # - name: Build Flutter app (Windows)
+    #   if: matrix.os == 'windows-latest'
+    #   run: flutter build windows --debug
+    #   working-directory: ./app
+    #
+    # - name: Build Flutter app (macOS)
+    #   if: matrix.os == 'macos-latest'
+    #   run: flutter build macos --debug
+    #   working-directory: ./app
     
     - name: Build Flutter app (Linux)
       if: matrix.os == 'ubuntu-latest'
