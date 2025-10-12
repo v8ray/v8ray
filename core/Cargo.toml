@@ -47,10 +47,10 @@ base64 = "0.21"
 uuid = { version = "1.6", features = ["v4", "serde"] }
 
 # Configuration
-config = "0.13"
+config = "0.14"  # 升级以避免 yaml-rust 未维护警告
 
-# Database
-sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "sqlite", "chrono", "uuid"] }
+# Database (只使用 SQLite，禁用 MySQL/PostgreSQL 以避免 rsa 漏洞)
+sqlx = { version = "0.8", features = ["runtime-tokio-rustls", "sqlite", "chrono", "uuid"], default-features = false }  # 修复 RUSTSEC-2024-0363
 
 # Time handling
 chrono = { version = "0.4", features = ["serde"] }
