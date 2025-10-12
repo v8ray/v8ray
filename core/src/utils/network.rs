@@ -12,7 +12,7 @@ pub fn is_valid_ip(ip: &str) -> bool {
 
 /// Check if a port number is valid
 pub fn is_valid_port(port: u16) -> bool {
-    port > 0 && port <= 65535
+    port > 0
 }
 
 /// Parse an address string into host and port

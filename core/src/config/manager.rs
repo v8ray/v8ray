@@ -5,7 +5,7 @@
 use super::{Config, ProxyServerConfig};
 use crate::error::{ConfigError, ConfigResult};
 use crate::utils::crypto::{decrypt_aes256, derive_key_from_password, encrypt_aes256};
-use chrono::{DateTime, Utc};
+use chrono::Utc;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;

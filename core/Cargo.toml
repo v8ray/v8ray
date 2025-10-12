@@ -22,6 +22,7 @@ path = "src/main.rs"
 # Async runtime
 tokio = { version = "1.35", features = ["full"] }
 tokio-util = "0.7"
+futures = "0.3"
 
 # Serialization
 serde = { version = "1.0", features = ["derive"] }
@@ -45,6 +46,7 @@ reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-feature
 aes-gcm = "0.10"
 base64 = "0.21"
 uuid = { version = "1.6", features = ["v4", "serde"] }
+lazy_static = "1.4"
 
 # Configuration
 config = "0.14"  # 升级以避免 yaml-rust 未维护警告
@@ -72,8 +74,8 @@ nix = "0.27"
 core-foundation = "0.9"
 system-configuration = "0.5"
 
-# Flutter Rust Bridge (TODO: Configure properly)
-# flutter_rust_bridge = "2.0"
+# Flutter Rust Bridge
+flutter_rust_bridge = "2.0"
 
 # CLI
 clap = { version = "4.4", features = ["derive"] }
@@ -84,10 +86,11 @@ tokio-test = "0.4"
 tempfile = "3.8"
 mockall = "0.12"
 criterion = "0.5"
+serial_test = "3.0"
 
 # Build dependencies
 [build-dependencies]
-# flutter_rust_bridge_codegen = "2.0"
+flutter_rust_bridge_codegen = "2.0"
 
 # Features
 [features]

@@ -40,15 +40,20 @@ pub struct AppConfig {
 /// Application mode
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum AppMode {
+    /// Simple mode - minimal UI
     Simple,
+    /// Advanced mode - full features
     Advanced,
 }
 
 /// Theme setting
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Theme {
+    /// Light theme
     Light,
+    /// Dark theme
     Dark,
+    /// Follow system theme
     System,
 }
 
@@ -68,8 +73,11 @@ pub struct ProxyConfig {
 /// Proxy mode
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum ProxyMode {
+    /// Direct connection (no proxy)
     Direct,
+    /// Always use proxy
     Proxy,
+    /// Auto mode (PAC/rules)
     Auto,
 }
 
@@ -222,10 +230,10 @@ impl Config {
 
     /// Validate configuration
     pub fn validate(&self) -> Result<(), ConfigError> {
-        if self.proxy.http_port == 0 || self.proxy.http_port > 65535 {
+        if self.proxy.http_port == 0 {
             return Err(ConfigError::Validation("Invalid HTTP port".to_string()));
         }
-        if self.proxy.socks_port == 0 || self.proxy.socks_port > 65535 {
+        if self.proxy.socks_port == 0 {
             return Err(ConfigError::Validation("Invalid SOCKS port".to_string()));
         }
         if self.subscription.timeout == 0 {

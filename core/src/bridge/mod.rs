@@ -3,44 +3,93 @@
 //! This module provides the FFI interface for communication between
 //! the Rust core and Flutter frontend.
 
-// TODO: Enable when flutter_rust_bridge is properly configured
-// use flutter_rust_bridge::frb;
+use anyhow::Result;
+use std::sync::Arc;
+use tokio::sync::RwLock;
 
-/// Initialize the bridge
-// TODO: Enable when flutter_rust_bridge is properly configured
-// #[frb(sync)]
-pub fn init_bridge() -> String {
-    "V8Ray Bridge initialized".to_string()
+// 子模块
+/// API 定义模块
+pub mod api;
+/// 配置管理模块
+pub mod config;
+/// 连接管理模块
+pub mod connection;
+/// 事件流模块
+pub mod events;
+/// 流量统计模块
+pub mod traffic;
+
+// 全局状态
+lazy_static::lazy_static! {
+    static ref BRIDGE_STATE: Arc<RwLock<BridgeState>> = Arc::new(RwLock::new(BridgeState::default()));
 }
 
-/// Get core version through bridge
-// TODO: Enable when flutter_rust_bridge is properly configured
-// #[frb(sync)]
-pub fn get_version() -> String {
-    crate::version().to_string()
+/// Bridge 状态
+#[derive(Debug, Default)]
+struct BridgeState {
+    initialized: bool,
 }
 
-/// Bridge result type
-pub type BridgeResult<T> = Result<T, String>;
+/// 初始化 Bridge
+pub fn init() -> Result<()> {
+    let mut state = BRIDGE_STATE.blocking_write();
+    if state.initialized {
+        return Ok(());
+    }
 
-/// Convert anyhow::Error to String for bridge
-pub fn convert_error(err: anyhow::Error) -> String {
-    err.to_string()
+    // 初始化日志（忽略重复初始化错误）
+    let log_config = crate::utils::logger::LogConfig::default();
+    let _ = crate::utils::logger::init_logger(&log_config);
+
+    // 初始化配置管理器
+    config::init()?;
+
+    // 初始化连接管理器
+    connection::init()?;
+
+    // 初始化事件系统
+    events::init()?;
+
+    state.initialized = true;
+    tracing::info!("V8Ray Bridge initialized successfully");
+    Ok(())
+}
+
+/// 关闭 Bridge
+pub fn shutdown() -> Result<()> {
+    let mut state = BRIDGE_STATE.blocking_write();
+    if !state.initialized {
+        return Ok(());
+    }
+
+    // 关闭连接
+    connection::shutdown()?;
+
+    // 关闭事件系统
+    events::shutdown()?;
+
+    state.initialized = false;
+    tracing::info!("V8Ray Bridge shutdown successfully");
+    Ok(())
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use serial_test::serial;
 
     #[test]
-    fn test_init_bridge() {
-        let result = init_bridge();
-        assert!(!result.is_empty());
+    #[serial]
+    fn test_init() {
+        let result = init();
+        assert!(result.is_ok());
     }
 
     #[test]
-    fn test_get_version() {
-        let version = get_version();
-        assert!(!version.is_empty());
+    #[serial]
+    fn test_shutdown() {
+        init().unwrap();
+        let result = shutdown();
+        assert!(result.is_ok());
     }
 }

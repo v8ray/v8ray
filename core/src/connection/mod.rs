@@ -11,10 +11,15 @@ use uuid::Uuid;
 /// Connection state
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum ConnectionState {
+    /// Not connected
     Disconnected,
+    /// Connecting to server
     Connecting,
+    /// Connected to server
     Connected,
+    /// Disconnecting from server
     Disconnecting,
+    /// Connection error
     Error(String),
 }
 

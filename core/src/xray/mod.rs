@@ -11,12 +11,16 @@ use tokio::sync::RwLock;
 /// Xray Core errors
 #[derive(Error, Debug)]
 pub enum XrayError {
+    /// IO error
     #[error("IO error: {0}")]
     Io(#[from] std::io::Error),
+    /// Process error
     #[error("Process error: {0}")]
     Process(String),
+    /// Configuration error
     #[error("Configuration error: {0}")]
     Config(String),
+    /// Xray Core not found
     #[error("Xray Core not found")]
     NotFound,
 }
@@ -24,10 +28,15 @@ pub enum XrayError {
 /// Xray Core status
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum XrayStatus {
+    /// Xray Core is stopped
     Stopped,
+    /// Xray Core is starting
     Starting,
+    /// Xray Core is running
     Running,
+    /// Xray Core is stopping
     Stopping,
+    /// Xray Core has error
     Error(String),
 }
 

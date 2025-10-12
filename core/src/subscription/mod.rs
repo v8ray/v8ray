@@ -27,9 +27,13 @@ pub struct Subscription {
 /// Subscription status
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum SubscriptionStatus {
+    /// Subscription is active
     Active,
+    /// Subscription is inactive
     Inactive,
+    /// Subscription has error
     Error(String),
+    /// Subscription is updating
     Updating,
 }
 

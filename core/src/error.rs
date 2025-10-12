@@ -43,6 +43,7 @@ pub enum V8RayError {
 
 /// Configuration errors
 #[derive(Error, Debug)]
+#[allow(missing_docs)]
 pub enum ConfigError {
     #[error("IO error: {0}")]
     Io(#[from] std::io::Error),
@@ -80,6 +81,7 @@ pub enum ConfigError {
 
 /// Connection errors
 #[derive(Error, Debug)]
+#[allow(missing_docs)]
 pub enum ConnectionError {
     #[error("Connection failed: {0}")]
     Failed(String),
@@ -105,6 +107,7 @@ pub enum ConnectionError {
 
 /// Subscription errors
 #[derive(Error, Debug)]
+#[allow(missing_docs)]
 pub enum SubscriptionError {
     #[error("HTTP request failed: {0}")]
     HttpRequest(#[from] reqwest::Error),
@@ -130,6 +133,7 @@ pub enum SubscriptionError {
 
 /// Xray Core errors
 #[derive(Error, Debug)]
+#[allow(missing_docs)]
 pub enum XrayError {
     #[error("Xray process error: {0}")]
     Process(String),
@@ -152,6 +156,7 @@ pub enum XrayError {
 
 /// Platform specific errors
 #[derive(Error, Debug)]
+#[allow(missing_docs)]
 pub enum PlatformError {
     #[error("VPN permission denied")]
     VpnPermissionDenied,
@@ -171,6 +176,7 @@ pub enum PlatformError {
 
 /// Network errors
 #[derive(Error, Debug)]
+#[allow(missing_docs)]
 pub enum NetworkError {
     #[error("HTTP error: {0}")]
     Http(#[from] reqwest::Error),
@@ -190,6 +196,7 @@ pub enum NetworkError {
 
 /// Storage errors
 #[derive(Error, Debug)]
+#[allow(missing_docs)]
 pub enum StorageError {
     #[error("Database error: {0}")]
     Database(String),
