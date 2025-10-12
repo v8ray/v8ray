@@ -145,15 +145,15 @@ impl ConfigManager {
     /// Add a proxy server configuration
     pub async fn add_proxy_config(&self, config: ProxyServerConfig) -> ConfigResult<String> {
         let id = config.id.clone();
-        
+
         let mut configs = self.proxy_configs.write().await;
         if configs.contains_key(&id) {
             return Err(ConfigError::AlreadyExists(id));
         }
-        
+
         configs.insert(id.clone(), config);
         debug!("Added proxy config: {}", id);
-        
+
         Ok(id)
     }
 
@@ -179,25 +179,25 @@ impl ConfigManager {
         config: ProxyServerConfig,
     ) -> ConfigResult<()> {
         let mut configs = self.proxy_configs.write().await;
-        
+
         if !configs.contains_key(id) {
             return Err(ConfigError::NotFound(id.to_string()));
         }
-        
+
         configs.insert(id.to_string(), config);
         debug!("Updated proxy config: {}", id);
-        
+
         Ok(())
     }
 
     /// Delete a proxy server configuration
     pub async fn delete_proxy_config(&self, id: &str) -> ConfigResult<()> {
         let mut configs = self.proxy_configs.write().await;
-        
+
         if configs.remove(id).is_none() {
             return Err(ConfigError::NotFound(id.to_string()));
         }
-        
+
         debug!("Deleted proxy config: {}", id);
         Ok(())
     }
@@ -205,11 +205,11 @@ impl ConfigManager {
     /// Delete multiple proxy server configurations
     pub async fn delete_proxy_configs(&self, ids: Vec<String>) -> ConfigResult<()> {
         let mut configs = self.proxy_configs.write().await;
-        
+
         for id in ids {
             configs.remove(&id);
         }
-        
+
         debug!("Deleted multiple proxy configs");
         Ok(())
     }
@@ -230,9 +230,10 @@ impl ConfigManager {
 
     /// Create a backup of the current configuration
     pub async fn create_backup(&self) -> ConfigResult<PathBuf> {
-        let backup_dir = self.backup_dir.as_ref().ok_or_else(|| {
-            ConfigError::Validation("Backup directory not set".to_string())
-        })?;
+        let backup_dir = self
+            .backup_dir
+            .as_ref()
+            .ok_or_else(|| ConfigError::Validation("Backup directory not set".to_string()))?;
 
         // Create backup directory if it doesn't exist
         std::fs::create_dir_all(backup_dir)?;
@@ -270,9 +271,10 @@ impl ConfigManager {
 
     /// List all available backups
     pub fn list_backups(&self) -> ConfigResult<Vec<PathBuf>> {
-        let backup_dir = self.backup_dir.as_ref().ok_or_else(|| {
-            ConfigError::Validation("Backup directory not set".to_string())
-        })?;
+        let backup_dir = self
+            .backup_dir
+            .as_ref()
+            .ok_or_else(|| ConfigError::Validation("Backup directory not set".to_string()))?;
 
         if !backup_dir.exists() {
             return Ok(vec![]);
@@ -371,7 +373,7 @@ mod tests {
     async fn test_config_manager_new() {
         let temp_file = NamedTempFile::new().unwrap();
         let manager = ConfigManager::new(temp_file.path());
-        
+
         let config = manager.get_config().await;
         assert_eq!(config.proxy.http_port, 8080);
     }
@@ -380,10 +382,13 @@ mod tests {
     async fn test_add_and_get_proxy_config() {
         let temp_file = NamedTempFile::new().unwrap();
         let manager = ConfigManager::new(temp_file.path());
-        
+
         let proxy_config = create_test_proxy_config("test-1", "Test Server");
-        let id = manager.add_proxy_config(proxy_config.clone()).await.unwrap();
-        
+        let id = manager
+            .add_proxy_config(proxy_config.clone())
+            .await
+            .unwrap();
+
         let retrieved = manager.get_proxy_config(&id).await.unwrap();
         assert_eq!(retrieved.name, "Test Server");
     }
@@ -392,13 +397,19 @@ mod tests {
     async fn test_update_proxy_config() {
         let temp_file = NamedTempFile::new().unwrap();
         let manager = ConfigManager::new(temp_file.path());
-        
+
         let mut proxy_config = create_test_proxy_config("test-1", "Test Server");
-        manager.add_proxy_config(proxy_config.clone()).await.unwrap();
-        
+        manager
+            .add_proxy_config(proxy_config.clone())
+            .await
+            .unwrap();
+
         proxy_config.name = "Updated Server".to_string();
-        manager.update_proxy_config("test-1", proxy_config).await.unwrap();
-        
+        manager
+            .update_proxy_config("test-1", proxy_config)
+            .await
+            .unwrap();
+
         let retrieved = manager.get_proxy_config("test-1").await.unwrap();
         assert_eq!(retrieved.name, "Updated Server");
     }
@@ -407,12 +418,12 @@ mod tests {
     async fn test_delete_proxy_config() {
         let temp_file = NamedTempFile::new().unwrap();
         let manager = ConfigManager::new(temp_file.path());
-        
+
         let proxy_config = create_test_proxy_config("test-1", "Test Server");
         manager.add_proxy_config(proxy_config).await.unwrap();
-        
+
         manager.delete_proxy_config("test-1").await.unwrap();
-        
+
         let result = manager.get_proxy_config("test-1").await;
         assert!(result.is_err());
     }
@@ -422,8 +433,14 @@ mod tests {
         let temp_file = NamedTempFile::new().unwrap();
         let manager = ConfigManager::new(temp_file.path());
 
-        manager.add_proxy_config(create_test_proxy_config("test-1", "Server 1")).await.unwrap();
-        manager.add_proxy_config(create_test_proxy_config("test-2", "Server 2")).await.unwrap();
+        manager
+            .add_proxy_config(create_test_proxy_config("test-1", "Server 1"))
+            .await
+            .unwrap();
+        manager
+            .add_proxy_config(create_test_proxy_config("test-2", "Server 2"))
+            .await
+            .unwrap();
 
         let all_configs = manager.get_all_proxy_configs().await;
         assert_eq!(all_configs.len(), 2);
@@ -436,9 +453,12 @@ mod tests {
         manager.set_encryption_password("test_password".to_string());
 
         // Modify config
-        manager.update_config(|config| {
-            config.proxy.http_port = 9090;
-        }).await.unwrap();
+        manager
+            .update_config(|config| {
+                config.proxy.http_port = 9090;
+            })
+            .await
+            .unwrap();
 
         // Save with encryption
         manager.save().await.unwrap();
@@ -466,18 +486,24 @@ mod tests {
         manager.set_backup_dir(&backup_dir);
 
         // Modify config
-        manager.update_config(|config| {
-            config.proxy.http_port = 7070;
-        }).await.unwrap();
+        manager
+            .update_config(|config| {
+                config.proxy.http_port = 7070;
+            })
+            .await
+            .unwrap();
 
         // Create backup
         let backup_path = manager.create_backup().await.unwrap();
         assert!(backup_path.exists());
 
         // Modify config again
-        manager.update_config(|config| {
-            config.proxy.http_port = 8080;
-        }).await.unwrap();
+        manager
+            .update_config(|config| {
+                config.proxy.http_port = 8080;
+            })
+            .await
+            .unwrap();
 
         // Restore from backup
         manager.restore_from_backup(&backup_path).await.unwrap();
@@ -544,9 +570,12 @@ mod tests {
         let manager = ConfigManager::new(&config_file);
 
         // Modify config
-        manager.update_config(|config| {
-            config.proxy.http_port = 6060;
-        }).await.unwrap();
+        manager
+            .update_config(|config| {
+                config.proxy.http_port = 6060;
+            })
+            .await
+            .unwrap();
 
         // Export
         manager.export_config(&export_file).await.unwrap();
@@ -560,4 +589,3 @@ mod tests {
         assert_eq!(config.proxy.http_port, 6060);
     }
 }
-

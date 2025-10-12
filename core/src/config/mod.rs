@@ -250,10 +250,10 @@ mod tests {
     fn test_config_save_load() {
         let config = Config::default();
         let temp_file = NamedTempFile::new().unwrap();
-        
+
         config.save(temp_file.path()).unwrap();
         let loaded_config = Config::load(temp_file.path()).unwrap();
-        
+
         assert_eq!(config.app.mode as u8, loaded_config.app.mode as u8);
         assert_eq!(config.proxy.http_port, loaded_config.proxy.http_port);
     }

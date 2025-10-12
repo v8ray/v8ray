@@ -122,7 +122,7 @@ impl XrayCore {
     /// Start Xray Core with configuration
     pub async fn start(&self, config: XrayConfig) -> Result<(), XrayError> {
         let mut status = self.status.write().await;
-        
+
         if *status == XrayStatus::Running {
             return Ok(());
         }
@@ -140,8 +140,8 @@ impl XrayCore {
         let xray_path = self.find_xray_binary()?;
 
         // Generate configuration file
-        let config_content = serde_json::to_string_pretty(&config)
-            .map_err(|e| XrayError::Config(e.to_string()))?;
+        let config_content =
+            serde_json::to_string_pretty(&config).map_err(|e| XrayError::Config(e.to_string()))?;
 
         // Write config to temporary file
         let config_path = std::env::temp_dir().join("v8ray_xray_config.json");
@@ -174,7 +174,7 @@ impl XrayCore {
     /// Stop Xray Core
     pub async fn stop(&self) -> Result<(), XrayError> {
         let mut status = self.status.write().await;
-        
+
         if *status == XrayStatus::Stopped {
             return Ok(());
         }
@@ -209,7 +209,7 @@ impl XrayCore {
         };
 
         self.stop().await?;
-        
+
         if let Some(config) = config {
             self.start(config).await?;
         }
@@ -274,13 +274,11 @@ impl Default for XrayConfig {
                     settings: None,
                 },
             ],
-            outbounds: vec![
-                OutboundConfig {
-                    protocol: "freedom".to_string(),
-                    settings: None,
-                    stream_settings: None,
-                },
-            ],
+            outbounds: vec![OutboundConfig {
+                protocol: "freedom".to_string(),
+                settings: None,
+                stream_settings: None,
+            }],
             routing: None,
         }
     }
@@ -301,7 +299,7 @@ mod tests {
         let config = XrayConfig::default();
         let json = serde_json::to_string(&config).unwrap();
         assert!(!json.is_empty());
-        
+
         let _parsed: XrayConfig = serde_json::from_str(&json).unwrap();
     }
 }

@@ -275,6 +275,3 @@ fn create_test_proxy(id: &str, name: &str, server: &str, port: u16) -> ProxyServ
         updated_at: Utc::now(),
     }
 }
-
-
-

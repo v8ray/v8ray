@@ -24,20 +24,20 @@ async fn test_complete_initialization() {
 #[tokio::test]
 async fn test_config_integration() {
     use v8ray_core::config::*;
-    
+
     // Create a test configuration
     let mut config = Config::default();
     config.app.mode = AppMode::Advanced;
     config.proxy.http_port = 8080;
     config.proxy.socks_port = 1080;
-    
+
     // Validate configuration
     assert!(config.validate().is_ok());
-    
+
     // Test serialization/deserialization
     let json = serde_json::to_string(&config).unwrap();
     let deserialized: Config = serde_json::from_str(&json).unwrap();
-    
+
     assert_eq!(config.app.mode as u8, deserialized.app.mode as u8);
     assert_eq!(config.proxy.http_port, deserialized.proxy.http_port);
 }
@@ -46,27 +46,26 @@ async fn test_config_integration() {
 #[tokio::test]
 async fn test_connection_integration() {
     use v8ray_core::connection::*;
-    
+
     let manager = ConnectionManager::new();
-    
+
     // Test initial state
     assert_eq!(manager.get_state().await, ConnectionState::Disconnected);
-    
+
     // Test connection flow
-    let result = manager.connect(
-        "Test Server".to_string(),
-        "127.0.0.1:8080".to_string()
-    ).await;
+    let result = manager
+        .connect("Test Server".to_string(), "127.0.0.1:8080".to_string())
+        .await;
     assert!(result.is_ok());
     assert_eq!(manager.get_state().await, ConnectionState::Connected);
-    
+
     // Test statistics update
     manager.update_stats(1024, 2048).await.unwrap();
     let connection = manager.get_current_connection().await.unwrap();
     let stats = connection.stats.unwrap();
     assert_eq!(stats.upload, 1024);
     assert_eq!(stats.download, 2048);
-    
+
     // Test disconnection
     manager.disconnect().await.unwrap();
     assert_eq!(manager.get_state().await, ConnectionState::Disconnected);
@@ -76,31 +75,34 @@ async fn test_connection_integration() {
 #[tokio::test]
 async fn test_subscription_integration() {
     use v8ray_core::subscription::*;
-    
+
     let mut manager = SubscriptionManager::new();
-    
+
     // Add subscription
-    let id = manager.add_subscription(
-        "Test Subscription".to_string(),
-        "https://example.com/subscription".to_string()
-    ).await.unwrap();
-    
+    let id = manager
+        .add_subscription(
+            "Test Subscription".to_string(),
+            "https://example.com/subscription".to_string(),
+        )
+        .await
+        .unwrap();
+
     // Verify subscription was added
     let subscriptions = manager.get_subscriptions();
     assert_eq!(subscriptions.len(), 1);
     assert_eq!(subscriptions[0].id, id);
     assert_eq!(subscriptions[0].name, "Test Subscription");
-    
+
     // Test subscription update
     manager.update_subscription(id).await.unwrap();
     let subscription = &manager.get_subscriptions()[0];
     assert_eq!(subscription.status, SubscriptionStatus::Active);
     assert!(subscription.last_update.is_some());
-    
+
     // Test server retrieval
     let servers = manager.get_servers();
     assert!(!servers.is_empty());
-    
+
     // Test subscription removal
     manager.remove_subscription(id).unwrap();
     assert!(manager.get_subscriptions().is_empty());
@@ -111,21 +113,21 @@ async fn test_subscription_integration() {
 #[tokio::test]
 async fn test_xray_integration() {
     use v8ray_core::xray::*;
-    
+
     let xray = XrayCore::new();
-    
+
     // Test initial status
     assert_eq!(xray.get_status().await, XrayStatus::Stopped);
-    
+
     // Test configuration creation
     let config = XrayConfig::default();
     assert!(!config.inbounds.is_empty());
     assert!(!config.outbounds.is_empty());
-    
+
     // Test configuration serialization
     let json = serde_json::to_string(&config).unwrap();
     assert!(!json.is_empty());
-    
+
     // Note: We don't actually start Xray in tests as it requires the binary
     // In a real environment, you would test the start/stop functionality
 }
@@ -134,23 +136,23 @@ async fn test_xray_integration() {
 #[tokio::test]
 async fn test_platform_integration() {
     use v8ray_core::platform::*;
-    
+
     // Test platform information
     let info = get_platform_info();
     assert!(!info.os.is_empty());
     assert!(!info.arch.is_empty());
     assert!(!info.version.is_empty());
-    
+
     // Test platform capabilities
     let capabilities = &info.capabilities;
     // At least one capability should be supported
     assert!(
-        capabilities.system_proxy ||
-        capabilities.vpn_mode ||
-        capabilities.tun_mode ||
-        capabilities.auto_start
+        capabilities.system_proxy
+            || capabilities.vpn_mode
+            || capabilities.tun_mode
+            || capabilities.auto_start
     );
-    
+
     // Test platform operations (mock implementation)
     // Note: Platform-specific tests are skipped in integration tests
     // as they require platform-specific implementations
@@ -165,16 +167,16 @@ async fn test_platform_integration() {
 /// Test error handling across modules
 #[tokio::test]
 async fn test_error_handling() {
-    use v8ray_core::subscription::*;
     use uuid::Uuid;
-    
+    use v8ray_core::subscription::*;
+
     let mut manager = SubscriptionManager::new();
-    
+
     // Test invalid subscription ID
     let invalid_id = Uuid::new_v4();
     let result = manager.update_subscription(invalid_id).await;
     assert!(result.is_err());
-    
+
     // Test removing non-existent subscription
     let result = manager.remove_subscription(invalid_id);
     assert!(result.is_ok()); // Remove is idempotent
@@ -183,19 +185,19 @@ async fn test_error_handling() {
 /// Test concurrent operations
 #[tokio::test]
 async fn test_concurrent_operations() {
-    use v8ray_core::connection::*;
     use std::sync::Arc;
-    
+    use v8ray_core::connection::*;
+
     let manager = Arc::new(ConnectionManager::new());
-    
+
     // Test concurrent state queries
-    let handles: Vec<_> = (0..10).map(|_| {
-        let manager = Arc::clone(&manager);
-        tokio::spawn(async move {
-            manager.get_state().await
+    let handles: Vec<_> = (0..10)
+        .map(|_| {
+            let manager = Arc::clone(&manager);
+            tokio::spawn(async move { manager.get_state().await })
         })
-    }).collect();
-    
+        .collect();
+
     // All should return Disconnected
     for handle in handles {
         let state = handle.await.unwrap();
@@ -207,26 +209,29 @@ async fn test_concurrent_operations() {
 #[tokio::test]
 async fn test_memory_cleanup() {
     use v8ray_core::subscription::*;
-    
+
     let mut manager = SubscriptionManager::new();
-    
+
     // Add multiple subscriptions
     let mut ids = Vec::new();
     for i in 0..10 {
-        let id = manager.add_subscription(
-            format!("Test {}", i),
-            format!("https://example.com/sub{}", i)
-        ).await.unwrap();
+        let id = manager
+            .add_subscription(
+                format!("Test {}", i),
+                format!("https://example.com/sub{}", i),
+            )
+            .await
+            .unwrap();
         ids.push(id);
     }
-    
+
     assert_eq!(manager.get_subscriptions().len(), 10);
-    
+
     // Remove all subscriptions
     for id in ids {
         manager.remove_subscription(id).unwrap();
     }
-    
+
     assert!(manager.get_subscriptions().is_empty());
     assert!(manager.get_servers().is_empty());
 }
@@ -234,17 +239,17 @@ async fn test_memory_cleanup() {
 /// Test performance benchmarks
 #[tokio::test]
 async fn test_performance() {
-    use v8ray_core::config::*;
     use std::time::Instant;
-    
+    use v8ray_core::config::*;
+
     // Test configuration validation performance
     let config = Config::default();
     let start = Instant::now();
-    
+
     for _ in 0..1000 {
         config.validate().unwrap();
     }
-    
+
     let duration = start.elapsed();
     // Should complete 1000 validations in less than 100ms
     assert!(duration.as_millis() < 100);

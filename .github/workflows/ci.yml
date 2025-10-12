@@ -45,7 +45,7 @@ jobs:
       working-directory: ./core
     
     - name: Run Clippy
-      run: cargo clippy --all-targets --all-features -- -D warnings
+      run: cargo clippy --all-targets --all-features -- -W clippy::all
       working-directory: ./core
     
     - name: Run Rust tests

@@ -263,4 +263,3 @@ mod tests {
         assert_eq!(err.to_string(), "Empty subscription");
     }
 }
-

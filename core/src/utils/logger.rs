@@ -118,14 +118,11 @@ pub fn init_logger(config: &LogConfig) -> Result<()> {
             .file_dir
             .clone()
             .unwrap_or_else(|| PathBuf::from("logs"));
-        
+
         std::fs::create_dir_all(&file_dir)?;
 
-        let file_appender = RollingFileAppender::new(
-            config.rotation.into(),
-            file_dir,
-            &config.file_prefix,
-        );
+        let file_appender =
+            RollingFileAppender::new(config.rotation.into(), file_dir, &config.file_prefix);
         let file_layer = fmt::layer().with_writer(file_appender).with_ansi(false);
 
         registry.with(console_layer).with(file_layer).init();
@@ -139,14 +136,11 @@ pub fn init_logger(config: &LogConfig) -> Result<()> {
             .file_dir
             .clone()
             .unwrap_or_else(|| PathBuf::from("logs"));
-        
+
         std::fs::create_dir_all(&file_dir)?;
 
-        let file_appender = RollingFileAppender::new(
-            config.rotation.into(),
-            file_dir,
-            &config.file_prefix,
-        );
+        let file_appender =
+            RollingFileAppender::new(config.rotation.into(), file_dir, &config.file_prefix);
         let file_layer = fmt::layer().with_writer(file_appender).with_ansi(false);
 
         registry.with(file_layer).init();
@@ -206,4 +200,3 @@ mod tests {
         assert_eq!(rotation, Rotation::DAILY);
     }
 }
-

@@ -88,7 +88,7 @@ impl SubscriptionManager {
 
         let id = subscription.id;
         self.subscriptions.push(subscription);
-        
+
         // Try to update the subscription immediately
         if let Err(e) = self.update_subscription(id).await {
             tracing::warn!("Failed to update subscription {}: {}", id, e);
@@ -101,19 +101,22 @@ impl SubscriptionManager {
     pub fn remove_subscription(&mut self, id: Uuid) -> crate::Result<()> {
         // Remove subscription
         self.subscriptions.retain(|s| s.id != id);
-        
+
         // Remove associated servers
         self.servers.retain(|s| s.subscription_id != id);
-        
+
         Ok(())
     }
 
     /// Update a specific subscription
     pub async fn update_subscription(&mut self, id: Uuid) -> crate::Result<()> {
-        let subscription = self.subscriptions
+        let subscription = self
+            .subscriptions
             .iter_mut()
             .find(|s| s.id == id)
-            .ok_or_else(|| crate::error::V8RayError::Generic("Subscription not found".to_string()))?;
+            .ok_or_else(|| {
+                crate::error::V8RayError::Generic("Subscription not found".to_string())
+            })?;
 
         subscription.status = SubscriptionStatus::Updating;
 
@@ -145,13 +148,17 @@ impl SubscriptionManager {
 
         // Remove old servers for this subscription
         self.servers.retain(|s| s.subscription_id != id);
-        
+
         // Add new servers
         self.servers.extend(mock_servers);
 
         // Update subscription info
         subscription.last_update = Some(chrono::Utc::now());
-        subscription.server_count = self.servers.iter().filter(|s| s.subscription_id == id).count();
+        subscription.server_count = self
+            .servers
+            .iter()
+            .filter(|s| s.subscription_id == id)
+            .count();
         subscription.status = SubscriptionStatus::Active;
 
         Ok(())
@@ -160,11 +167,11 @@ impl SubscriptionManager {
     /// Update all subscriptions
     pub async fn update_all_subscriptions(&mut self) -> crate::Result<()> {
         let subscription_ids: Vec<Uuid> = self.subscriptions.iter().map(|s| s.id).collect();
-        
+
         for id in subscription_ids {
             if let Err(e) = self.update_subscription(id).await {
                 tracing::error!("Failed to update subscription {}: {}", id, e);
-                
+
                 // Mark subscription as error
                 if let Some(subscription) = self.subscriptions.iter_mut().find(|s| s.id == id) {
                     subscription.status = SubscriptionStatus::Error(e.to_string());
@@ -187,7 +194,10 @@ impl SubscriptionManager {
 
     /// Get servers for a specific subscription
     pub fn get_servers_for_subscription(&self, subscription_id: Uuid) -> Vec<&Server> {
-        self.servers.iter().filter(|s| s.subscription_id == subscription_id).collect()
+        self.servers
+            .iter()
+            .filter(|s| s.subscription_id == subscription_id)
+            .collect()
     }
 }
 
@@ -198,20 +208,23 @@ mod tests {
     #[tokio::test]
     async fn test_subscription_manager() {
         let mut manager = SubscriptionManager::new();
-        
+
         // Add subscription
-        let id = manager.add_subscription(
-            "Test Subscription".to_string(),
-            "https://example.com/subscription".to_string()
-        ).await.unwrap();
-        
+        let id = manager
+            .add_subscription(
+                "Test Subscription".to_string(),
+                "https://example.com/subscription".to_string(),
+            )
+            .await
+            .unwrap();
+
         // Check subscription was added
         assert_eq!(manager.get_subscriptions().len(), 1);
         assert_eq!(manager.get_subscriptions()[0].id, id);
-        
+
         // Check servers were added during update
         assert!(!manager.get_servers().is_empty());
-        
+
         // Remove subscription
         manager.remove_subscription(id).unwrap();
         assert!(manager.get_subscriptions().is_empty());
@@ -221,15 +234,15 @@ mod tests {
     #[tokio::test]
     async fn test_subscription_update() {
         let mut manager = SubscriptionManager::new();
-        
-        let id = manager.add_subscription(
-            "Test".to_string(),
-            "https://example.com/sub".to_string()
-        ).await.unwrap();
-        
+
+        let id = manager
+            .add_subscription("Test".to_string(), "https://example.com/sub".to_string())
+            .await
+            .unwrap();
+
         // Update subscription
         manager.update_subscription(id).await.unwrap();
-        
+
         let subscription = &manager.get_subscriptions()[0];
         assert_eq!(subscription.status, SubscriptionStatus::Active);
         assert!(subscription.last_update.is_some());

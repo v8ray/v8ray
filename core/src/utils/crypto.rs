@@ -19,19 +19,19 @@ use base64::{engine::general_purpose::STANDARD as BASE64, Engine};
 /// Base64-encoded encrypted data with nonce prepended
 pub fn encrypt_aes256(data: &[u8], key: &[u8; 32]) -> Result<String> {
     let cipher = Aes256Gcm::new(key.into());
-    
+
     // Generate a random nonce
     let nonce = Aes256Gcm::generate_nonce(&mut OsRng);
-    
+
     // Encrypt the data
     let ciphertext = cipher
         .encrypt(&nonce, data)
         .map_err(|e| anyhow!("Encryption failed: {}", e))?;
-    
+
     // Prepend nonce to ciphertext
     let mut result = nonce.to_vec();
     result.extend_from_slice(&ciphertext);
-    
+
     // Encode as base64
     Ok(BASE64.encode(&result))
 }
@@ -49,17 +49,17 @@ pub fn decrypt_aes256(encrypted_data: &str, key: &[u8; 32]) -> Result<Vec<u8>> {
     let data = BASE64
         .decode(encrypted_data)
         .map_err(|e| anyhow!("Base64 decode failed: {}", e))?;
-    
+
     if data.len() < 12 {
         return Err(anyhow!("Invalid encrypted data: too short"));
     }
-    
+
     // Extract nonce and ciphertext
     let (nonce_bytes, ciphertext) = data.split_at(12);
     let nonce = Nonce::from_slice(nonce_bytes);
-    
+
     let cipher = Aes256Gcm::new(key.into());
-    
+
     // Decrypt the data
     cipher
         .decrypt(nonce, ciphertext)
@@ -79,11 +79,11 @@ pub fn generate_key() -> [u8; 32] {
 pub fn derive_key_from_password(password: &str) -> [u8; 32] {
     use std::collections::hash_map::DefaultHasher;
     use std::hash::{Hash, Hasher};
-    
+
     let mut hasher = DefaultHasher::new();
     password.hash(&mut hasher);
     let hash = hasher.finish();
-    
+
     // Expand the hash to 32 bytes
     let mut key = [0u8; 32];
     for (i, chunk) in key.chunks_mut(8).enumerate() {
@@ -92,7 +92,7 @@ pub fn derive_key_from_password(password: &str) -> [u8; 32] {
         let bytes = hasher.finish().to_le_bytes();
         chunk.copy_from_slice(&bytes);
     }
-    
+
     key
 }
 
@@ -104,10 +104,10 @@ mod tests {
     fn test_encrypt_decrypt() {
         let key = generate_key();
         let data = b"Hello, V8Ray!";
-        
+
         let encrypted = encrypt_aes256(data, &key).unwrap();
         let decrypted = decrypt_aes256(&encrypted, &key).unwrap();
-        
+
         assert_eq!(data.to_vec(), decrypted);
     }
 
@@ -116,10 +116,10 @@ mod tests {
         let password = "my_secure_password";
         let key = derive_key_from_password(password);
         let data = b"Sensitive configuration data";
-        
+
         let encrypted = encrypt_aes256(data, &key).unwrap();
         let decrypted = decrypt_aes256(&encrypted, &key).unwrap();
-        
+
         assert_eq!(data.to_vec(), decrypted);
     }
 
@@ -135,7 +135,7 @@ mod tests {
         let key1 = generate_key();
         let key2 = generate_key();
         let data = b"Test data";
-        
+
         let encrypted = encrypt_aes256(data, &key1).unwrap();
         let result = decrypt_aes256(&encrypted, &key2);
         assert!(result.is_err());
@@ -157,4 +157,3 @@ mod tests {
         assert_eq!(key1, key2);
     }
 }
-

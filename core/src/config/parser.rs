@@ -25,9 +25,9 @@ impl ConfigParser {
     /// - ss://base64_encoded_method_password@server:port
     pub fn parse_url(url: &str) -> ConfigResult<ProxyServerConfig> {
         debug!("Parsing proxy URL");
-        
+
         let url_lower = url.to_lowercase();
-        
+
         if url_lower.starts_with("vmess://") {
             Self::parse_vmess_url(url)
         } else if url_lower.starts_with("vless://") {
@@ -45,9 +45,9 @@ impl ConfigParser {
 
     /// Parse VMess URL
     fn parse_vmess_url(url: &str) -> ConfigResult<ProxyServerConfig> {
-        let encoded = url.strip_prefix("vmess://").ok_or_else(|| {
-            ConfigError::InvalidUrl("Invalid VMess URL format".to_string())
-        })?;
+        let encoded = url
+            .strip_prefix("vmess://")
+            .ok_or_else(|| ConfigError::InvalidUrl("Invalid VMess URL format".to_string()))?;
 
         let decoded = BASE64
             .decode(encoded)
@@ -66,7 +66,8 @@ impl ConfigParser {
 
         let port = json["port"]
             .as_u64()
-            .ok_or_else(|| ConfigError::MissingField("port".to_string()))? as u16;
+            .ok_or_else(|| ConfigError::MissingField("port".to_string()))?
+            as u16;
 
         let id = json["id"]
             .as_str()
@@ -169,7 +170,10 @@ impl ConfigParser {
 
         let mut stream_settings = None;
         if let Some(network) = query_pairs.get("type") {
-            let security = query_pairs.get("security").map(|s| s.as_str()).unwrap_or("none");
+            let security = query_pairs
+                .get("security")
+                .map(|s| s.as_str())
+                .unwrap_or("none");
 
             let mut stream = StreamSettings {
                 network: network.clone(),
@@ -201,7 +205,10 @@ impl ConfigParser {
                 }
 
                 stream.ws_settings = Some(WsSettings {
-                    path: query_pairs.get("path").cloned().unwrap_or_else(|| "/".to_string()),
+                    path: query_pairs
+                        .get("path")
+                        .cloned()
+                        .unwrap_or_else(|| "/".to_string()),
                     headers,
                 });
             }
@@ -270,7 +277,7 @@ impl ConfigParser {
     /// Parse Shadowsocks URL
     fn parse_shadowsocks_url(url: &str) -> ConfigResult<ProxyServerConfig> {
         warn!("Shadowsocks URL parsing is simplified");
-        
+
         // ss://base64(method:password)@server:port#name
         let url = Url::parse(url)
             .map_err(|e| ConfigError::InvalidUrl(format!("URL parse failed: {}", e)))?;
@@ -316,7 +323,7 @@ mod tests {
         let url = "vless://uuid-here@example.com:443?type=ws&security=tls&path=/ws#Test%20Server";
         let result = ConfigParser::parse_url(url);
         assert!(result.is_ok());
-        
+
         let config = result.unwrap();
         assert_eq!(config.protocol, ProxyProtocol::Vless);
         assert_eq!(config.server, "example.com");
@@ -328,7 +335,7 @@ mod tests {
         let url = "trojan://password@example.com:443#Test%20Server";
         let result = ConfigParser::parse_url(url);
         assert!(result.is_ok());
-        
+
         let config = result.unwrap();
         assert_eq!(config.protocol, ProxyProtocol::Trojan);
         assert_eq!(config.server, "example.com");
@@ -341,4 +348,3 @@ mod tests {
         assert!(result.is_err());
     }
 }
-

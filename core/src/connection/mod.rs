@@ -81,7 +81,7 @@ impl ConnectionManager {
     /// Start a new connection
     pub async fn connect(&self, name: String, server: String) -> crate::Result<()> {
         let mut current = self.current_connection.write().await;
-        
+
         // Disconnect existing connection if any
         if let Some(ref mut conn) = *current {
             conn.state = ConnectionState::Disconnecting;
@@ -118,19 +118,19 @@ impl ConnectionManager {
     /// Disconnect current connection
     pub async fn disconnect(&self) -> crate::Result<()> {
         let mut current = self.current_connection.write().await;
-        
+
         if let Some(ref mut conn) = *current {
             conn.state = ConnectionState::Disconnecting;
-            
+
             // TODO: Implement actual disconnection logic
             tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
-            
+
             conn.state = ConnectionState::Disconnected;
-            
+
             // Move to history
             let mut history = self.history.write().await;
             history.push(conn.clone());
-            
+
             // Keep only last 100 connections in history
             if history.len() > 100 {
                 history.remove(0);
@@ -154,7 +154,7 @@ impl ConnectionManager {
     /// Update connection statistics
     pub async fn update_stats(&self, upload: u64, download: u64) -> crate::Result<()> {
         let mut current = self.current_connection.write().await;
-        
+
         if let Some(ref mut conn) = *current {
             if let Some(ref mut stats) = conn.stats {
                 stats.upload += upload;
@@ -174,14 +174,17 @@ mod tests {
     #[tokio::test]
     async fn test_connection_manager() {
         let manager = ConnectionManager::new();
-        
+
         // Initial state should be disconnected
         assert_eq!(manager.get_state().await, ConnectionState::Disconnected);
-        
+
         // Test connection
-        manager.connect("Test".to_string(), "127.0.0.1:8080".to_string()).await.unwrap();
+        manager
+            .connect("Test".to_string(), "127.0.0.1:8080".to_string())
+            .await
+            .unwrap();
         assert_eq!(manager.get_state().await, ConnectionState::Connected);
-        
+
         // Test disconnection
         manager.disconnect().await.unwrap();
         assert_eq!(manager.get_state().await, ConnectionState::Disconnected);
@@ -190,10 +193,13 @@ mod tests {
     #[tokio::test]
     async fn test_connection_stats() {
         let manager = ConnectionManager::new();
-        
-        manager.connect("Test".to_string(), "127.0.0.1:8080".to_string()).await.unwrap();
+
+        manager
+            .connect("Test".to_string(), "127.0.0.1:8080".to_string())
+            .await
+            .unwrap();
         manager.update_stats(1024, 2048).await.unwrap();
-        
+
         let connection = manager.get_current_connection().await.unwrap();
         let stats = connection.stats.unwrap();
         assert_eq!(stats.upload, 1024);

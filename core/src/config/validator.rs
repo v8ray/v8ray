@@ -2,7 +2,7 @@
 //!
 //! This module provides validation functionality for configurations.
 
-use super::{Config, ProxyServerConfig, ProxyProtocol};
+use super::{Config, ProxyProtocol, ProxyServerConfig};
 use crate::utils::network::{is_valid_hostname, is_valid_ip, is_valid_port};
 use tracing::debug;
 
@@ -205,7 +205,7 @@ mod tests {
     fn test_validate_config_invalid_port() {
         let mut config = Config::default();
         config.proxy.http_port = 0;
-        
+
         let result = ConfigValidator::validate_config(&config);
         assert!(!result.is_valid());
         assert!(!result.errors.is_empty());
@@ -216,7 +216,7 @@ mod tests {
         let mut config = Config::default();
         config.proxy.http_port = 8080;
         config.proxy.socks_port = 8080;
-        
+
         let result = ConfigValidator::validate_config(&config);
         assert!(!result.is_valid());
     }
@@ -225,7 +225,7 @@ mod tests {
     fn test_validate_proxy_config_success() {
         let mut settings = HashMap::new();
         settings.insert("id".to_string(), serde_json::json!("uuid-here"));
-        
+
         let config = ProxyServerConfig {
             id: "test".to_string(),
             name: "Test Server".to_string(),
@@ -238,7 +238,7 @@ mod tests {
             created_at: Utc::now(),
             updated_at: Utc::now(),
         };
-        
+
         let result = ConfigValidator::validate_proxy_config(&config);
         assert!(result.is_valid());
     }
@@ -257,7 +257,7 @@ mod tests {
             created_at: Utc::now(),
             updated_at: Utc::now(),
         };
-        
+
         let result = ConfigValidator::validate_proxy_config(&config);
         assert!(!result.is_valid());
     }
@@ -276,9 +276,8 @@ mod tests {
             created_at: Utc::now(),
             updated_at: Utc::now(),
         };
-        
+
         let result = ConfigValidator::validate_proxy_config(&config);
         assert!(!result.is_valid());
     }
 }
-

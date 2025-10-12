@@ -35,19 +35,19 @@ pub struct PlatformCapabilities {
 pub trait PlatformOps {
     /// Set system proxy
     fn set_system_proxy(&self, http_port: u16, socks_port: u16) -> crate::Result<()>;
-    
+
     /// Clear system proxy
     fn clear_system_proxy(&self) -> crate::Result<()>;
-    
+
     /// Check if system proxy is set
     fn is_system_proxy_set(&self) -> crate::Result<bool>;
-    
+
     /// Enable auto start
     fn enable_auto_start(&self) -> crate::Result<()>;
-    
+
     /// Disable auto start
     fn disable_auto_start(&self) -> crate::Result<()>;
-    
+
     /// Check if auto start is enabled
     fn is_auto_start_enabled(&self) -> crate::Result<bool>;
 }
@@ -56,7 +56,7 @@ pub trait PlatformOps {
 pub fn get_platform_info() -> PlatformInfo {
     let os = std::env::consts::OS.to_string();
     let arch = std::env::consts::ARCH.to_string();
-    
+
     // Get OS version (simplified)
     let version = match os.as_str() {
         #[cfg(target_os = "windows")]
@@ -139,11 +139,17 @@ fn get_linux_version() -> String {
 }
 
 #[cfg(not(any(target_os = "windows", target_os = "macos", target_os = "linux")))]
-fn get_windows_version() -> String { "unknown".to_string() }
+fn get_windows_version() -> String {
+    "unknown".to_string()
+}
 #[cfg(not(any(target_os = "windows", target_os = "macos", target_os = "linux")))]
-fn get_macos_version() -> String { "unknown".to_string() }
+fn get_macos_version() -> String {
+    "unknown".to_string()
+}
 #[cfg(not(any(target_os = "windows", target_os = "macos", target_os = "linux")))]
-fn get_linux_version() -> String { "unknown".to_string() }
+fn get_linux_version() -> String {
+    "unknown".to_string()
+}
 
 /// Windows platform implementation
 #[cfg(target_os = "windows")]
@@ -153,7 +159,11 @@ pub struct WindowsPlatform;
 impl PlatformOps for WindowsPlatform {
     fn set_system_proxy(&self, http_port: u16, socks_port: u16) -> crate::Result<()> {
         // TODO: Implement Windows system proxy setting
-        tracing::info!("Setting Windows system proxy: HTTP={}, SOCKS={}", http_port, socks_port);
+        tracing::info!(
+            "Setting Windows system proxy: HTTP={}, SOCKS={}",
+            http_port,
+            socks_port
+        );
         Ok(())
     }
 
@@ -194,7 +204,11 @@ pub struct MacOSPlatform;
 impl PlatformOps for MacOSPlatform {
     fn set_system_proxy(&self, http_port: u16, socks_port: u16) -> crate::Result<()> {
         // TODO: Implement macOS system proxy setting
-        tracing::info!("Setting macOS system proxy: HTTP={}, SOCKS={}", http_port, socks_port);
+        tracing::info!(
+            "Setting macOS system proxy: HTTP={}, SOCKS={}",
+            http_port,
+            socks_port
+        );
         Ok(())
     }
 
@@ -235,7 +249,11 @@ pub struct LinuxPlatform;
 impl PlatformOps for LinuxPlatform {
     fn set_system_proxy(&self, http_port: u16, socks_port: u16) -> crate::Result<()> {
         // TODO: Implement Linux system proxy setting
-        tracing::info!("Setting Linux system proxy: HTTP={}, SOCKS={}", http_port, socks_port);
+        tracing::info!(
+            "Setting Linux system proxy: HTTP={}, SOCKS={}",
+            http_port,
+            socks_port
+        );
         Ok(())
     }
 
@@ -299,10 +317,10 @@ mod tests {
         let info = get_platform_info();
         // At least one capability should be supported on major platforms
         assert!(
-            info.capabilities.system_proxy ||
-            info.capabilities.vpn_mode ||
-            info.capabilities.tun_mode ||
-            info.capabilities.auto_start
+            info.capabilities.system_proxy
+                || info.capabilities.vpn_mode
+                || info.capabilities.tun_mode
+                || info.capabilities.auto_start
         );
     }
 }
