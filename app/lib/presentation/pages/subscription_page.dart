@@ -31,7 +31,9 @@ class _SubscriptionPageState extends ConsumerState<SubscriptionPage> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
-              ref.read(subscriptionListProvider.notifier).updateAllSubscriptions();
+              ref
+                  .read(subscriptionListProvider.notifier)
+                  .updateAllSubscriptions();
             },
             tooltip: 'Update All',
           ),
@@ -57,7 +59,8 @@ class _SubscriptionPageState extends ConsumerState<SubscriptionPage> {
                         icon: const Icon(Icons.clear),
                         onPressed: () {
                           _searchController.clear();
-                          ref.read(subscriptionFilterProvider.notifier).state = '';
+                          ref.read(subscriptionFilterProvider.notifier).state =
+                              '';
                         },
                       )
                     : null,
@@ -113,13 +116,16 @@ class _SubscriptionPageState extends ConsumerState<SubscriptionPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                    const Icon(Icons.error_outline,
+                        size: 48, color: Colors.red),
                     const SizedBox(height: 16),
                     Text('Error: $error'),
                     const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () {
-                        ref.read(subscriptionListProvider.notifier).loadSubscriptions();
+                        ref
+                            .read(subscriptionListProvider.notifier)
+                            .loadSubscriptions();
                       },
                       child: const Text('Retry'),
                     ),
@@ -219,7 +225,8 @@ class _SubscriptionCard extends ConsumerWidget {
           backgroundColor: _getStatusColor(context),
           child: Text(
             subscription.serverCount.toString(),
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
         title: Text(
@@ -340,7 +347,8 @@ class _SubscriptionCard extends ConsumerWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Subscription'),
-        content: Text('Are you sure you want to delete "${subscription.name}"?'),
+        content:
+            Text('Are you sure you want to delete "${subscription.name}"?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -377,4 +385,3 @@ class _SubscriptionCard extends ConsumerWidget {
     );
   }
 }
-
