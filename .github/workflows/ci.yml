@@ -8,7 +8,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  FLUTTER_VERSION: 'stable'  # 使用最新稳定版 (需要 Dart 3.3.0+ 以支持 go_router)
+  FLUTTER_CHANNEL: 'stable'  # Flutter 频道 (stable/beta/dev)
   RUST_VERSION: 'stable'  # 使用最新稳定版 (需要 1.81.0+ 以支持新依赖)
 
 jobs:
@@ -71,7 +71,7 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        channel: ${{ env.FLUTTER_VERSION }}
+        channel: ${{ env.FLUTTER_CHANNEL }}
         cache: true
     
     - name: Install Flutter dependencies
@@ -209,7 +209,7 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: ${{ env.FLUTTER_VERSION }}
+        channel: ${{ env.FLUTTER_CHANNEL }}
         cache: true
     
     - name: Install Linux dependencies
