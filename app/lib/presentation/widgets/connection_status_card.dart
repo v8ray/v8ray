@@ -89,7 +89,6 @@ class ConnectionStatusCard extends ConsumerWidget {
         statusIcon = Icons.error;
         break;
       case ConnectionStatus.disconnected:
-      default:
         statusColor = AppColors.disconnected;
         statusText = l10n.disconnected;
         statusIcon = Icons.circle;

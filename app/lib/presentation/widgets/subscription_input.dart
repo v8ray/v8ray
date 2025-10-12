@@ -125,7 +125,7 @@ class SubscriptionInput extends ConsumerWidget {
 
   /// 显示配置对话框
   void _showConfigDialog(BuildContext context, WidgetRef ref) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => _SubscriptionConfigDialog(),
     );

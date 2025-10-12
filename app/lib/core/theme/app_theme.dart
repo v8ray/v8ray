@@ -10,7 +10,7 @@ class AppTheme {
 
   // 主色调 - 使用蓝色系
   static const Color _primaryColor = Color(0xFF2196F3);
-  static const Color _secondaryColor = Color(0xFF03A9F4);
+  // static const Color _secondaryColor = Color(0xFF03A9F4);  // 暂未使用
 
   /// 浅色主题
   static ThemeData get lightTheme {

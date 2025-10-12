@@ -68,7 +68,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-    - assets/config/
+    # - assets/config/  # 暂未创建，后续添加
 
   # Fonts will be added later
   # fonts:

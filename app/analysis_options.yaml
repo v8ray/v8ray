@@ -35,7 +35,7 @@ linter:
     - avoid_empty_else
     - avoid_print
     - avoid_relative_lib_imports
-    - avoid_returning_null_for_future
+    # - avoid_returning_null_for_future  # 已在 Dart 3.3.0 中移除
     - avoid_slow_async_io
     - avoid_types_as_parameter_names
     - avoid_web_libraries_in_flutter
@@ -46,8 +46,8 @@ linter:
     - empty_statements
     - hash_and_equals
     - invariant_booleans
-    - iterable_contains_unrelated_type
-    - list_remove_unrelated_type
+    # - iterable_contains_unrelated_type  # 已在 Dart 3.3.0 中移除
+    # - list_remove_unrelated_type  # 已在 Dart 3.3.0 中移除
     - literal_only_boolean_expressions
     - no_adjacent_strings_in_list
     - no_duplicate_case_values
@@ -82,7 +82,7 @@ linter:
     - avoid_redundant_argument_values
     - avoid_renaming_method_parameters
     - avoid_return_types_on_setters
-    - avoid_returning_null
+    # - avoid_returning_null  # 已在 Dart 3.3.0 中移除
     - avoid_returning_null_for_void
     - avoid_setters_without_getters
     - avoid_shadowing_type_parameters
@@ -115,11 +115,11 @@ linter:
     - non_constant_identifier_names
     - null_check_on_nullable_type_parameter
     - null_closures
-    - omit_local_variable_types
+    # - omit_local_variable_types  # 与 always_specify_types 冲突
     - one_member_abstracts
     - only_throw_errors
     - overridden_fields
-    - package_api_docs
+    # - package_api_docs  # 已在 Dart 3.7.0 中移除
     - package_prefixed_library_names
     - parameter_assignments
     - prefer_adjacent_string_concatenation

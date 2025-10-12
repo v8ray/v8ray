@@ -140,7 +140,7 @@ class SubscriptionUpdateNotifier
       // TODO: 实际的订阅更新逻辑将在后续Sprint中实现
       // 这里只是模拟更新过程
       for (var i = 0; i <= 100; i += 10) {
-        await Future.delayed(const Duration(milliseconds: 200));
+        await Future<void>.delayed(const Duration(milliseconds: 200));
         state = state.copyWith(progress: i / 100);
       }
 
