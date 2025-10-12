@@ -1,4 +1,5 @@
 # Rustfmt configuration for V8Ray Core
+# 只使用稳定版特性，移除 nightly-only 选项
 
 # Edition
 edition = "2021"
@@ -9,35 +10,26 @@ hard_tabs = false
 tab_spaces = 4
 
 # Imports
-imports_granularity = "Crate"
 reorder_imports = true
-group_imports = "StdExternalCrate"
 
 # Functions
-fn_args_layout = "Tall"
-brace_style = "SameLineWhere"
-
-# Control flow
-control_brace_style = "AlwaysSameLine"
-
-# Comments and documentation
-comment_width = 80
-wrap_comments = true
-format_code_in_doc_comments = true
-doc_comment_code_block_width = 80
-
-# Strings
-format_strings = true
-
-# Macros
-format_macro_matchers = true
-format_macro_bodies = true
+# fn_args_layout 已废弃，使用 fn_params_layout
+# 但 fn_params_layout 也是 nightly-only，所以移除
 
 # Misc
 remove_nested_parens = true
 use_small_heuristics = "Default"
 newline_style = "Unix"
 
-# Unstable features (require nightly)
-# unstable_features = true
-# format_generated_files = false
+# 以下选项需要 nightly，已移除:
+# - imports_granularity = "Crate"
+# - group_imports = "StdExternalCrate"
+# - brace_style = "SameLineWhere"
+# - control_brace_style = "AlwaysSameLine"
+# - comment_width = 80
+# - wrap_comments = true
+# - format_code_in_doc_comments = true
+# - doc_comment_code_block_width = 80
+# - format_strings = true
+# - format_macro_matchers = true
+# - format_macro_bodies = true

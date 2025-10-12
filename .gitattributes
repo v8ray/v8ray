@@ -1,0 +1,43 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Rust files - always use LF
+*.rs text eol=lf
+*.toml text eol=lf
+Cargo.lock text eol=lf
+
+# Dart/Flutter files - always use LF
+*.dart text eol=lf
+*.yaml text eol=lf
+pubspec.lock text eol=lf
+analysis_options.yaml text eol=lf
+
+# Configuration files - always use LF
+*.json text eol=lf
+*.yml text eol=lf
+*.md text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+
+# Shell scripts - always use LF
+*.sh text eol=lf
+
+# Windows scripts - always use CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.tar.gz binary
+*.so binary
+*.dll binary
+*.dylib binary
+*.exe binary
+

@@ -8,7 +8,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  FLUTTER_VERSION: '3.16.0'
+  FLUTTER_VERSION: '3.24.0'  # 升级以支持 Dart 3.3.0+ (go_router 需要)
   RUST_VERSION: 'stable'  # 使用最新稳定版 (需要 1.81.0+ 以支持新依赖)
 
 jobs:
