@@ -3,6 +3,16 @@
 //! This module handles subscription management including parsing different
 //! subscription formats, automatic updates, and server list management.
 
+mod http_client;
+mod parser;
+mod scheduler;
+mod storage;
+
+pub use http_client::{HttpClientConfig, SubscriptionHttpClient};
+pub use parser::{SubscriptionFormat, SubscriptionParser};
+pub use scheduler::{SchedulerConfig, SubscriptionScheduler};
+pub use storage::SubscriptionStorage;
+
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use uuid::Uuid;
@@ -62,6 +72,8 @@ pub struct SubscriptionManager {
     subscriptions: Vec<Subscription>,
     /// List of servers from all subscriptions
     servers: Vec<Server>,
+    /// HTTP client for fetching subscriptions
+    http_client: SubscriptionHttpClient,
 }
 
 impl Default for SubscriptionManager {
@@ -76,7 +88,17 @@ impl SubscriptionManager {
         Self {
             subscriptions: Vec::new(),
             servers: Vec::new(),
+            http_client: SubscriptionHttpClient::new().expect("Failed to create HTTP client"),
         }
+    }
+
+    /// Create a new subscription manager with custom HTTP client config
+    pub fn with_http_config(config: HttpClientConfig) -> crate::Result<Self> {
+        Ok(Self {
+            subscriptions: Vec::new(),
+            servers: Vec::new(),
+            http_client: SubscriptionHttpClient::with_config(config)?,
+        })
     }
 
     /// Add a new subscription
@@ -124,37 +146,43 @@ impl SubscriptionManager {
 
         subscription.status = SubscriptionStatus::Updating;
 
-        // TODO: Implement actual subscription fetching and parsing
-        // For now, simulate the update process
-        tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
+        // Fetch subscription content
+        let content = match self.http_client.fetch_subscription(&subscription.url).await {
+            Ok(content) => content,
+            Err(e) => {
+                subscription.status = SubscriptionStatus::Error(e.to_string());
+                return Err(e.into());
+            }
+        };
 
-        // Simulate parsing some servers
-        let mock_servers = vec![
-            Server {
+        // Parse subscription content
+        let proxy_configs = match SubscriptionParser::parse(&content) {
+            Ok(configs) => configs,
+            Err(e) => {
+                subscription.status = SubscriptionStatus::Error(e.to_string());
+                return Err(e.into());
+            }
+        };
+
+        // Convert ProxyServerConfig to Server
+        let new_servers: Vec<Server> = proxy_configs
+            .into_iter()
+            .map(|config| Server {
                 id: Uuid::new_v4(),
-                name: "Mock Server 1".to_string(),
-                address: "example1.com".to_string(),
-                port: 443,
-                protocol: "vmess".to_string(),
-                config: HashMap::new(),
+                name: config.name,
+                address: config.server,
+                port: config.port,
+                protocol: format!("{:?}", config.protocol).to_lowercase(),
+                config: config.settings,
                 subscription_id: id,
-            },
-            Server {
-                id: Uuid::new_v4(),
-                name: "Mock Server 2".to_string(),
-                address: "example2.com".to_string(),
-                port: 443,
-                protocol: "vless".to_string(),
-                config: HashMap::new(),
-                subscription_id: id,
-            },
-        ];
+            })
+            .collect();
 
         // Remove old servers for this subscription
         self.servers.retain(|s| s.subscription_id != id);
 
         // Add new servers
-        self.servers.extend(mock_servers);
+        self.servers.extend(new_servers);
 
         // Update subscription info
         subscription.last_update = Some(chrono::Utc::now());
@@ -164,6 +192,12 @@ impl SubscriptionManager {
             .filter(|s| s.subscription_id == id)
             .count();
         subscription.status = SubscriptionStatus::Active;
+
+        tracing::info!(
+            "Updated subscription '{}': {} servers",
+            subscription.name,
+            subscription.server_count
+        );
 
         Ok(())
     }
@@ -210,14 +244,14 @@ mod tests {
     use super::*;
 
     #[tokio::test]
-    async fn test_subscription_manager() {
+    async fn test_subscription_manager_basic() {
         let mut manager = SubscriptionManager::new();
 
-        // Add subscription
+        // Add subscription (will fail to fetch, but subscription should be added)
         let id = manager
             .add_subscription(
                 "Test Subscription".to_string(),
-                "https://example.com/subscription".to_string(),
+                "https://nonexistent-domain-12345.com/subscription".to_string(),
             )
             .await
             .unwrap();
@@ -225,9 +259,14 @@ mod tests {
         // Check subscription was added
         assert_eq!(manager.get_subscriptions().len(), 1);
         assert_eq!(manager.get_subscriptions()[0].id, id);
+        assert_eq!(manager.get_subscriptions()[0].name, "Test Subscription");
 
-        // Check servers were added during update
-        assert!(!manager.get_servers().is_empty());
+        // The subscription should have error status since the URL doesn't exist
+        // But it should still be in the list
+        assert!(matches!(
+            manager.get_subscriptions()[0].status,
+            SubscriptionStatus::Error(_) | SubscriptionStatus::Inactive
+        ));
 
         // Remove subscription
         manager.remove_subscription(id).unwrap();
@@ -236,20 +275,53 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_subscription_update() {
+    async fn test_subscription_with_mock_data() {
         let mut manager = SubscriptionManager::new();
 
-        let id = manager
-            .add_subscription("Test".to_string(), "https://example.com/sub".to_string())
-            .await
-            .unwrap();
+        // Create a subscription manually
+        let subscription = Subscription {
+            id: Uuid::new_v4(),
+            name: "Test Subscription".to_string(),
+            url: "https://example.com/sub".to_string(),
+            last_update: None,
+            server_count: 0,
+            status: SubscriptionStatus::Inactive,
+        };
 
-        // Update subscription
-        manager.update_subscription(id).await.unwrap();
+        let id = subscription.id;
+        manager.subscriptions.push(subscription);
 
-        let subscription = &manager.get_subscriptions()[0];
-        assert_eq!(subscription.status, SubscriptionStatus::Active);
-        assert!(subscription.last_update.is_some());
-        assert!(subscription.server_count > 0);
+        // Manually add some servers
+        manager.servers.push(Server {
+            id: Uuid::new_v4(),
+            name: "Test Server".to_string(),
+            address: "example.com".to_string(),
+            port: 443,
+            protocol: "vmess".to_string(),
+            config: HashMap::new(),
+            subscription_id: id,
+        });
+
+        // Check servers
+        assert_eq!(manager.get_servers().len(), 1);
+        assert_eq!(manager.get_servers_for_subscription(id).len(), 1);
+
+        // Remove subscription
+        manager.remove_subscription(id).unwrap();
+        assert!(manager.get_subscriptions().is_empty());
+        assert!(manager.get_servers().is_empty());
+    }
+
+    #[test]
+    fn test_subscription_status() {
+        let active = SubscriptionStatus::Active;
+        let inactive = SubscriptionStatus::Inactive;
+        let error = SubscriptionStatus::Error("test error".to_string());
+        let updating = SubscriptionStatus::Updating;
+
+        assert_eq!(active, SubscriptionStatus::Active);
+        assert_eq!(inactive, SubscriptionStatus::Inactive);
+        assert!(matches!(error, SubscriptionStatus::Error(_)));
+        assert_eq!(updating, SubscriptionStatus::Updating);
     }
 }

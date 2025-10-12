@@ -64,10 +64,16 @@ impl ConfigParser {
             .ok_or_else(|| ConfigError::MissingField("add".to_string()))?
             .to_string();
 
-        let port = json["port"]
-            .as_u64()
-            .ok_or_else(|| ConfigError::MissingField("port".to_string()))?
-            as u16;
+        // Port can be either a number or a string
+        let port = if let Some(port_num) = json["port"].as_u64() {
+            port_num as u16
+        } else if let Some(port_str) = json["port"].as_str() {
+            port_str
+                .parse::<u16>()
+                .map_err(|_| ConfigError::InvalidUrl(format!("Invalid port: {}", port_str)))?
+        } else {
+            return Err(ConfigError::MissingField("port".to_string()));
+        };
 
         let id = json["id"]
             .as_str()

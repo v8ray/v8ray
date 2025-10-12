@@ -16,6 +16,8 @@ pub mod config;
 pub mod connection;
 /// 事件流模块
 pub mod events;
+/// 订阅管理模块
+pub mod subscription;
 /// 流量统计模块
 pub mod traffic;
 

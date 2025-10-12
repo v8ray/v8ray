@@ -199,13 +199,16 @@ pub enum NetworkError {
 #[allow(missing_docs)]
 pub enum StorageError {
     #[error("Database error: {0}")]
-    Database(String),
+    Database(#[from] sqlx::Error),
 
     #[error("IO error: {0}")]
     Io(#[from] std::io::Error),
 
     #[error("Serialization error: {0}")]
     Serialization(String),
+
+    #[error("Parse error: {0}")]
+    Parse(String),
 
     #[error("Not found: {0}")]
     NotFound(String),

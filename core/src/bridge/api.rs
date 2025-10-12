@@ -76,6 +76,40 @@ pub struct TrafficStats {
     pub total_download: u64,
 }
 
+/// 订阅信息
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SubscriptionInfo {
+    /// 订阅 ID
+    pub id: String,
+    /// 订阅名称
+    pub name: String,
+    /// 订阅 URL
+    pub url: String,
+    /// 最后更新时间（Unix 时间戳）
+    pub last_update: Option<i64>,
+    /// 服务器数量
+    pub server_count: i32,
+    /// 订阅状态
+    pub status: String,
+}
+
+/// 服务器信息
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ServerInfo {
+    /// 服务器 ID
+    pub id: String,
+    /// 所属订阅 ID
+    pub subscription_id: String,
+    /// 服务器名称
+    pub name: String,
+    /// 服务器地址
+    pub address: String,
+    /// 端口
+    pub port: i32,
+    /// 协议类型
+    pub protocol: String,
+}
+
 /// 事件类型
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum V8RayEvent {
@@ -271,4 +305,105 @@ pub fn reset_traffic_stats() -> Result<()> {
 /// - 事件流
 pub fn create_event_stream() -> impl futures::Stream<Item = V8RayEvent> {
     crate::bridge::events::create_event_stream()
+}
+
+// ============================================================================
+// 订阅管理 API
+// ============================================================================
+
+/// 初始化订阅管理器
+///
+/// # 参数
+/// - `db_path`: 数据库路径
+///
+/// # 返回
+/// - `Ok(())`: 初始化成功
+/// - `Err(e)`: 初始化失败
+pub async fn init_subscription_manager(db_path: String) -> Result<()> {
+    crate::bridge::subscription::init_subscription_manager(db_path).await
+}
+
+/// 添加订阅
+///
+/// # 参数
+/// - `name`: 订阅名称
+/// - `url`: 订阅 URL
+///
+/// # 返回
+/// - `Ok(id)`: 订阅 ID
+/// - `Err(e)`: 添加失败
+pub async fn add_subscription(name: String, url: String) -> Result<String> {
+    crate::bridge::subscription::add_subscription(name, url).await
+}
+
+/// 删除订阅
+///
+/// # 参数
+/// - `id`: 订阅 ID
+///
+/// # 返回
+/// - `Ok(())`: 删除成功
+/// - `Err(e)`: 删除失败
+pub async fn remove_subscription(id: String) -> Result<()> {
+    crate::bridge::subscription::remove_subscription(id).await
+}
+
+/// 更新订阅
+///
+/// # 参数
+/// - `id`: 订阅 ID
+///
+/// # 返回
+/// - `Ok(())`: 更新成功
+/// - `Err(e)`: 更新失败
+pub async fn update_subscription(id: String) -> Result<()> {
+    crate::bridge::subscription::update_subscription(id).await
+}
+
+/// 更新所有订阅
+///
+/// # 返回
+/// - `Ok(())`: 更新成功
+/// - `Err(e)`: 更新失败
+pub async fn update_all_subscriptions() -> Result<()> {
+    crate::bridge::subscription::update_all_subscriptions().await
+}
+
+/// 获取所有订阅
+///
+/// # 返回
+/// - `Ok(subscriptions)`: 订阅列表
+/// - `Err(e)`: 获取失败
+pub async fn get_subscriptions() -> Result<Vec<SubscriptionInfo>> {
+    crate::bridge::subscription::get_subscriptions().await
+}
+
+/// 获取所有服务器
+///
+/// # 返回
+/// - `Ok(servers)`: 服务器列表
+/// - `Err(e)`: 获取失败
+pub async fn get_servers() -> Result<Vec<ServerInfo>> {
+    crate::bridge::subscription::get_servers().await
+}
+
+/// 获取指定订阅的服务器
+///
+/// # 参数
+/// - `subscription_id`: 订阅 ID
+///
+/// # 返回
+/// - `Ok(servers)`: 服务器列表
+/// - `Err(e)`: 获取失败
+pub async fn get_servers_for_subscription(subscription_id: String) -> Result<Vec<ServerInfo>> {
+    crate::bridge::subscription::get_servers_for_subscription(subscription_id).await
+}
+
+/// 从存储加载订阅
+///
+/// # 返回
+/// - `Ok(())`: 加载成功
+/// - `Err(e)`: 加载失败
+pub async fn load_subscriptions_from_storage() -> Result<()> {
+    crate::bridge::subscription::load_subscriptions_from_storage().await
 }
