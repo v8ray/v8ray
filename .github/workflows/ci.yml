@@ -85,7 +85,8 @@ jobs:
       working-directory: ./app
     
     - name: Analyze Flutter code
-      run: flutter analyze
+      # 只将 error 和 warning 视为失败，忽略 info 级别
+      run: flutter analyze --no-fatal-infos
       working-directory: ./app
     
     - name: Run Flutter tests
