@@ -65,21 +65,23 @@ pub fn create_event_stream() -> impl Stream<Item = V8RayEvent> {
             Ok(event) => Some((event, rx)),
             Err(_) => None,
         }
-    }).boxed()
+    })
+    .boxed()
 }
 
 /// 发送事件（内部使用）
 #[allow(dead_code)]
 pub(crate) fn send_event(event: V8RayEvent) -> Result<()> {
-    let manager = EVENT_MANAGER.try_read()
+    let manager = EVENT_MANAGER
+        .try_read()
         .map_err(|e| anyhow::anyhow!("Failed to acquire event manager lock: {}", e))?;
     manager.send(event)
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use super::super::api::{ConnectionStatus, TrafficStats};
+    use super::*;
     use futures::StreamExt;
     use serial_test::serial;
 
@@ -161,4 +163,3 @@ mod tests {
         assert!(result.is_ok());
     }
 }
-

@@ -101,8 +101,8 @@ pub(crate) fn update_traffic(upload: u64, download: u64) {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::time::Duration;
     use serial_test::serial;
+    use std::time::Duration;
 
     #[test]
     #[serial]
@@ -130,7 +130,7 @@ mod tests {
     #[serial]
     fn test_reset() {
         update_traffic(1000, 2000);
-        
+
         reset_traffic_stats().unwrap();
 
         let stats = get_traffic_stats().unwrap();
@@ -158,4 +158,3 @@ mod tests {
         assert!(stats2.upload_speed > 0 || stats2.download_speed > 0);
     }
 }
-

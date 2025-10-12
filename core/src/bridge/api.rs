@@ -272,4 +272,3 @@ pub fn reset_traffic_stats() -> Result<()> {
 pub fn create_event_stream() -> impl futures::Stream<Item = V8RayEvent> {
     crate::bridge::events::create_event_stream()
 }
-

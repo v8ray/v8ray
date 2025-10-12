@@ -176,4 +176,3 @@ mod tests {
         assert!(!validate_config(invalid_config).unwrap());
     }
 }
-

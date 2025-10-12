@@ -39,7 +39,7 @@ impl ConnectionManager {
         }
 
         self.status = ConnectionStatus::Connecting;
-        
+
         // TODO: 实际的连接逻辑
         // 这里只是模拟
         std::thread::sleep(Duration::from_millis(100));
@@ -156,9 +156,9 @@ mod tests {
     #[serial]
     fn test_connect_and_disconnect() {
         let config_id = "test-config";
-        
+
         connect(config_id).unwrap();
-        
+
         let info = get_connection_info().unwrap();
         assert_eq!(info.status, ConnectionStatus::Connected);
         assert_eq!(info.server_address, Some(format!("server-{}", config_id)));
@@ -218,4 +218,3 @@ mod tests {
         disconnect().unwrap();
     }
 }
-

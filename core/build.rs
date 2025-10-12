@@ -15,4 +15,3 @@ fn main() {
         println!("cargo:warning=OUT_DIR: {}", out_dir);
     }
 }
-

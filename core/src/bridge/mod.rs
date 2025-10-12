@@ -46,9 +46,9 @@ pub fn init() -> Result<()> {
 
     // 忽略日志初始化错误（可能已经初始化过了）
     match log_result {
-        Ok(Ok(_)) => {},
-        Ok(Err(_)) => {},  // 日志初始化失败,继续
-        Err(_) => {},      // panic 被捕获,继续
+        Ok(Ok(_)) => {}
+        Ok(Err(_)) => {} // 日志初始化失败,继续
+        Err(_) => {}     // panic 被捕获,继续
     }
 
     // 初始化配置管理器
@@ -95,7 +95,7 @@ mod tests {
         let result = init();
         // 只要不是其他错误就可以
         match result {
-            Ok(_) => {},
+            Ok(_) => {}
             Err(e) => {
                 // 允许日志系统重复初始化的错误
                 assert!(e.to_string().contains("global default"));

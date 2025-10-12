@@ -40,15 +40,13 @@ pub type Result<T> = std::result::Result<T, V8RayError>;
 pub fn init(log_config: Option<LogConfig>) -> Result<()> {
     // Initialize logging (ignore errors if already initialized)
     let config = log_config.unwrap_or_default();
-    let log_result = std::panic::catch_unwind(|| {
-        utils::logger::init_logger(&config)
-    });
+    let log_result = std::panic::catch_unwind(|| utils::logger::init_logger(&config));
 
     // Ignore logger initialization errors (may already be initialized)
     match log_result {
-        Ok(Ok(_)) => {},
-        Ok(Err(_)) => {},  // Logger init failed, continue
-        Err(_) => {},      // Panic caught, continue
+        Ok(Ok(_)) => {}
+        Ok(Err(_)) => {} // Logger init failed, continue
+        Err(_) => {}     // Panic caught, continue
     }
 
     tracing::info!("V8Ray Core v{} initialized", version());
