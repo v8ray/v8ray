@@ -17,8 +17,10 @@ void main() {
       ),
     );
 
-    // Verify that the app starts successfully
-    await tester.pumpAndSettle();
+    // Pump a few frames to let the app initialize
+    // Don't use pumpAndSettle because we have continuous animations (pulse animation)
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
 
     // The app should load without errors
     expect(find.byType(MaterialApp), findsOneWidget);
