@@ -1,0 +1,195 @@
+name: Full Build
+
+on:
+  workflow_dispatch:  # 手动触发
+    inputs:
+      build_type:
+        description: 'Build type'
+        required: true
+        default: 'debug'
+        type: choice
+        options:
+          - debug
+          - release
+      platforms:
+        description: 'Platforms to build (comma-separated: linux,windows,macos,android,ios)'
+        required: true
+        default: 'linux,windows,macos'
+        type: string
+
+env:
+  CARGO_TERM_COLOR: always
+  FLUTTER_CHANNEL: 'stable'
+  RUST_VERSION: 'stable'
+
+jobs:
+  build:
+    name: Build ${{ matrix.platform }} (${{ inputs.build_type }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux
+            os: ubuntu-latest
+            rust-target: x86_64-unknown-linux-gnu
+            flutter-target: linux
+          - platform: windows
+            os: windows-latest
+            rust-target: x86_64-pc-windows-msvc
+            flutter-target: windows
+          - platform: macos
+            os: macos-latest
+            rust-target: x86_64-apple-darwin
+            flutter-target: macos
+          - platform: android
+            os: ubuntu-latest
+            rust-target: aarch64-linux-android
+            flutter-target: apk
+          - platform: ios
+            os: macos-latest
+            rust-target: aarch64-apple-ios
+            flutter-target: ios
+    
+    # 只构建用户选择的平台
+    if: contains(inputs.platforms, matrix.platform)
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: ${{ env.RUST_VERSION }}
+        targets: ${{ matrix.rust-target }}
+    
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: ${{ env.FLUTTER_CHANNEL }}
+        cache: true
+    
+    - name: Install Linux dependencies
+      if: matrix.platform == 'linux'
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y ninja-build libgtk-3-dev
+    
+    - name: Install Android dependencies
+      if: matrix.platform == 'android'
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y openjdk-17-jdk
+        echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
+    
+    - name: Cache Rust dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          core/target/
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+    
+    - name: Build Rust (${{ inputs.build_type }})
+      run: |
+        if [ "${{ inputs.build_type }}" = "release" ]; then
+          cargo build --release --target ${{ matrix.rust-target }}
+        else
+          cargo build --target ${{ matrix.rust-target }}
+        fi
+      working-directory: ./core
+      shell: bash
+    
+    - name: Install Flutter dependencies
+      run: flutter pub get
+      working-directory: ./app
+    
+    - name: Build Flutter (${{ inputs.build_type }})
+      run: |
+        if [ "${{ inputs.build_type }}" = "release" ]; then
+          flutter build ${{ matrix.flutter-target }} --release
+        else
+          flutter build ${{ matrix.flutter-target }} --debug
+        fi
+      working-directory: ./app
+      shell: bash
+    
+    - name: Package artifacts (Linux)
+      if: matrix.platform == 'linux'
+      run: |
+        mkdir -p artifacts
+        if [ "${{ inputs.build_type }}" = "release" ]; then
+          cp -r app/build/linux/x64/release/bundle/* artifacts/
+          cp core/target/${{ matrix.rust-target }}/release/v8ray-core artifacts/
+        else
+          cp -r app/build/linux/x64/debug/bundle/* artifacts/
+          cp core/target/${{ matrix.rust-target }}/debug/v8ray-core artifacts/
+        fi
+        tar -czf v8ray-linux-${{ inputs.build_type }}.tar.gz -C artifacts .
+      shell: bash
+    
+    - name: Package artifacts (Windows)
+      if: matrix.platform == 'windows'
+      run: |
+        mkdir artifacts
+        if ("${{ inputs.build_type }}" -eq "release") {
+          Copy-Item -Recurse app/build/windows/x64/runner/Release/* artifacts/
+          Copy-Item core/target/${{ matrix.rust-target }}/release/v8ray-core.exe artifacts/
+        } else {
+          Copy-Item -Recurse app/build/windows/x64/runner/Debug/* artifacts/
+          Copy-Item core/target/${{ matrix.rust-target }}/debug/v8ray-core.exe artifacts/
+        }
+        Compress-Archive -Path artifacts/* -DestinationPath v8ray-windows-${{ inputs.build_type }}.zip
+      shell: pwsh
+    
+    - name: Package artifacts (macOS)
+      if: matrix.platform == 'macos'
+      run: |
+        mkdir -p artifacts
+        if [ "${{ inputs.build_type }}" = "release" ]; then
+          cp -r app/build/macos/Build/Products/Release/* artifacts/
+          cp core/target/${{ matrix.rust-target }}/release/v8ray-core artifacts/
+        else
+          cp -r app/build/macos/Build/Products/Debug/* artifacts/
+          cp core/target/${{ matrix.rust-target }}/debug/v8ray-core artifacts/
+        fi
+        tar -czf v8ray-macos-${{ inputs.build_type }}.tar.gz -C artifacts .
+      shell: bash
+    
+    - name: Package artifacts (Android)
+      if: matrix.platform == 'android'
+      run: |
+        mkdir -p artifacts
+        if [ "${{ inputs.build_type }}" = "release" ]; then
+          cp app/build/app/outputs/flutter-apk/app-release.apk artifacts/v8ray-android-release.apk
+        else
+          cp app/build/app/outputs/flutter-apk/app-debug.apk artifacts/v8ray-android-debug.apk
+        fi
+      shell: bash
+    
+    - name: Package artifacts (iOS)
+      if: matrix.platform == 'ios'
+      run: |
+        mkdir -p artifacts
+        if [ "${{ inputs.build_type }}" = "release" ]; then
+          cp -r app/build/ios/iphoneos/Runner.app artifacts/
+        else
+          cp -r app/build/ios/iphonesimulator/Runner.app artifacts/
+        fi
+        tar -czf v8ray-ios-${{ inputs.build_type }}.tar.gz -C artifacts .
+      shell: bash
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: v8ray-${{ matrix.platform }}-${{ inputs.build_type }}
+        path: |
+          v8ray-*.tar.gz
+          v8ray-*.zip
+          artifacts/*.apk
+        retention-days: 7
+        if-no-files-found: warn
+
