@@ -73,4 +73,3 @@ class Validators {
     return emailRegex.hasMatch(email);
   }
 }
-

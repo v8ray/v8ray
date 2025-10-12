@@ -7,4 +7,3 @@ export 'locale_provider.dart';
 export 'proxy_mode_provider.dart';
 export 'subscription_provider.dart';
 export 'theme_provider.dart';
-

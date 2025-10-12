@@ -26,7 +26,8 @@ class AppInfo {
   static const String homepage = 'https://github.com/yourusername/v8ray';
 
   /// 问题反馈
-  static const String issuesUrl = 'https://github.com/yourusername/v8ray/issues';
+  static const String issuesUrl =
+      'https://github.com/yourusername/v8ray/issues';
 }
 
 /// 存储键名
@@ -210,4 +211,3 @@ class SubscriptionConstants {
   static const String urlPattern =
       r'^https?://[a-zA-Z0-9\-._~:/?#\[\]@!$&()*+,;=%]+$';
 }
-

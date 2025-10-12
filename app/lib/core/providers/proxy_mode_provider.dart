@@ -92,4 +92,3 @@ class ProxyModeNotifier extends StateNotifier<ProxyMode> {
     }
   }
 }
-

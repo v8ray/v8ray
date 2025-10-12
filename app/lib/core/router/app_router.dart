@@ -113,4 +113,3 @@ extension AppRouterExtension on BuildContext {
   /// 导航到关于页面
   void goToAbout() => go(RoutePaths.about);
 }
-

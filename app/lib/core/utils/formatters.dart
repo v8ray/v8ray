@@ -78,11 +78,11 @@ class Formatters {
   }
 
   /// 截断字符串
-  static String truncate(String text, int maxLength, {String ellipsis = '...'}) {
+  static String truncate(String text, int maxLength,
+      {String ellipsis = '...'}) {
     if (text.length <= maxLength) {
       return text;
     }
     return '${text.substring(0, maxLength - ellipsis.length)}$ellipsis';
   }
 }
-

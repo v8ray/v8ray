@@ -26,8 +26,8 @@ class ConnectionButton extends ConsumerWidget {
         !connectionState.isDisconnecting;
 
     // 判断是否可以断开
-    final canDisconnect = connectionState.isConnected ||
-        connectionState.isConnecting;
+    final canDisconnect =
+        connectionState.isConnected || connectionState.isConnecting;
 
     return SizedBox(
       height: 56,
@@ -168,4 +168,3 @@ class ConnectionButton extends ConsumerWidget {
     await ref.read(connectionProvider.notifier).disconnect();
   }
 }
-

@@ -122,7 +122,8 @@ final subscriptionUpdateProvider =
 );
 
 /// 订阅更新状态管理
-class SubscriptionUpdateNotifier extends StateNotifier<SubscriptionUpdateState> {
+class SubscriptionUpdateNotifier
+    extends StateNotifier<SubscriptionUpdateState> {
   SubscriptionUpdateNotifier() : super(const SubscriptionUpdateState());
 
   /// 更新订阅
@@ -166,4 +167,3 @@ class SubscriptionUpdateNotifier extends StateNotifier<SubscriptionUpdateState> 
     state = const SubscriptionUpdateState();
   }
 }
-

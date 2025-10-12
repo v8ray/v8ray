@@ -118,4 +118,3 @@ class AppTextStyles {
     fontFeatures: [FontFeature.tabularFigures()],
   );
 }
-
