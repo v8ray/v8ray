@@ -56,6 +56,9 @@ pub fn decrypt_aes256(encrypted_data: &str, key: &[u8; 32]) -> Result<Vec<u8>> {
 
     // Extract nonce and ciphertext
     let (nonce_bytes, ciphertext) = data.split_at(12);
+
+    // Convert nonce bytes to Nonce type (suppress deprecation warning)
+    #[allow(deprecated)]
     let nonce = Nonce::from_slice(nonce_bytes);
 
     let cipher = Aes256Gcm::new(key.into());

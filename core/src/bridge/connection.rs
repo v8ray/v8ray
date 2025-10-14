@@ -210,27 +210,18 @@ pub fn test_latency(config_id: &str) -> Result<u32> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::config::{ProxyProtocol, ProxyServerConfig};
     use serial_test::serial;
 
     fn create_test_config() -> ProxyServerConfig {
         use std::collections::HashMap;
-        let mut settings = HashMap::new();
-        settings.insert("id".to_string(), serde_json::json!("test-uuid"));
-        settings.insert("alterId".to_string(), serde_json::json!(0));
-        settings.insert("security".to_string(), serde_json::json!("auto"));
-
         ProxyServerConfig {
             id: "test-config".to_string(),
             name: "Test Server".to_string(),
-            server: "example.com".to_string(),
+            address: "example.com".to_string(),
             port: 443,
-            protocol: ProxyProtocol::Vmess,
-            settings,
-            stream_settings: None,
+            protocol: "vmess".to_string(),
+            settings: HashMap::new(),
             tags: vec![],
-            created_at: chrono::Utc::now(),
-            updated_at: chrono::Utc::now(),
         }
     }
 

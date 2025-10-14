@@ -7,7 +7,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  FLUTTER_VERSION: '3.27.1'  # Latest stable version (2024-12)
+  FLUTTER_CHANNEL: 'master'  # Use master channel to get latest Flutter with Dart 3.7+
 
 jobs:
   build-and-release:
@@ -38,7 +38,7 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: ${{ env.FLUTTER_VERSION }}
+        channel: ${{ env.FLUTTER_CHANNEL }}
         cache: true
 
     - name: Install Linux dependencies
