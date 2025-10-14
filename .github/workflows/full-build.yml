@@ -19,7 +19,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  FLUTTER_CHANNEL: 'stable'
+  FLUTTER_CHANNEL: 'master'  # Use master channel to match release.yml (Dart 3.7+ required)
   RUST_VERSION: 'stable'
   # Disable interactive prompts
   CI: true

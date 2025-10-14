@@ -1,8 +1,10 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'core/error/index.dart';
@@ -27,7 +29,9 @@ Future<void> main() async {
 
   // 初始化 Rust Bridge
   try {
-    await V8RayBridge.init();
+    // 创建自定义库加载器，支持从应用程序目录加载
+    final externalLibrary = _createExternalLibrary();
+    await V8RayBridge.init(externalLibrary: externalLibrary);
     appLogger.info('Rust Bridge initialized successfully');
 
     // 初始化 Rust Core（包括日志系统）
@@ -241,5 +245,61 @@ class V8RayApp extends ConsumerWidget {
       ],
       locale: locale,
     );
+  }
+}
+
+/// 创建外部库加载器
+///
+/// 在开发模式下，从 core/target/[debug|release] 加载
+/// 在发布模式下，从应用程序目录加载
+ExternalLibrary? _createExternalLibrary() {
+  // 在 Web 平台上不需要加载本地库
+  if (!Platform.isLinux && !Platform.isWindows && !Platform.isMacOS) {
+    return null;
+  }
+
+  try {
+    // 获取可执行文件所在目录
+    final executablePath = Platform.resolvedExecutable;
+    final executableDir = File(executablePath).parent.path;
+
+    // 确定库文件名
+    String libraryName;
+    if (Platform.isWindows) {
+      libraryName = 'v8ray_core.dll';
+    } else if (Platform.isMacOS) {
+      libraryName = 'libv8ray_core.dylib';
+    } else {
+      libraryName = 'libv8ray_core.so';
+    }
+
+    // 尝试从应用程序目录加载（发布模式）
+    final releaseLibPath = '$executableDir/$libraryName';
+    if (File(releaseLibPath).existsSync()) {
+      appLogger.info('Loading Rust library from: $releaseLibPath');
+      return ExternalLibrary.open(releaseLibPath);
+    }
+
+    // 尝试从开发目录加载（开发模式）
+    final buildMode =
+        const bool.fromEnvironment('dart.vm.product') ? 'release' : 'debug';
+    final devLibPath =
+        '$executableDir/../../core/target/$buildMode/$libraryName';
+    if (File(devLibPath).existsSync()) {
+      appLogger.info('Loading Rust library from: $devLibPath');
+      return ExternalLibrary.open(devLibPath);
+    }
+
+    // 如果都找不到，返回 null 使用默认加载器
+    appLogger.warning(
+      'Rust library not found in expected locations:\n'
+      '  - Release: $releaseLibPath\n'
+      '  - Dev: $devLibPath\n'
+      'Will try default loader...',
+    );
+    return null;
+  } catch (e, stackTrace) {
+    appLogger.error('Failed to create external library loader', e, stackTrace);
+    return null;
   }
 }

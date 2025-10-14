@@ -9,7 +9,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  FLUTTER_CHANNEL: 'stable'  # Flutter 频道 (stable/beta/dev)
+  FLUTTER_CHANNEL: 'master'  # Use master channel to match release.yml (Dart 3.7+ required)
   RUST_VERSION: 'stable'  # 使用最新稳定版 (需要 1.81.0+ 以支持新依赖)
   # Disable interactive prompts
   CI: true

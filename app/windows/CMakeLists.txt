@@ -106,3 +106,21 @@ install(DIRECTORY "${PROJECT_BUILD_DIR}/${FLUTTER_ASSET_DIR_NAME}"
 install(FILES "${AOT_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_DATA_DIR}"
   CONFIGURATIONS Profile;Release
   COMPONENT Runtime)
+
+# Install Rust library (v8ray_core.dll)
+set(RUST_LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../core/target")
+if(CMAKE_BUILD_TYPE MATCHES "Release" OR CMAKE_BUILD_TYPE MATCHES "Profile")
+  set(RUST_BUILD_TYPE "release")
+else()
+  set(RUST_BUILD_TYPE "debug")
+endif()
+
+set(RUST_LIBRARY "${RUST_LIB_DIR}/${RUST_BUILD_TYPE}/v8ray_core.dll")
+if(EXISTS "${RUST_LIBRARY}")
+  install(FILES "${RUST_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
+    COMPONENT Runtime)
+  message(STATUS "Will install Rust library: ${RUST_LIBRARY}")
+else()
+  message(WARNING "Rust library not found: ${RUST_LIBRARY}")
+  message(WARNING "Please build Rust library first: cd core && cargo build --lib")
+endif()
