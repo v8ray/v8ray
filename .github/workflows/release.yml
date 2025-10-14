@@ -8,11 +8,16 @@ on:
 env:
   CARGO_TERM_COLOR: always
   FLUTTER_CHANNEL: 'master'  # Use master channel to get latest Flutter with Dart 3.7+
+  # Disable interactive prompts on Windows
+  CI: true
+  PUB_CACHE: ${{ github.workspace }}/.pub-cache
 
 jobs:
   build-and-release:
     name: Build and Release
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write  # Required to create releases
     strategy:
       matrix:
         include:
@@ -54,6 +59,12 @@ jobs:
     - name: Install Flutter dependencies
       run: flutter pub get
       working-directory: ./app
+      env:
+        # Disable interactive prompts
+        CI: true
+        # Prevent "Terminate batch job" prompt on Windows
+        FLUTTER_SUPPRESS_ANALYTICS: true
+        PUB_ENVIRONMENT: bot.github
 
     - name: Build Flutter release
       run: flutter build ${{ matrix.flutter-target }} --release
@@ -72,20 +83,20 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       run: |
         cd app/build/linux/x64/release/bundle
-        tar -czf ../../../../../${{ matrix.asset-name }}.tar.gz .
+        tar -czf ${{ github.workspace }}/${{ matrix.asset-name }}.tar.gz .
 
     - name: Package release (Windows)
       if: matrix.os == 'windows-latest'
       run: |
         cd app/build/windows/x64/runner/Release
-        Compress-Archive -Path * -DestinationPath ../../../../../${{ matrix.asset-name }}.zip
+        Compress-Archive -Path * -DestinationPath ${{ github.workspace }}/${{ matrix.asset-name }}.zip
       shell: pwsh
 
     - name: Package release (macOS)
       if: matrix.os == 'macos-latest'
       run: |
         cd app/build/macos/Build/Products/Release
-        tar -czf ../../../../../${{ matrix.asset-name }}.tar.gz .
+        tar -czf ${{ github.workspace }}/${{ matrix.asset-name }}.tar.gz .
 
     - name: Upload Release
       uses: softprops/action-gh-release@v1

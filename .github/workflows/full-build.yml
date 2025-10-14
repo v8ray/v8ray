@@ -21,6 +21,10 @@ env:
   CARGO_TERM_COLOR: always
   FLUTTER_CHANNEL: 'stable'
   RUST_VERSION: 'stable'
+  # Disable interactive prompts
+  CI: true
+  FLUTTER_SUPPRESS_ANALYTICS: true
+  PUB_ENVIRONMENT: bot.github
 
 jobs:
   build:
