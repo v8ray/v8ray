@@ -35,6 +35,9 @@ class EnhancedErrorDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    if (l10n == null) {
+      return const Center(child: Text('Localization not available'));
+    }
     final theme = Theme.of(context);
 
     final message =
@@ -215,6 +218,9 @@ class _AutoRetryErrorDisplayState extends State<AutoRetryErrorDisplay> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    if (l10n == null) {
+      return const Center(child: Text('Localization not available'));
+    }
     final theme = Theme.of(context);
 
     final message =
