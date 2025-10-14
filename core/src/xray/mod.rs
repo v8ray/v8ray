@@ -299,8 +299,12 @@ impl XrayCore {
         }
 
         std::fs::write(&config_path, &config_content).map_err(|e| {
-            tracing::error!("Failed to write config file: {} (kind: {:?}, raw_os_error: {:?})",
-                e, e.kind(), e.raw_os_error());
+            tracing::error!(
+                "Failed to write config file: {} (kind: {:?}, raw_os_error: {:?})",
+                e,
+                e.kind(),
+                e.raw_os_error()
+            );
             e
         })?;
         tracing::info!("Xray config written to: {:?}", config_path);
@@ -325,7 +329,10 @@ impl XrayCore {
             tracing::error!("Failed to get config metadata: {}", e);
             XrayError::Process(format!("Failed to get config metadata: {}", e))
         })?;
-        tracing::info!("Config file permissions: {:?}", config_metadata.permissions());
+        tracing::info!(
+            "Config file permissions: {:?}",
+            config_metadata.permissions()
+        );
 
         let mut child = Command::new(&xray_path)
             .arg("-config")
@@ -335,8 +342,12 @@ impl XrayCore {
             .stderr(Stdio::piped())
             .spawn()
             .map_err(|e| {
-                tracing::error!("Failed to spawn Xray process: {} (kind: {:?}, raw_os_error: {:?})",
-                    e, e.kind(), e.raw_os_error());
+                tracing::error!(
+                    "Failed to spawn Xray process: {} (kind: {:?}, raw_os_error: {:?})",
+                    e,
+                    e.kind(),
+                    e.raw_os_error()
+                );
                 XrayError::Process(format!("Failed to spawn Xray process: {}", e))
             })?;
 
@@ -436,15 +447,38 @@ impl XrayCore {
             let mut process_pid = self.process_pid.write().await;
             if let Some(pid) = process_pid.take() {
                 tracing::info!("Killing Xray process with PID: {}", pid);
-                // Use kill command to terminate the process
-                unsafe {
-                    libc::kill(pid as i32, libc::SIGTERM);
+
+                #[cfg(unix)]
+                {
+                    // Unix/Linux/macOS: Use libc::kill
+                    unsafe {
+                        libc::kill(pid as i32, libc::SIGTERM);
+                    }
+                    // Wait a bit for graceful shutdown
+                    tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;
+                    // Force kill if still running
+                    unsafe {
+                        libc::kill(pid as i32, libc::SIGKILL);
+                    }
                 }
-                // Wait a bit for graceful shutdown
-                tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;
-                // Force kill if still running
-                unsafe {
-                    libc::kill(pid as i32, libc::SIGKILL);
+
+                #[cfg(windows)]
+                {
+                    // Windows: Use taskkill command
+                    use std::process::Command;
+
+                    // Try graceful termination first
+                    let _ = Command::new("taskkill")
+                        .args(&["/PID", &pid.to_string(), "/T"])
+                        .output();
+
+                    // Wait a bit for graceful shutdown
+                    tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;
+
+                    // Force kill if still running
+                    let _ = Command::new("taskkill")
+                        .args(&["/PID", &pid.to_string(), "/T", "/F"])
+                        .output();
                 }
             }
         }

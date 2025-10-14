@@ -172,6 +172,9 @@ pub enum PlatformError {
 
     #[error("Permission error: {0}")]
     Permission(String),
+
+    #[error("Command execution failed: {0}")]
+    Command(String),
 }
 
 /// Network errors

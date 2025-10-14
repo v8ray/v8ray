@@ -50,39 +50,50 @@ jobs:
             os: macos-latest
             rust-target: aarch64-apple-ios
             flutter-target: ios
-    
-    # 只构建用户选择的平台
-    if: contains(inputs.platforms, matrix.platform)
-    
+
     steps:
+    - name: Check if platform should be built
+      id: check_platform
+      run: |
+        if [[ "${{ inputs.platforms }}" == *"${{ matrix.platform }}"* ]]; then
+          echo "should_build=true" >> $GITHUB_OUTPUT
+        else
+          echo "should_build=false" >> $GITHUB_OUTPUT
+        fi
+      shell: bash
+
     - uses: actions/checkout@v4
+      if: steps.check_platform.outputs.should_build == 'true'
     
     - name: Install Rust
+      if: steps.check_platform.outputs.should_build == 'true'
       uses: dtolnay/rust-toolchain@stable
       with:
         toolchain: ${{ env.RUST_VERSION }}
         targets: ${{ matrix.rust-target }}
-    
+
     - name: Setup Flutter
+      if: steps.check_platform.outputs.should_build == 'true'
       uses: subosito/flutter-action@v2
       with:
         channel: ${{ env.FLUTTER_CHANNEL }}
         cache: true
-    
+
     - name: Install Linux dependencies
-      if: matrix.platform == 'linux'
+      if: steps.check_platform.outputs.should_build == 'true' && matrix.platform == 'linux'
       run: |
         sudo apt-get update -y
         sudo apt-get install -y ninja-build libgtk-3-dev
-    
+
     - name: Install Android dependencies
-      if: matrix.platform == 'android'
+      if: steps.check_platform.outputs.should_build == 'true' && matrix.platform == 'android'
       run: |
         sudo apt-get update -y
         sudo apt-get install -y openjdk-17-jdk
         echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
-    
+
     - name: Cache Rust dependencies
+      if: steps.check_platform.outputs.should_build == 'true'
       uses: actions/cache@v3
       with:
         path: |
@@ -94,6 +105,7 @@ jobs:
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
     
     - name: Build Rust (${{ inputs.build_type }})
+      if: steps.check_platform.outputs.should_build == 'true'
       run: |
         if [ "${{ inputs.build_type }}" = "release" ]; then
           cargo build --release --target ${{ matrix.rust-target }}
@@ -102,12 +114,14 @@ jobs:
         fi
       working-directory: ./core
       shell: bash
-    
+
     - name: Install Flutter dependencies
+      if: steps.check_platform.outputs.should_build == 'true'
       run: flutter pub get
       working-directory: ./app
-    
+
     - name: Build Flutter (${{ inputs.build_type }})
+      if: steps.check_platform.outputs.should_build == 'true'
       run: |
         if [ "${{ inputs.build_type }}" = "release" ]; then
           flutter build ${{ matrix.flutter-target }} --release
@@ -116,9 +130,9 @@ jobs:
         fi
       working-directory: ./app
       shell: bash
-    
+
     - name: Package artifacts (Linux)
-      if: matrix.platform == 'linux'
+      if: steps.check_platform.outputs.should_build == 'true' && matrix.platform == 'linux'
       run: |
         mkdir -p artifacts
         if [ "${{ inputs.build_type }}" = "release" ]; then
@@ -132,7 +146,7 @@ jobs:
       shell: bash
     
     - name: Package artifacts (Windows)
-      if: matrix.platform == 'windows'
+      if: steps.check_platform.outputs.should_build == 'true' && matrix.platform == 'windows'
       run: |
         mkdir artifacts
         if ("${{ inputs.build_type }}" -eq "release") {
@@ -144,9 +158,9 @@ jobs:
         }
         Compress-Archive -Path artifacts/* -DestinationPath v8ray-windows-${{ inputs.build_type }}.zip
       shell: pwsh
-    
+
     - name: Package artifacts (macOS)
-      if: matrix.platform == 'macos'
+      if: steps.check_platform.outputs.should_build == 'true' && matrix.platform == 'macos'
       run: |
         mkdir -p artifacts
         if [ "${{ inputs.build_type }}" = "release" ]; then
@@ -158,9 +172,9 @@ jobs:
         fi
         tar -czf v8ray-macos-${{ inputs.build_type }}.tar.gz -C artifacts .
       shell: bash
-    
+
     - name: Package artifacts (Android)
-      if: matrix.platform == 'android'
+      if: steps.check_platform.outputs.should_build == 'true' && matrix.platform == 'android'
       run: |
         mkdir -p artifacts
         if [ "${{ inputs.build_type }}" = "release" ]; then
@@ -169,9 +183,9 @@ jobs:
           cp app/build/app/outputs/flutter-apk/app-debug.apk artifacts/v8ray-android-debug.apk
         fi
       shell: bash
-    
+
     - name: Package artifacts (iOS)
-      if: matrix.platform == 'ios'
+      if: steps.check_platform.outputs.should_build == 'true' && matrix.platform == 'ios'
       run: |
         mkdir -p artifacts
         if [ "${{ inputs.build_type }}" = "release" ]; then
@@ -181,8 +195,9 @@ jobs:
         fi
         tar -czf v8ray-ios-${{ inputs.build_type }}.tar.gz -C artifacts .
       shell: bash
-    
+
     - name: Upload artifacts
+      if: steps.check_platform.outputs.should_build == 'true'
       uses: actions/upload-artifact@v4
       with:
         name: v8ray-${{ matrix.platform }}-${{ inputs.build_type }}

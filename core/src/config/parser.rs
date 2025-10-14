@@ -164,7 +164,11 @@ impl ConfigParser {
         // VLESS URL 的名称通常在 fragment (#后面)，也可能在 query 参数中
         let name = url
             .fragment()
-            .map(|s| urlencoding::decode(s).unwrap_or_else(|_| s.into()).to_string())
+            .map(|s| {
+                urlencoding::decode(s)
+                    .unwrap_or_else(|_| s.into())
+                    .to_string()
+            })
             .or_else(|| query_pairs.get("remarks").cloned())
             .or_else(|| query_pairs.get("name").cloned())
             .unwrap_or_else(|| "VLESS Server".to_string());
@@ -262,7 +266,11 @@ impl ConfigParser {
         // Trojan URL 的名称通常在 fragment (#后面)
         let name = url
             .fragment()
-            .map(|s| urlencoding::decode(s).unwrap_or_else(|_| s.into()).to_string())
+            .map(|s| {
+                urlencoding::decode(s)
+                    .unwrap_or_else(|_| s.into())
+                    .to_string()
+            })
             .or_else(|| query_pairs.get("name").cloned())
             .unwrap_or_else(|| "Trojan Server".to_string());
 
@@ -303,7 +311,11 @@ impl ConfigParser {
         // Shadowsocks URL 的名称在 fragment (#后面)
         let name = url
             .fragment()
-            .map(|s| urlencoding::decode(s).unwrap_or_else(|_| s.into()).to_string())
+            .map(|s| {
+                urlencoding::decode(s)
+                    .unwrap_or_else(|_| s.into())
+                    .to_string()
+            })
             .unwrap_or_else(|| "Shadowsocks Server".to_string());
 
         // For now, return a basic config

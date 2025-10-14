@@ -762,17 +762,17 @@ impl LinuxPlatform {
                     .output()
             } else {
                 // 否则直接运行 gsettings
-                Command::new("gsettings")
-                    .args(args)
-                    .output()
+                Command::new("gsettings").args(args).output()
             }
             .map_err(|e| crate::error::PlatformError::SystemProxy(e.to_string()))?;
 
             if !output.status.success() {
                 let stderr = String::from_utf8_lossy(&output.stderr);
-                return Err(crate::error::PlatformError::SystemProxy(
-                    format!("gsettings command failed: {}", stderr)
-                ).into());
+                return Err(crate::error::PlatformError::SystemProxy(format!(
+                    "gsettings command failed: {}",
+                    stderr
+                ))
+                .into());
             }
             Ok(())
         };
@@ -848,9 +848,11 @@ impl LinuxPlatform {
 
         if !output.status.success() {
             let stderr = String::from_utf8_lossy(&output.stderr);
-            return Err(crate::error::PlatformError::SystemProxy(
-                format!("Failed to clear proxy mode: {}", stderr)
-            ).into());
+            return Err(crate::error::PlatformError::SystemProxy(format!(
+                "Failed to clear proxy mode: {}",
+                stderr
+            ))
+            .into());
         }
 
         tracing::info!("Successfully cleared system proxy");
