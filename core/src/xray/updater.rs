@@ -8,6 +8,10 @@ use std::path::{Path, PathBuf};
 use tokio::fs;
 use tokio::io::AsyncWriteExt;
 
+// Windows-specific imports for hiding console window
+#[cfg(windows)]
+use std::os::windows::process::CommandExt;
+
 /// Xray Core update information
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UpdateInfo {
@@ -55,8 +59,17 @@ impl XrayUpdater {
             return Ok("not installed".to_string());
         }
 
-        let output = tokio::process::Command::new(&binary_path)
-            .arg("version")
+        let mut cmd = tokio::process::Command::new(&binary_path);
+        cmd.arg("version");
+
+        // On Windows, hide the console window
+        #[cfg(windows)]
+        {
+            const CREATE_NO_WINDOW: u32 = 0x08000000;
+            cmd.creation_flags(CREATE_NO_WINDOW);
+        }
+
+        let output = cmd
             .output()
             .await
             .map_err(|e| XrayError::Process(e.to_string()))?;

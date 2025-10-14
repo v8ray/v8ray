@@ -20,6 +20,10 @@ use tokio::process::Command;
 use tokio::sync::{broadcast, RwLock};
 use tokio::time;
 
+// Windows-specific imports for hiding console window
+#[cfg(windows)]
+use std::os::windows::process::CommandExt;
+
 /// Xray Core errors
 #[derive(Error, Debug)]
 pub enum XrayError {
@@ -334,22 +338,33 @@ impl XrayCore {
             config_metadata.permissions()
         );
 
-        let mut child = Command::new(&xray_path)
-            .arg("-config")
+        // Create command with platform-specific settings
+        let mut cmd = Command::new(&xray_path);
+        cmd.arg("-config")
             .arg(&config_path)
             .stdin(Stdio::null())
             .stdout(Stdio::piped())
-            .stderr(Stdio::piped())
-            .spawn()
-            .map_err(|e| {
-                tracing::error!(
-                    "Failed to spawn Xray process: {} (kind: {:?}, raw_os_error: {:?})",
-                    e,
-                    e.kind(),
-                    e.raw_os_error()
-                );
-                XrayError::Process(format!("Failed to spawn Xray process: {}", e))
-            })?;
+            .stderr(Stdio::piped());
+
+        // On Windows, hide the console window
+        #[cfg(windows)]
+        {
+            // CREATE_NO_WINDOW = 0x08000000
+            // This prevents a console window from appearing when spawning the process
+            const CREATE_NO_WINDOW: u32 = 0x08000000;
+            cmd.creation_flags(CREATE_NO_WINDOW);
+            tracing::info!("Windows: Setting CREATE_NO_WINDOW flag to hide console");
+        }
+
+        let mut child = cmd.spawn().map_err(|e| {
+            tracing::error!(
+                "Failed to spawn Xray process: {} (kind: {:?}, raw_os_error: {:?})",
+                e,
+                e.kind(),
+                e.raw_os_error()
+            );
+            XrayError::Process(format!("Failed to spawn Xray process: {}", e))
+        })?;
 
         let pid = child
             .id()
@@ -465,11 +480,16 @@ impl XrayCore {
                 #[cfg(windows)]
                 {
                     // Windows: Use taskkill command
+                    use std::os::windows::process::CommandExt;
                     use std::process::Command;
+
+                    // CREATE_NO_WINDOW flag to prevent console window from appearing
+                    const CREATE_NO_WINDOW: u32 = 0x08000000;
 
                     // Try graceful termination first
                     let _ = Command::new("taskkill")
                         .args(&["/PID", &pid.to_string(), "/T"])
+                        .creation_flags(CREATE_NO_WINDOW)
                         .output();
 
                     // Wait a bit for graceful shutdown
@@ -478,6 +498,7 @@ impl XrayCore {
                     // Force kill if still running
                     let _ = Command::new("taskkill")
                         .args(&["/PID", &pid.to_string(), "/T", "/F"])
+                        .creation_flags(CREATE_NO_WINDOW)
                         .output();
                 }
             }
@@ -582,8 +603,17 @@ impl XrayCore {
     pub async fn get_version(&self) -> Result<String, XrayError> {
         let binary_path = self.find_xray_binary()?;
 
-        let output = Command::new(binary_path)
-            .arg("version")
+        let mut cmd = Command::new(binary_path);
+        cmd.arg("version");
+
+        // On Windows, hide the console window
+        #[cfg(windows)]
+        {
+            const CREATE_NO_WINDOW: u32 = 0x08000000;
+            cmd.creation_flags(CREATE_NO_WINDOW);
+        }
+
+        let output = cmd
             .output()
             .await
             .map_err(|e| XrayError::Process(e.to_string()))?;
