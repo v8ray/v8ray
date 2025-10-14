@@ -21,34 +21,35 @@ class LanguageSelector extends ConsumerWidget {
       onSelected: (locale) {
         ref.read(localeProvider.notifier).setLocale(locale);
       },
-      itemBuilder: (context) => [
-        PopupMenuItem(
-          value: const Locale('en'),
-          child: Row(
-            children: [
-              if (currentLocale.languageCode == 'en')
-                const Icon(Icons.check, size: 20)
-              else
-                const SizedBox(width: 20),
-              const SizedBox(width: 12),
-              const Text('English'),
-            ],
-          ),
-        ),
-        PopupMenuItem(
-          value: const Locale('zh'),
-          child: Row(
-            children: [
-              if (currentLocale.languageCode == 'zh')
-                const Icon(Icons.check, size: 20)
-              else
-                const SizedBox(width: 20),
-              const SizedBox(width: 12),
-              const Text('简体中文'),
-            ],
-          ),
-        ),
-      ],
+      itemBuilder:
+          (context) => [
+            PopupMenuItem(
+              value: const Locale('en'),
+              child: Row(
+                children: [
+                  if (currentLocale.languageCode == 'en')
+                    const Icon(Icons.check, size: 20)
+                  else
+                    const SizedBox(width: 20),
+                  const SizedBox(width: 12),
+                  const Text('English'),
+                ],
+              ),
+            ),
+            PopupMenuItem(
+              value: const Locale('zh'),
+              child: Row(
+                children: [
+                  if (currentLocale.languageCode == 'zh')
+                    const Icon(Icons.check, size: 20)
+                  else
+                    const SizedBox(width: 20),
+                  const SizedBox(width: 12),
+                  const Text('简体中文'),
+                ],
+              ),
+            ),
+          ],
     );
   }
 }

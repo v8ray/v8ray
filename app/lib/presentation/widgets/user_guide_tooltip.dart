@@ -88,13 +88,14 @@ class _UserGuideTooltipState extends State<UserGuideTooltip> {
     final offset = renderBox.localToGlobal(Offset.zero);
 
     _overlayEntry = OverlayEntry(
-      builder: (context) => _TooltipOverlay(
-        message: widget.message,
-        targetOffset: offset,
-        targetSize: size,
-        position: widget.position,
-        onDismiss: _dismissTooltip,
-      ),
+      builder:
+          (context) => _TooltipOverlay(
+            message: widget.message,
+            targetOffset: offset,
+            targetSize: size,
+            position: widget.position,
+            onDismiss: _dismissTooltip,
+          ),
     );
 
     overlay.insert(_overlayEntry!);
@@ -121,12 +122,7 @@ class _UserGuideTooltipState extends State<UserGuideTooltip> {
 }
 
 /// 提示位置
-enum TooltipPosition {
-  top,
-  bottom,
-  left,
-  right,
-}
+enum TooltipPosition { top, bottom, left, right }
 
 /// 提示遮罩层
 class _TooltipOverlay extends StatelessWidget {
@@ -167,7 +163,9 @@ class _TooltipOverlay extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withOpacity(0.3),
                       blurRadius: 12,
                       spreadRadius: 4,
                     ),
@@ -180,10 +178,7 @@ class _TooltipOverlay extends StatelessWidget {
             Positioned(
               left: _calculateLeft(),
               top: _calculateTop(),
-              child: _TooltipBubble(
-                message: message,
-                onDismiss: onDismiss,
-              ),
+              child: _TooltipBubble(message: message, onDismiss: onDismiss),
             ),
           ],
         ),
@@ -219,10 +214,7 @@ class _TooltipBubble extends StatelessWidget {
   final String message;
   final VoidCallback onDismiss;
 
-  const _TooltipBubble({
-    required this.message,
-    required this.onDismiss,
-  });
+  const _TooltipBubble({required this.message, required this.onDismiss});
 
   @override
   Widget build(BuildContext context) {
@@ -317,4 +309,3 @@ class SimpleTooltip extends StatelessWidget {
     );
   }
 }
-

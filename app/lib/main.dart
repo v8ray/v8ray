@@ -35,7 +35,10 @@ Future<void> main() async {
     appLogger.info('Rust Core initialized successfully');
   } catch (e, stackTrace) {
     appLogger.error('Failed to initialize Rust Bridge', e, stackTrace);
-    _showErrorAndExit(ErrorType.initializationFailed, errorDetails: e.toString());
+    _showErrorAndExit(
+      ErrorType.initializationFailed,
+      errorDetails: e.toString(),
+    );
     return;
   }
 
@@ -46,7 +49,9 @@ Future<void> main() async {
 
     // 只有 macOS 需要管理员权限（networksetup 命令需要）
     if (platformInfo.os == 'macos' && !hasAdminPrivileges) {
-      appLogger.warning('macOS requires administrator privileges for system proxy settings');
+      appLogger.warning(
+        'macOS requires administrator privileges for system proxy settings',
+      );
       _showErrorAndExit(ErrorType.adminPrivilegesRequired);
       return;
     }
@@ -54,7 +59,9 @@ Future<void> main() async {
     if (hasAdminPrivileges) {
       appLogger.info('Running with administrator privileges');
     } else {
-      appLogger.info('Running as normal user (sufficient for ${platformInfo.os})');
+      appLogger.info(
+        'Running as normal user (sufficient for ${platformInfo.os})',
+      );
     }
   } catch (e, stackTrace) {
     appLogger.error('Failed to check admin privileges', e, stackTrace);
@@ -76,15 +83,14 @@ Future<void> main() async {
     appLogger.info('Subscription manager initialized successfully');
   } catch (e, stackTrace) {
     appLogger.error('Failed to initialize subscription manager', e, stackTrace);
-    _showErrorAndExit(ErrorType.initializationFailed, errorDetails: 'Failed to initialize database: ${e.toString()}');
+    _showErrorAndExit(
+      ErrorType.initializationFailed,
+      errorDetails: 'Failed to initialize database: ${e.toString()}',
+    );
     return;
   }
 
-  runApp(
-    const ProviderScope(
-      child: V8RayApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: V8RayApp()));
 }
 
 /// 错误类型枚举
@@ -114,10 +120,7 @@ class _ErrorPage extends StatelessWidget {
   final ErrorType errorType;
   final String? errorDetails;
 
-  const _ErrorPage({
-    required this.errorType,
-    this.errorDetails,
-  });
+  const _ErrorPage({required this.errorType, this.errorDetails});
 
   @override
   Widget build(BuildContext context) {
@@ -133,15 +136,17 @@ class _ErrorPage extends StatelessWidget {
         break;
       case ErrorType.initializationFailed:
         title = l10n.errorInitializationFailed;
-        message = errorDetails != null
-            ? 'Failed to initialize application: $errorDetails'
-            : 'Failed to initialize application';
+        message =
+            errorDetails != null
+                ? 'Failed to initialize application: $errorDetails'
+                : 'Failed to initialize application';
         break;
       case ErrorType.permissionCheckFailed:
         title = l10n.errorPermissionCheckFailed;
-        message = errorDetails != null
-            ? 'Failed to verify administrator privileges: $errorDetails'
-            : 'Failed to verify administrator privileges';
+        message =
+            errorDetails != null
+                ? 'Failed to verify administrator privileges: $errorDetails'
+                : 'Failed to verify administrator privileges';
         break;
     }
 
@@ -158,11 +163,7 @@ class _ErrorPage extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(
-                    Icons.error_outline,
-                    color: Colors.red,
-                    size: 64,
-                  ),
+                  const Icon(Icons.error_outline, color: Colors.red, size: 64),
                   const SizedBox(height: 24),
                   Text(
                     title,

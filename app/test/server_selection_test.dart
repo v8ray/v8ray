@@ -44,7 +44,10 @@ void main() {
 
       // 先选择一个服务器
       notifier.selectServer(testServerId);
-      expect(container.read(serverProvider).selectedServer, equals(testServerId));
+      expect(
+        container.read(serverProvider).selectedServer,
+        equals(testServerId),
+      );
 
       // 清除选择
       notifier.clearSelection();
@@ -70,15 +73,11 @@ void main() {
       final state = container.read(serverProvider);
 
       // 创建带错误的状态
-      final stateWithError = state.copyWith(
-        errorMessage: 'Test error',
-      );
+      final stateWithError = state.copyWith(errorMessage: 'Test error');
       expect(stateWithError.errorMessage, equals('Test error'));
 
       // 清除错误
-      final stateWithoutError = stateWithError.copyWith(
-        clearError: true,
-      );
+      final stateWithoutError = stateWithError.copyWith(clearError: true);
       expect(stateWithoutError.errorMessage, isNull);
     });
   });
@@ -197,9 +196,7 @@ void main() {
     test('错误消息应该可以设置', () {
       final state = container.read(serverProvider);
 
-      final errorState = state.copyWith(
-        errorMessage: 'Failed to load servers',
-      );
+      final errorState = state.copyWith(errorMessage: 'Failed to load servers');
 
       expect(errorState.errorMessage, equals('Failed to load servers'));
     });
@@ -207,9 +204,7 @@ void main() {
     test('错误消息应该可以清除', () {
       final state = container.read(serverProvider);
 
-      final errorState = state.copyWith(
-        errorMessage: 'Test error',
-      );
+      final errorState = state.copyWith(errorMessage: 'Test error');
       expect(errorState.errorMessage, isNotNull);
 
       final clearedState = errorState.copyWith(clearError: true);
@@ -291,4 +286,3 @@ void main() {
     });
   });
 }
-

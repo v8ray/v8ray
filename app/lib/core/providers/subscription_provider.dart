@@ -13,8 +13,8 @@ import '../utils/validators.dart';
 /// 订阅URL Provider
 final subscriptionUrlProvider =
     StateNotifierProvider<SubscriptionUrlNotifier, String>((ref) {
-  return SubscriptionUrlNotifier();
-});
+      return SubscriptionUrlNotifier();
+    });
 
 /// 订阅URL状态管理
 class SubscriptionUrlNotifier extends StateNotifier<String> {
@@ -132,8 +132,8 @@ class SubscriptionUpdateState {
 /// 订阅更新状态Provider
 final subscriptionUpdateProvider =
     StateNotifierProvider<SubscriptionUpdateNotifier, SubscriptionUpdateState>(
-  (ref) => SubscriptionUpdateNotifier(),
-);
+      (ref) => SubscriptionUpdateNotifier(),
+    );
 
 /// 订阅更新状态管理
 class SubscriptionUpdateNotifier
@@ -192,7 +192,9 @@ class SubscriptionUpdateNotifier
         retryCount: 0,
       );
 
-      appLogger.info('Subscription updated successfully: ${servers.length} servers');
+      appLogger.info(
+        'Subscription updated successfully: ${servers.length} servers',
+      );
     } catch (e, stackTrace) {
       appLogger.error('Failed to update subscription', e, stackTrace);
 

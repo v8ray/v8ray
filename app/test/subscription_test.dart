@@ -96,24 +96,18 @@ void main() {
       final state = container.read(subscriptionProvider);
 
       // 创建带错误的状态
-      final stateWithError = state.copyWith(
-        errorMessage: 'Test error',
-      );
+      final stateWithError = state.copyWith(errorMessage: 'Test error');
       expect(stateWithError.errorMessage, equals('Test error'));
 
       // 清除错误
-      final stateWithoutError = stateWithError.copyWith(
-        clearError: true,
-      );
+      final stateWithoutError = stateWithError.copyWith(clearError: true);
       expect(stateWithoutError.errorMessage, isNull);
     });
 
     test('重试计数应该正确更新', () {
       final state = container.read(subscriptionProvider);
 
-      final stateWithRetry = state.copyWith(
-        retryCount: 3,
-      );
+      final stateWithRetry = state.copyWith(retryCount: 3);
 
       expect(stateWithRetry.retryCount, equals(3));
     });
@@ -187,15 +181,16 @@ void main() {
         statusMessage: 'Downloading subscription...',
       );
 
-      expect(stateWithMessage.statusMessage, equals('Downloading subscription...'));
+      expect(
+        stateWithMessage.statusMessage,
+        equals('Downloading subscription...'),
+      );
     });
 
     test('状态消息应该可以清除', () {
       final state = container.read(subscriptionProvider);
 
-      final stateWithMessage = state.copyWith(
-        statusMessage: 'Test message',
-      );
+      final stateWithMessage = state.copyWith(statusMessage: 'Test message');
       expect(stateWithMessage.statusMessage, isNotNull);
 
       final stateWithoutMessage = stateWithMessage.copyWith(
@@ -225,9 +220,7 @@ void main() {
       final state = container.read(subscriptionProvider);
       final now = DateTime.now();
 
-      final updatedState = state.copyWith(
-        lastUpdateTime: now,
-      );
+      final updatedState = state.copyWith(lastUpdateTime: now);
 
       expect(updatedState.lastUpdateTime, equals(now));
     });
@@ -236,13 +229,15 @@ void main() {
       final state = container.read(subscriptionProvider);
       final now = DateTime.now();
 
-      final updatedState = state.copyWith(
-        lastUpdateTime: now,
-      );
+      final updatedState = state.copyWith(lastUpdateTime: now);
 
       expect(updatedState.lastUpdateTime, isA<DateTime>());
-      expect(updatedState.lastUpdateTime!.isBefore(DateTime.now().add(const Duration(seconds: 1))), isTrue);
+      expect(
+        updatedState.lastUpdateTime!.isBefore(
+          DateTime.now().add(const Duration(seconds: 1)),
+        ),
+        isTrue,
+      );
     });
   });
 }
-

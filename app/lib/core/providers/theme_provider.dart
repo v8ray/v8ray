@@ -10,8 +10,9 @@ import '../constants/app_constants.dart';
 import '../utils/logger.dart';
 
 /// 主题模式Provider
-final themeModeProvider =
-    StateNotifierProvider<ThemeModeNotifier, ThemeMode>((ref) {
+final themeModeProvider = StateNotifierProvider<ThemeModeNotifier, ThemeMode>((
+  ref,
+) {
   return ThemeModeNotifier();
 });
 

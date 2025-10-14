@@ -78,10 +78,7 @@ class SystemProxySwitch extends ConsumerWidget {
 
     if (asCard) {
       return Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: content,
-        ),
+        child: Padding(padding: const EdgeInsets.all(16.0), child: content),
       );
     }
 
@@ -123,11 +120,7 @@ class SystemProxySwitch extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 8),
-          _buildDetailRow(
-            context,
-            'HTTP',
-            '127.0.0.1:${proxyState.httpPort}',
-          ),
+          _buildDetailRow(context, 'HTTP', '127.0.0.1:${proxyState.httpPort}'),
           const SizedBox(height: 4),
           _buildDetailRow(
             context,
@@ -140,9 +133,10 @@ class SystemProxySwitch extends ConsumerWidget {
                 ? l10n.systemProxyEnabled
                 : l10n.systemProxyDisabled,
             style: theme.textTheme.bodySmall?.copyWith(
-              color: proxyState.isEnabled
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.onSurfaceVariant,
+              color:
+                  proxyState.isEnabled
+                      ? theme.colorScheme.primary
+                      : theme.colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -152,11 +146,7 @@ class SystemProxySwitch extends ConsumerWidget {
   }
 
   /// 构建详细信息行
-  Widget _buildDetailRow(
-    BuildContext context,
-    String label,
-    String value,
-  ) {
+  Widget _buildDetailRow(BuildContext context, String label, String value) {
     final theme = Theme.of(context);
 
     return Row(
@@ -194,17 +184,11 @@ class SystemProxySwitch extends ConsumerWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.errorContainer.withOpacity(0.3),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: theme.colorScheme.error.withOpacity(0.3),
-        ),
+        border: Border.all(color: theme.colorScheme.error.withOpacity(0.3)),
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 16,
-            color: theme.colorScheme.error,
-          ),
+          Icon(Icons.error_outline, size: 16, color: theme.colorScheme.error),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -248,9 +232,7 @@ class SystemProxySwitch extends ConsumerWidget {
               children: [
                 const Icon(Icons.error_outline, color: Colors.white),
                 const SizedBox(width: 12),
-                Expanded(
-                  child: Text(l10n.systemProxyError),
-                ),
+                Expanded(child: Text(l10n.systemProxyError)),
               ],
             ),
             backgroundColor: Theme.of(context).colorScheme.error,
@@ -279,22 +261,23 @@ class SimpleSystemProxySwitch extends ConsumerWidget {
             : l10n.systemProxyDisabled,
       ),
       value: proxyState.isEnabled,
-      onChanged: proxyState.isLoading
-          ? null
-          : (_) async {
-              try {
-                await ref.read(systemProxyProvider.notifier).toggleSystemProxy();
-              } catch (e) {
-                // 错误已在 provider 中处理
-              }
-            },
+      onChanged:
+          proxyState.isLoading
+              ? null
+              : (_) async {
+                try {
+                  await ref
+                      .read(systemProxyProvider.notifier)
+                      .toggleSystemProxy();
+                } catch (e) {
+                  // 错误已在 provider 中处理
+                }
+              },
       secondary: Icon(
         Icons.settings_ethernet,
-        color: proxyState.isEnabled
-            ? Theme.of(context).colorScheme.primary
-            : null,
+        color:
+            proxyState.isEnabled ? Theme.of(context).colorScheme.primary : null,
       ),
     );
   }
 }
-

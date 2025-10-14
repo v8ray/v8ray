@@ -17,11 +17,7 @@ class ErrorHandler {
     // 捕获Flutter框架错误
     FlutterError.onError = (FlutterErrorDetails details) {
       FlutterError.presentError(details);
-      _logError(
-        'Flutter Error',
-        details.exception,
-        details.stack,
-      );
+      _logError('Flutter Error', details.exception, details.stack);
     };
 
     // 捕获异步错误
@@ -47,16 +43,9 @@ class ErrorHandler {
   }
 
   /// 处理应用错误
-  static void handleAppError(
-    AppError error, [
-    BuildContext? context,
-  ]) {
+  static void handleAppError(AppError error, [BuildContext? context]) {
     // 记录错误
-    appLogger.error(
-      error.message,
-      error.originalError,
-      error.stackTrace,
-    );
+    appLogger.error(error.message, error.originalError, error.stackTrace);
 
     // 如果有上下文，显示错误提示
     if (context != null && context.mounted) {
@@ -65,11 +54,7 @@ class ErrorHandler {
   }
 
   /// 记录错误
-  static void _logError(
-    String title,
-    Object error,
-    StackTrace? stackTrace,
-  ) {
+  static void _logError(String title, Object error, StackTrace? stackTrace) {
     if (error is AppError) {
       appLogger.error(
         '[$title] ${error.message}',
@@ -77,11 +62,7 @@ class ErrorHandler {
         error.stackTrace ?? stackTrace,
       );
     } else {
-      appLogger.error(
-        '[$title] $error',
-        error,
-        stackTrace,
-      );
+      appLogger.error('[$title] $error', error, stackTrace);
     }
   }
 
@@ -144,10 +125,7 @@ class ErrorHandler {
       SnackBar(
         content: Row(
           children: [
-            Icon(
-              icon,
-              color: Theme.of(context).colorScheme.onError,
-            ),
+            Icon(icon, color: Theme.of(context).colorScheme.onError),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -156,9 +134,7 @@ class ErrorHandler {
                 children: [
                   Text(
                     _getErrorTitle(error),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -212,50 +188,51 @@ class ErrorHandler {
 
     return showDialog(
       context: context,
-      builder: (BuildContext context) => AlertDialog(
-        icon: Icon(
-          Icons.error_outline,
-          color: Theme.of(context).colorScheme.error,
-          size: 48,
-        ),
-        title: Text(_getErrorTitle(error)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(error.message),
-            if (showDetails && error.originalError != null) ...[
-              const SizedBox(height: 16),
-              const Text(
-                'Details:',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.errorContainer,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Text(
-                  error.originalError.toString(),
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontFamily: 'monospace',
-                    color: Theme.of(context).colorScheme.onErrorContainer,
+      builder:
+          (BuildContext context) => AlertDialog(
+            icon: Icon(
+              Icons.error_outline,
+              color: Theme.of(context).colorScheme.error,
+              size: 48,
+            ),
+            title: Text(_getErrorTitle(error)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(error.message),
+                if (showDetails && error.originalError != null) ...[
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Details:',
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.errorContainer,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      error.originalError.toString(),
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontFamily: 'monospace',
+                        color: Theme.of(context).colorScheme.onErrorContainer,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('OK'),
               ),
             ],
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
           ),
-        ],
-      ),
     );
   }
 }

@@ -20,9 +20,10 @@ class NodeSelector extends ConsumerWidget {
     final connectionState = ref.watch(connectionProvider);
 
     // 如果正在连接，禁用选择
-    final isDisabled = connectionState.isConnecting || 
-                       connectionState.isConnected ||
-                       connectionState.isDisconnecting;
+    final isDisabled =
+        connectionState.isConnecting ||
+        connectionState.isConnected ||
+        connectionState.isDisconnecting;
 
     return Card(
       child: Padding(
@@ -42,17 +43,21 @@ class NodeSelector extends ConsumerWidget {
                 Text(
                   l10n.nodeSelection,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const Spacer(),
                 // 刷新按钮
                 IconButton(
                   icon: const Icon(Icons.refresh, size: 20),
                   tooltip: l10n.refresh,
-                  onPressed: isDisabled
-                      ? null
-                      : () => ref.read(serverProvider.notifier).refreshServers(),
+                  onPressed:
+                      isDisabled
+                          ? null
+                          : () =>
+                              ref
+                                  .read(serverProvider.notifier)
+                                  .refreshServers(),
                 ),
               ],
             ),
@@ -90,10 +95,7 @@ class NodeSelector extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.error_outline,
-            color: Theme.of(context).colorScheme.error,
-          ),
+          Icon(Icons.error_outline, color: Theme.of(context).colorScheme.error),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
@@ -123,15 +125,15 @@ class NodeSelector extends ConsumerWidget {
           Text(
             l10n.noServersAvailable,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.outline,
-                ),
+              color: Theme.of(context).colorScheme.outline,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
             l10n.pleaseUpdateSubscription,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.outline,
-                ),
+              color: Theme.of(context).colorScheme.outline,
+            ),
           ),
         ],
       ),
@@ -173,25 +175,32 @@ class NodeSelector extends ConsumerWidget {
                       Text(
                         serverState.selectedServer!.name,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.onPrimaryContainer,
-                            ),
+                          fontWeight: FontWeight.bold,
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         '${serverState.selectedServer!.address}:${serverState.selectedServer!.port}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).colorScheme.onPrimaryContainer,
-                            ),
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
+                        ),
                       ),
                     ],
                   ),
                 ),
                 // 更改按钮
                 TextButton(
-                  onPressed: isDisabled
-                      ? null
-                      : () => _showServerSelectionDialog(context, ref, serverState),
+                  onPressed:
+                      isDisabled
+                          ? null
+                          : () => _showServerSelectionDialog(
+                            context,
+                            ref,
+                            serverState,
+                          ),
                   child: Text(l10n.change),
                 ),
               ],
@@ -200,9 +209,11 @@ class NodeSelector extends ConsumerWidget {
         else
           // 没有选中服务器时显示选择按钮
           OutlinedButton.icon(
-            onPressed: isDisabled
-                ? null
-                : () => _showServerSelectionDialog(context, ref, serverState),
+            onPressed:
+                isDisabled
+                    ? null
+                    : () =>
+                        _showServerSelectionDialog(context, ref, serverState),
             icon: const Icon(Icons.add),
             label: Text(l10n.selectNode),
             style: OutlinedButton.styleFrom(
@@ -215,8 +226,8 @@ class NodeSelector extends ConsumerWidget {
         Text(
           '${l10n.totalServers}: ${serverState.servers.length}',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.outline,
-              ),
+            color: Theme.of(context).colorScheme.outline,
+          ),
           textAlign: TextAlign.center,
         ),
       ],
@@ -259,11 +270,16 @@ class _ServerSelectionDialog extends ConsumerWidget {
 
             return ListTile(
               leading: Icon(
-                isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                color: isSelected ? Theme.of(context).colorScheme.primary : null,
+                isSelected
+                    ? Icons.radio_button_checked
+                    : Icons.radio_button_unchecked,
+                color:
+                    isSelected ? Theme.of(context).colorScheme.primary : null,
               ),
               title: Text(server.name),
-              subtitle: Text('${server.address}:${server.port} (${server.protocol})'),
+              subtitle: Text(
+                '${server.address}:${server.port} (${server.protocol})',
+              ),
               selected: isSelected,
               onTap: () {
                 ref.read(serverProvider.notifier).selectServer(server.id);
@@ -282,4 +298,3 @@ class _ServerSelectionDialog extends ConsumerWidget {
     );
   }
 }
-

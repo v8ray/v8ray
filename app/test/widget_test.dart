@@ -11,11 +11,7 @@ import 'package:v8ray/main.dart';
 void main() {
   testWidgets('V8Ray app smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(
-      const ProviderScope(
-        child: V8RayApp(),
-      ),
-    );
+    await tester.pumpWidget(const ProviderScope(child: V8RayApp()));
 
     // Pump a few frames to let the app initialize
     // Don't use pumpAndSettle because we have continuous animations (pulse animation)

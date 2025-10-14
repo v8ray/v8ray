@@ -55,14 +55,10 @@ void main() {
     test('清除错误应该移除错误消息', () {
       final state = container.read(systemProxyProvider);
 
-      final stateWithError = state.copyWith(
-        errorMessage: 'Test error',
-      );
+      final stateWithError = state.copyWith(errorMessage: 'Test error');
       expect(stateWithError.errorMessage, equals('Test error'));
 
-      final stateWithoutError = stateWithError.copyWith(
-        clearError: true,
-      );
+      final stateWithoutError = stateWithError.copyWith(clearError: true);
       expect(stateWithoutError.errorMessage, isNull);
     });
   });
@@ -197,9 +193,7 @@ void main() {
     test('错误消息应该可以清除', () {
       final state = container.read(systemProxyProvider);
 
-      final errorState = state.copyWith(
-        errorMessage: 'Test error',
-      );
+      final errorState = state.copyWith(errorMessage: 'Test error');
       expect(errorState.errorMessage, isNotNull);
 
       final clearedState = errorState.copyWith(clearError: true);
@@ -235,10 +229,7 @@ void main() {
     test('两个端口应该可以同时更新', () {
       final state = container.read(systemProxyProvider);
 
-      final newState = state.copyWith(
-        httpPort: 8888,
-        socksPort: 1888,
-      );
+      final newState = state.copyWith(httpPort: 8888, socksPort: 1888);
 
       expect(newState.httpPort, equals(8888));
       expect(newState.socksPort, equals(1888));
@@ -309,20 +300,14 @@ void main() {
       const socksPort = 1888;
 
       // 模拟保存到SharedPreferences
-      final settings = {
-        'httpPort': httpPort,
-        'socksPort': socksPort,
-      };
+      final settings = {'httpPort': httpPort, 'socksPort': socksPort};
 
       expect(settings['httpPort'], equals(8888));
       expect(settings['socksPort'], equals(1888));
     });
 
     test('端口设置应该可以加载', () {
-      final settings = {
-        'httpPort': 8888,
-        'socksPort': 1888,
-      };
+      final settings = {'httpPort': 8888, 'socksPort': 1888};
 
       final httpPort = settings['httpPort'] as int;
       final socksPort = settings['socksPort'] as int;
@@ -332,4 +317,3 @@ void main() {
     });
   });
 }
-

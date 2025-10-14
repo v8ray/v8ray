@@ -53,10 +53,7 @@ class SimpleModePage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // 连接状态卡片（带动画）
-                AnimatedListItem(
-                  index: 0,
-                  child: const ConnectionStatusCard(),
-                ),
+                AnimatedListItem(index: 0, child: const ConnectionStatusCard()),
                 SizedBox(
                   height: Responsive(context).valueWhen(
                     mobile: UIConstants.largePadding,
@@ -65,24 +62,15 @@ class SimpleModePage extends ConsumerWidget {
                 ),
 
                 // 订阅链接输入（带动画）
-                AnimatedListItem(
-                  index: 1,
-                  child: const SubscriptionInput(),
-                ),
+                AnimatedListItem(index: 1, child: const SubscriptionInput()),
                 const SizedBox(height: UIConstants.defaultPadding),
 
                 // 节点选择器（带动画）
-                AnimatedListItem(
-                  index: 2,
-                  child: const NodeSelector(),
-                ),
+                AnimatedListItem(index: 2, child: const NodeSelector()),
                 const SizedBox(height: UIConstants.defaultPadding),
 
                 // 代理模式选择（带动画）
-                AnimatedListItem(
-                  index: 3,
-                  child: const ProxyModeSelector(),
-                ),
+                AnimatedListItem(index: 3, child: const ProxyModeSelector()),
               ],
             ),
           ),

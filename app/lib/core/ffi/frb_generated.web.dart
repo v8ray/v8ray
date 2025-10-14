@@ -3,7 +3,6 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
-
 // Static analysis wrongly picks the IO variant, thus ignore this
 // ignore_for_file: argument_type_not_assignable
 
@@ -17,260 +16,486 @@ import 'frb_generated.dart';
 import 'lib.dart';
 import 'platform.dart';
 
+abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
+  V8RayBridgeApiImplPlatform({
+    required super.handler,
+    required super.wire,
+    required super.generalizedFrbRustBinding,
+    required super.portManager,
+  });
 
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_ValuePtr =>
+      wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue;
 
+  @protected
+  AnyhowException dco_decode_AnyhowException(raw);
 
-                abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
-                  V8RayBridgeApiImplPlatform({
-                    required super.handler,
-                    required super.wire,
-                    required super.generalizedFrbRustBinding,
-                    required super.portManager,
-                  });
+  @protected
+  Value
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    raw,
+  );
 
-                  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_ValuePtr => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue;
+  @protected
+  Map<String, Value>
+  dco_decode_Map_String_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue_None(
+    raw,
+  );
 
+  @protected
+  Value
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    raw,
+  );
 
+  @protected
+  String dco_decode_String(raw);
 
-                  @protected AnyhowException dco_decode_AnyhowException(raw);
+  @protected
+  bool dco_decode_bool(raw);
 
-@protected Value dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(raw);
+  @protected
+  ConfigInfo dco_decode_box_autoadd_config_info(raw);
 
-@protected Map<String, Value> dco_decode_Map_String_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue_None(raw);
+  @protected
+  PlatformInt64 dco_decode_box_autoadd_i_64(raw);
 
-@protected Value dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(raw);
+  @protected
+  ProxyServerConfig dco_decode_box_autoadd_proxy_server_config(raw);
 
-@protected String dco_decode_String(raw);
+  @protected
+  int dco_decode_box_autoadd_u_32(raw);
 
-@protected bool dco_decode_bool(raw);
+  @protected
+  ConfigInfo dco_decode_config_info(raw);
 
-@protected ConfigInfo dco_decode_box_autoadd_config_info(raw);
+  @protected
+  ConnectionInfo dco_decode_connection_info(raw);
 
-@protected PlatformInt64 dco_decode_box_autoadd_i_64(raw);
+  @protected
+  ConnectionStatus dco_decode_connection_status(raw);
 
-@protected ProxyServerConfig dco_decode_box_autoadd_proxy_server_config(raw);
+  @protected
+  int dco_decode_i_32(raw);
 
-@protected int dco_decode_box_autoadd_u_32(raw);
+  @protected
+  PlatformInt64 dco_decode_i_64(raw);
 
-@protected ConfigInfo dco_decode_config_info(raw);
+  @protected
+  List<String> dco_decode_list_String(raw);
 
-@protected ConnectionInfo dco_decode_connection_info(raw);
+  @protected
+  List<ConfigInfo> dco_decode_list_config_info(raw);
 
-@protected ConnectionStatus dco_decode_connection_status(raw);
+  @protected
+  Uint8List dco_decode_list_prim_u_8_strict(raw);
 
-@protected int dco_decode_i_32(raw);
+  @protected
+  List<(String, Value)>
+  dco_decode_list_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
+    raw,
+  );
 
-@protected PlatformInt64 dco_decode_i_64(raw);
+  @protected
+  List<ServerInfo> dco_decode_list_server_info(raw);
 
-@protected List<String> dco_decode_list_String(raw);
+  @protected
+  List<SubscriptionInfo> dco_decode_list_subscription_info(raw);
 
-@protected List<ConfigInfo> dco_decode_list_config_info(raw);
+  @protected
+  String? dco_decode_opt_String(raw);
 
-@protected Uint8List dco_decode_list_prim_u_8_strict(raw);
+  @protected
+  PlatformInt64? dco_decode_opt_box_autoadd_i_64(raw);
 
-@protected List<(String,Value)> dco_decode_list_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(raw);
+  @protected
+  int? dco_decode_opt_box_autoadd_u_32(raw);
 
-@protected List<ServerInfo> dco_decode_list_server_info(raw);
+  @protected
+  PlatformCapabilities dco_decode_platform_capabilities(raw);
 
-@protected List<SubscriptionInfo> dco_decode_list_subscription_info(raw);
+  @protected
+  PlatformInfo dco_decode_platform_info(raw);
 
-@protected String? dco_decode_opt_String(raw);
+  @protected
+  ProxyServerConfig dco_decode_proxy_server_config(raw);
 
-@protected PlatformInt64? dco_decode_opt_box_autoadd_i_64(raw);
+  @protected
+  (String, Value)
+  dco_decode_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
+    raw,
+  );
 
-@protected int? dco_decode_opt_box_autoadd_u_32(raw);
+  @protected
+  ServerInfo dco_decode_server_info(raw);
 
-@protected PlatformCapabilities dco_decode_platform_capabilities(raw);
+  @protected
+  SubscriptionInfo dco_decode_subscription_info(raw);
 
-@protected PlatformInfo dco_decode_platform_info(raw);
+  @protected
+  TrafficStats dco_decode_traffic_stats(raw);
 
-@protected ProxyServerConfig dco_decode_proxy_server_config(raw);
+  @protected
+  int dco_decode_u_16(raw);
 
-@protected (String,Value) dco_decode_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(raw);
+  @protected
+  int dco_decode_u_32(raw);
 
-@protected ServerInfo dco_decode_server_info(raw);
+  @protected
+  BigInt dco_decode_u_64(raw);
 
-@protected SubscriptionInfo dco_decode_subscription_info(raw);
+  @protected
+  int dco_decode_u_8(raw);
 
-@protected TrafficStats dco_decode_traffic_stats(raw);
+  @protected
+  void dco_decode_unit(raw);
 
-@protected int dco_decode_u_16(raw);
+  @protected
+  BigInt dco_decode_usize(raw);
 
-@protected int dco_decode_u_32(raw);
+  @protected
+  AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
 
-@protected BigInt dco_decode_u_64(raw);
+  @protected
+  Value
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    SseDeserializer deserializer,
+  );
 
-@protected int dco_decode_u_8(raw);
+  @protected
+  Map<String, Value>
+  sse_decode_Map_String_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue_None(
+    SseDeserializer deserializer,
+  );
 
-@protected void dco_decode_unit(raw);
+  @protected
+  Value
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    SseDeserializer deserializer,
+  );
 
-@protected BigInt dco_decode_usize(raw);
+  @protected
+  String sse_decode_String(SseDeserializer deserializer);
 
-@protected AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
+  @protected
+  bool sse_decode_bool(SseDeserializer deserializer);
 
-@protected Value sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(SseDeserializer deserializer);
+  @protected
+  ConfigInfo sse_decode_box_autoadd_config_info(SseDeserializer deserializer);
 
-@protected Map<String, Value> sse_decode_Map_String_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue_None(SseDeserializer deserializer);
+  @protected
+  PlatformInt64 sse_decode_box_autoadd_i_64(SseDeserializer deserializer);
 
-@protected Value sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(SseDeserializer deserializer);
+  @protected
+  ProxyServerConfig sse_decode_box_autoadd_proxy_server_config(
+    SseDeserializer deserializer,
+  );
 
-@protected String sse_decode_String(SseDeserializer deserializer);
+  @protected
+  int sse_decode_box_autoadd_u_32(SseDeserializer deserializer);
 
-@protected bool sse_decode_bool(SseDeserializer deserializer);
+  @protected
+  ConfigInfo sse_decode_config_info(SseDeserializer deserializer);
 
-@protected ConfigInfo sse_decode_box_autoadd_config_info(SseDeserializer deserializer);
+  @protected
+  ConnectionInfo sse_decode_connection_info(SseDeserializer deserializer);
 
-@protected PlatformInt64 sse_decode_box_autoadd_i_64(SseDeserializer deserializer);
+  @protected
+  ConnectionStatus sse_decode_connection_status(SseDeserializer deserializer);
 
-@protected ProxyServerConfig sse_decode_box_autoadd_proxy_server_config(SseDeserializer deserializer);
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer);
 
-@protected int sse_decode_box_autoadd_u_32(SseDeserializer deserializer);
+  @protected
+  PlatformInt64 sse_decode_i_64(SseDeserializer deserializer);
 
-@protected ConfigInfo sse_decode_config_info(SseDeserializer deserializer);
+  @protected
+  List<String> sse_decode_list_String(SseDeserializer deserializer);
 
-@protected ConnectionInfo sse_decode_connection_info(SseDeserializer deserializer);
+  @protected
+  List<ConfigInfo> sse_decode_list_config_info(SseDeserializer deserializer);
 
-@protected ConnectionStatus sse_decode_connection_status(SseDeserializer deserializer);
+  @protected
+  Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
-@protected int sse_decode_i_32(SseDeserializer deserializer);
+  @protected
+  List<(String, Value)>
+  sse_decode_list_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
+    SseDeserializer deserializer,
+  );
 
-@protected PlatformInt64 sse_decode_i_64(SseDeserializer deserializer);
+  @protected
+  List<ServerInfo> sse_decode_list_server_info(SseDeserializer deserializer);
 
-@protected List<String> sse_decode_list_String(SseDeserializer deserializer);
+  @protected
+  List<SubscriptionInfo> sse_decode_list_subscription_info(
+    SseDeserializer deserializer,
+  );
 
-@protected List<ConfigInfo> sse_decode_list_config_info(SseDeserializer deserializer);
+  @protected
+  String? sse_decode_opt_String(SseDeserializer deserializer);
 
-@protected Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
+  @protected
+  PlatformInt64? sse_decode_opt_box_autoadd_i_64(SseDeserializer deserializer);
 
-@protected List<(String,Value)> sse_decode_list_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(SseDeserializer deserializer);
+  @protected
+  int? sse_decode_opt_box_autoadd_u_32(SseDeserializer deserializer);
 
-@protected List<ServerInfo> sse_decode_list_server_info(SseDeserializer deserializer);
+  @protected
+  PlatformCapabilities sse_decode_platform_capabilities(
+    SseDeserializer deserializer,
+  );
 
-@protected List<SubscriptionInfo> sse_decode_list_subscription_info(SseDeserializer deserializer);
+  @protected
+  PlatformInfo sse_decode_platform_info(SseDeserializer deserializer);
 
-@protected String? sse_decode_opt_String(SseDeserializer deserializer);
+  @protected
+  ProxyServerConfig sse_decode_proxy_server_config(
+    SseDeserializer deserializer,
+  );
 
-@protected PlatformInt64? sse_decode_opt_box_autoadd_i_64(SseDeserializer deserializer);
+  @protected
+  (String, Value)
+  sse_decode_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
+    SseDeserializer deserializer,
+  );
 
-@protected int? sse_decode_opt_box_autoadd_u_32(SseDeserializer deserializer);
+  @protected
+  ServerInfo sse_decode_server_info(SseDeserializer deserializer);
 
-@protected PlatformCapabilities sse_decode_platform_capabilities(SseDeserializer deserializer);
+  @protected
+  SubscriptionInfo sse_decode_subscription_info(SseDeserializer deserializer);
 
-@protected PlatformInfo sse_decode_platform_info(SseDeserializer deserializer);
+  @protected
+  TrafficStats sse_decode_traffic_stats(SseDeserializer deserializer);
 
-@protected ProxyServerConfig sse_decode_proxy_server_config(SseDeserializer deserializer);
+  @protected
+  int sse_decode_u_16(SseDeserializer deserializer);
 
-@protected (String,Value) sse_decode_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(SseDeserializer deserializer);
+  @protected
+  int sse_decode_u_32(SseDeserializer deserializer);
 
-@protected ServerInfo sse_decode_server_info(SseDeserializer deserializer);
+  @protected
+  BigInt sse_decode_u_64(SseDeserializer deserializer);
 
-@protected SubscriptionInfo sse_decode_subscription_info(SseDeserializer deserializer);
+  @protected
+  int sse_decode_u_8(SseDeserializer deserializer);
 
-@protected TrafficStats sse_decode_traffic_stats(SseDeserializer deserializer);
+  @protected
+  void sse_decode_unit(SseDeserializer deserializer);
 
-@protected int sse_decode_u_16(SseDeserializer deserializer);
+  @protected
+  BigInt sse_decode_usize(SseDeserializer deserializer);
 
-@protected int sse_decode_u_32(SseDeserializer deserializer);
+  @protected
+  void sse_encode_AnyhowException(
+    AnyhowException self,
+    SseSerializer serializer,
+  );
 
-@protected BigInt sse_decode_u_64(SseDeserializer deserializer);
+  @protected
+  void
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    Value self,
+    SseSerializer serializer,
+  );
 
-@protected int sse_decode_u_8(SseDeserializer deserializer);
-
-@protected void sse_decode_unit(SseDeserializer deserializer);
-
-@protected BigInt sse_decode_usize(SseDeserializer deserializer);
-
-@protected void sse_encode_AnyhowException(AnyhowException self, SseSerializer serializer);
-
-@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(Value self, SseSerializer serializer);
-
-@protected void sse_encode_Map_String_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue_None(Map<String, Value> self, SseSerializer serializer);
-
-@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(Value self, SseSerializer serializer);
-
-@protected void sse_encode_String(String self, SseSerializer serializer);
-
-@protected void sse_encode_bool(bool self, SseSerializer serializer);
-
-@protected void sse_encode_box_autoadd_config_info(ConfigInfo self, SseSerializer serializer);
-
-@protected void sse_encode_box_autoadd_i_64(PlatformInt64 self, SseSerializer serializer);
-
-@protected void sse_encode_box_autoadd_proxy_server_config(ProxyServerConfig self, SseSerializer serializer);
-
-@protected void sse_encode_box_autoadd_u_32(int self, SseSerializer serializer);
-
-@protected void sse_encode_config_info(ConfigInfo self, SseSerializer serializer);
-
-@protected void sse_encode_connection_info(ConnectionInfo self, SseSerializer serializer);
-
-@protected void sse_encode_connection_status(ConnectionStatus self, SseSerializer serializer);
-
-@protected void sse_encode_i_32(int self, SseSerializer serializer);
-
-@protected void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer);
-
-@protected void sse_encode_list_String(List<String> self, SseSerializer serializer);
-
-@protected void sse_encode_list_config_info(List<ConfigInfo> self, SseSerializer serializer);
-
-@protected void sse_encode_list_prim_u_8_strict(Uint8List self, SseSerializer serializer);
-
-@protected void sse_encode_list_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(List<(String,Value)> self, SseSerializer serializer);
-
-@protected void sse_encode_list_server_info(List<ServerInfo> self, SseSerializer serializer);
-
-@protected void sse_encode_list_subscription_info(List<SubscriptionInfo> self, SseSerializer serializer);
-
-@protected void sse_encode_opt_String(String? self, SseSerializer serializer);
-
-@protected void sse_encode_opt_box_autoadd_i_64(PlatformInt64? self, SseSerializer serializer);
-
-@protected void sse_encode_opt_box_autoadd_u_32(int? self, SseSerializer serializer);
-
-@protected void sse_encode_platform_capabilities(PlatformCapabilities self, SseSerializer serializer);
-
-@protected void sse_encode_platform_info(PlatformInfo self, SseSerializer serializer);
-
-@protected void sse_encode_proxy_server_config(ProxyServerConfig self, SseSerializer serializer);
-
-@protected void sse_encode_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value((String,Value) self, SseSerializer serializer);
-
-@protected void sse_encode_server_info(ServerInfo self, SseSerializer serializer);
-
-@protected void sse_encode_subscription_info(SubscriptionInfo self, SseSerializer serializer);
-
-@protected void sse_encode_traffic_stats(TrafficStats self, SseSerializer serializer);
-
-@protected void sse_encode_u_16(int self, SseSerializer serializer);
-
-@protected void sse_encode_u_32(int self, SseSerializer serializer);
-
-@protected void sse_encode_u_64(BigInt self, SseSerializer serializer);
-
-@protected void sse_encode_u_8(int self, SseSerializer serializer);
-
-@protected void sse_encode_unit(void self, SseSerializer serializer);
-
-@protected void sse_encode_usize(BigInt self, SseSerializer serializer);
-                }
-                
-
+  @protected
+  void
+  sse_encode_Map_String_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue_None(
+    Map<String, Value> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    Value self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_String(String self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_config_info(
+    ConfigInfo self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_i_64(
+    PlatformInt64 self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_proxy_server_config(
+    ProxyServerConfig self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_u_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_config_info(ConfigInfo self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_connection_info(
+    ConnectionInfo self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_connection_status(
+    ConnectionStatus self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_String(List<String> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_config_info(
+    List<ConfigInfo> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_prim_u_8_strict(
+    Uint8List self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void
+  sse_encode_list_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
+    List<(String, Value)> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_server_info(
+    List<ServerInfo> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_subscription_info(
+    List<SubscriptionInfo> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_opt_String(String? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_i_64(
+    PlatformInt64? self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_32(int? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_platform_capabilities(
+    PlatformCapabilities self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_platform_info(PlatformInfo self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_proxy_server_config(
+    ProxyServerConfig self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void
+  sse_encode_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
+    (String, Value) self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_server_info(ServerInfo self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_subscription_info(
+    SubscriptionInfo self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_traffic_stats(TrafficStats self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_u_16(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_u_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_u_64(BigInt self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_u_8(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_unit(void self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_usize(BigInt self, SseSerializer serializer);
+}
 
 // Section: wire_class
 
 class V8RayBridgeWire implements BaseWire {
-            V8RayBridgeWire.fromExternalLibrary();
+  V8RayBridgeWire.fromExternalLibrary();
 
-            void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(int ptr) => wasmModule.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(ptr);
+  void
+  rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    int ptr,
+  ) => wasmModule
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+        ptr,
+      );
 
-void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(int ptr) => wasmModule.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(ptr);
-        }
-        @JS('wasm_bindgen') external V8RayBridgeWasmModule get wasmModule;
+  void
+  rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    int ptr,
+  ) => wasmModule
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+        ptr,
+      );
+}
 
-        @JS() @anonymous extension type V8RayBridgeWasmModule._(JSObject _) implements JSObject {
-            external void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(int ptr);
+@JS('wasm_bindgen')
+external V8RayBridgeWasmModule get wasmModule;
 
-external void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(int ptr);
-        }
-        
+@JS()
+@anonymous
+extension type V8RayBridgeWasmModule._(JSObject _) implements JSObject {
+  external void
+  rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    int ptr,
+  );
+
+  external void
+  rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    int ptr,
+  );
+}

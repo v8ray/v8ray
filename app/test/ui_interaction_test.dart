@@ -13,11 +13,7 @@ import 'package:v8ray/presentation/widgets/loading_overlay.dart';
 void main() {
   group('应用启动测试', () {
     testWidgets('应用应该正常启动', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        const ProviderScope(
-          child: V8RayApp(),
-        ),
-      );
+      await tester.pumpWidget(const ProviderScope(child: V8RayApp()));
 
       await tester.pump();
 
@@ -25,11 +21,7 @@ void main() {
     });
 
     testWidgets('应用应该显示简单模式页面', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        const ProviderScope(
-          child: V8RayApp(),
-        ),
-      );
+      await tester.pumpWidget(const ProviderScope(child: V8RayApp()));
 
       await tester.pumpAndSettle();
 
@@ -81,10 +73,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: AnimatedButton(
-              text: 'Test Button',
-              isLoading: true,
-            ),
+            body: AnimatedButton(text: 'Test Button', isLoading: true),
           ),
         ),
       );
@@ -98,10 +87,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: AnimatedButton(
-              text: 'Test Button',
-              onPressed: null,
-            ),
+            body: AnimatedButton(text: 'Test Button', onPressed: null),
           ),
         ),
       );
@@ -133,12 +119,7 @@ void main() {
     testWidgets('SkeletonLoader应该正确渲染', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: SkeletonLoader(
-              width: 200,
-              height: 20,
-            ),
-          ),
+          home: Scaffold(body: SkeletonLoader(width: 200, height: 20)),
         ),
       );
 
@@ -149,10 +130,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: ListSkeletonLoader(
-              itemCount: 3,
-              itemHeight: 60,
-            ),
+            body: ListSkeletonLoader(itemCount: 3, itemHeight: 60),
           ),
         ),
       );
@@ -163,11 +141,7 @@ void main() {
     testWidgets('LoadingIndicator应该显示加载文本', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: LoadingIndicator(
-              message: 'Loading...',
-            ),
-          ),
+          home: Scaffold(body: LoadingIndicator(message: 'Loading...')),
         ),
       );
 
@@ -201,13 +175,7 @@ void main() {
       final controller = TextEditingController();
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: TextField(
-              controller: controller,
-            ),
-          ),
-        ),
+        MaterialApp(home: Scaffold(body: TextField(controller: controller))),
       );
 
       await tester.enterText(find.byType(TextField), 'Test input');
@@ -221,9 +189,7 @@ void main() {
         const MaterialApp(
           home: Scaffold(
             body: TextField(
-              decoration: InputDecoration(
-                hintText: 'Enter text',
-              ),
+              decoration: InputDecoration(hintText: 'Enter text'),
             ),
           ),
         ),
@@ -316,16 +282,17 @@ void main() {
                   onPressed: () {
                     showDialog(
                       context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('Test Dialog'),
-                        content: const Text('Dialog content'),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text('OK'),
+                      builder:
+                          (context) => AlertDialog(
+                            title: const Text('Test Dialog'),
+                            content: const Text('Dialog content'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('OK'),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
                     );
                   },
                   child: const Text('Show Dialog'),
@@ -355,9 +322,7 @@ void main() {
                 return ElevatedButton(
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Test SnackBar'),
-                      ),
+                      const SnackBar(content: Text('Test SnackBar')),
                     );
                   },
                   child: const Text('Show SnackBar'),
@@ -378,11 +343,7 @@ void main() {
   group('图标测试', () {
     testWidgets('Icon应该正确渲染', (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: Icon(Icons.check),
-          ),
-        ),
+        const MaterialApp(home: Scaffold(body: Icon(Icons.check))),
       );
 
       expect(find.byIcon(Icons.check), findsOneWidget);
@@ -391,12 +352,7 @@ void main() {
     testWidgets('Icon应该支持颜色', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: Icon(
-              Icons.check,
-              color: Colors.green,
-            ),
-          ),
+          home: Scaffold(body: Icon(Icons.check, color: Colors.green)),
         ),
       );
 
@@ -405,4 +361,3 @@ void main() {
     });
   });
 }
-

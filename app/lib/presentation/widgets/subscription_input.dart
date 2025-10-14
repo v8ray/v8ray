@@ -45,19 +45,21 @@ class SubscriptionInput extends ConsumerWidget {
                 // 更新订阅按钮
                 Expanded(
                   child: FilledButton.icon(
-                    onPressed: updateState.isUpdating || subscriptionUrl.isEmpty
-                        ? null
-                        : () => _updateSubscription(context, ref),
-                    icon: updateState.isUpdating
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                        : const Icon(Icons.refresh),
+                    onPressed:
+                        updateState.isUpdating || subscriptionUrl.isEmpty
+                            ? null
+                            : () => _updateSubscription(context, ref),
+                    icon:
+                        updateState.isUpdating
+                            ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                            : const Icon(Icons.refresh),
                     label: Text(l10n.updateSubscription),
                     style: FilledButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -70,9 +72,7 @@ class SubscriptionInput extends ConsumerWidget {
             // 更新进度
             if (updateState.isUpdating) ...[
               const SizedBox(height: 12),
-              LinearProgressIndicator(
-                value: updateState.progress,
-              ),
+              LinearProgressIndicator(value: updateState.progress),
             ],
 
             // 更新结果
@@ -111,8 +111,8 @@ class SubscriptionInput extends ConsumerWidget {
                     child: Text(
                       updateState.errorMessage!,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.error,
-                          ),
+                        color: Theme.of(context).colorScheme.error,
+                      ),
                     ),
                   ),
                 ],
@@ -150,7 +150,9 @@ class SubscriptionInput extends ConsumerWidget {
 
     try {
       // 更新订阅
-      await ref.read(subscriptionUpdateProvider.notifier).updateSubscription(url);
+      await ref
+          .read(subscriptionUpdateProvider.notifier)
+          .updateSubscription(url);
 
       if (context.mounted) {
         // 刷新服务器列表
@@ -174,9 +176,7 @@ class SubscriptionInput extends ConsumerWidget {
               children: [
                 const Icon(Icons.error_outline, color: Colors.white),
                 const SizedBox(width: 12),
-                Expanded(
-                  child: Text(l10n.updateFailed),
-                ),
+                Expanded(child: Text(l10n.updateFailed)),
               ],
             ),
             backgroundColor: Theme.of(context).colorScheme.error,
@@ -292,10 +292,7 @@ class _SubscriptionConfigDialogState
           child: Text(l10n.cancel),
         ),
         // 保存按钮
-        FilledButton(
-          onPressed: _saveConfig,
-          child: Text(l10n.save),
-        ),
+        FilledButton(onPressed: _saveConfig, child: Text(l10n.save)),
       ],
     );
   }

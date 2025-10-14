@@ -42,20 +42,20 @@ class AnimatedPageRoute<T> extends PageRouteBuilder<T> {
     this.curve = Curves.easeInOut,
     RouteSettings? settings,
   }) : super(
-          pageBuilder: (context, animation, secondaryAnimation) => page,
-          transitionDuration: duration,
-          reverseTransitionDuration: duration,
-          settings: settings,
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return _buildTransition(
-              child,
-              animation,
-              secondaryAnimation,
-              transitionType,
-              curve,
-            );
-          },
-        );
+         pageBuilder: (context, animation, secondaryAnimation) => page,
+         transitionDuration: duration,
+         reverseTransitionDuration: duration,
+         settings: settings,
+         transitionsBuilder: (context, animation, secondaryAnimation, child) {
+           return _buildTransition(
+             child,
+             animation,
+             secondaryAnimation,
+             transitionType,
+             curve,
+           );
+         },
+       );
 
   static Widget _buildTransition(
     Widget child,
@@ -64,17 +64,11 @@ class AnimatedPageRoute<T> extends PageRouteBuilder<T> {
     PageTransitionType type,
     Curve curve,
   ) {
-    final curvedAnimation = CurvedAnimation(
-      parent: animation,
-      curve: curve,
-    );
+    final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
 
     switch (type) {
       case PageTransitionType.fade:
-        return FadeTransition(
-          opacity: curvedAnimation,
-          child: child,
-        );
+        return FadeTransition(opacity: curvedAnimation, child: child);
 
       case PageTransitionType.slideRight:
         return SlideTransition(
@@ -112,10 +106,7 @@ class AnimatedPageRoute<T> extends PageRouteBuilder<T> {
       case PageTransitionType.rotate:
         return RotationTransition(
           turns: Tween<double>(begin: 0.0, end: 1.0).animate(curvedAnimation),
-          child: FadeTransition(
-            opacity: curvedAnimation,
-            child: child,
-          ),
+          child: FadeTransition(opacity: curvedAnimation, child: child),
         );
 
       case PageTransitionType.fadeScale:
@@ -179,11 +170,7 @@ class SharedAxisTransition extends StatelessWidget {
   }
 }
 
-enum SharedAxisTransitionType {
-  horizontal,
-  vertical,
-  scaled,
-}
+enum SharedAxisTransitionType { horizontal, vertical, scaled }
 
 /// 页面切换动画包装器
 class PageTransitionSwitcher extends StatelessWidget {
@@ -246,21 +233,17 @@ class _AnimatedListItemState extends State<AnimatedListItem>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0.0, 0.3),
       end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     // 延迟启动动画
     Future.delayed(widget.delay * widget.index, () {
@@ -280,11 +263,7 @@ class _AnimatedListItemState extends State<AnimatedListItem>
   Widget build(BuildContext context) {
     return FadeTransition(
       opacity: _fadeAnimation,
-      child: SlideTransition(
-        position: _slideAnimation,
-        child: widget.child,
-      ),
+      child: SlideTransition(position: _slideAnimation, child: widget.child),
     );
   }
 }
-

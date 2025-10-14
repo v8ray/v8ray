@@ -31,9 +31,7 @@ class AdvancedModePage extends ConsumerWidget {
           ),
         ],
       ),
-      body: const Center(
-        child: Text('Advanced Mode Page - To be implemented'),
-      ),
+      body: const Center(child: Text('Advanced Mode Page - To be implemented')),
     );
   }
 }

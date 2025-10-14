@@ -22,26 +22,29 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
     required super.portManager,
   });
 
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_ValuePtr => wire
-      ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValuePtr;
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_ValuePtr =>
+      wire._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValuePtr;
 
   @protected
   AnyhowException dco_decode_AnyhowException(raw);
 
   @protected
   Value
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-          raw);
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    raw,
+  );
 
   @protected
   Map<String, Value>
-      dco_decode_Map_String_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue_None(
-          raw);
+  dco_decode_Map_String_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue_None(
+    raw,
+  );
 
   @protected
   Value
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-          raw);
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    raw,
+  );
 
   @protected
   String dco_decode_String(raw);
@@ -87,8 +90,9 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
 
   @protected
   List<(String, Value)>
-      dco_decode_list_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
-          raw);
+  dco_decode_list_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
+    raw,
+  );
 
   @protected
   List<ServerInfo> dco_decode_list_server_info(raw);
@@ -115,11 +119,10 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
   ProxyServerConfig dco_decode_proxy_server_config(raw);
 
   @protected
-  (
-    String,
-    Value
-  ) dco_decode_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
-      raw);
+  (String, Value)
+  dco_decode_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
+    raw,
+  );
 
   @protected
   ServerInfo dco_decode_server_info(raw);
@@ -153,18 +156,21 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
 
   @protected
   Value
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-          SseDeserializer deserializer);
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    SseDeserializer deserializer,
+  );
 
   @protected
   Map<String, Value>
-      sse_decode_Map_String_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue_None(
-          SseDeserializer deserializer);
+  sse_decode_Map_String_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue_None(
+    SseDeserializer deserializer,
+  );
 
   @protected
   Value
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-          SseDeserializer deserializer);
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    SseDeserializer deserializer,
+  );
 
   @protected
   String sse_decode_String(SseDeserializer deserializer);
@@ -180,7 +186,8 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
 
   @protected
   ProxyServerConfig sse_decode_box_autoadd_proxy_server_config(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   int sse_decode_box_autoadd_u_32(SseDeserializer deserializer);
@@ -211,15 +218,17 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
 
   @protected
   List<(String, Value)>
-      sse_decode_list_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
-          SseDeserializer deserializer);
+  sse_decode_list_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
+    SseDeserializer deserializer,
+  );
 
   @protected
   List<ServerInfo> sse_decode_list_server_info(SseDeserializer deserializer);
 
   @protected
   List<SubscriptionInfo> sse_decode_list_subscription_info(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   String? sse_decode_opt_String(SseDeserializer deserializer);
@@ -232,21 +241,22 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
 
   @protected
   PlatformCapabilities sse_decode_platform_capabilities(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   PlatformInfo sse_decode_platform_info(SseDeserializer deserializer);
 
   @protected
   ProxyServerConfig sse_decode_proxy_server_config(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
-  (
-    String,
-    Value
-  ) sse_decode_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
-      SseDeserializer deserializer);
+  (String, Value)
+  sse_decode_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
+    SseDeserializer deserializer,
+  );
 
   @protected
   ServerInfo sse_decode_server_info(SseDeserializer deserializer);
@@ -277,22 +287,30 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
 
   @protected
   void sse_encode_AnyhowException(
-      AnyhowException self, SseSerializer serializer);
+    AnyhowException self,
+    SseSerializer serializer,
+  );
 
   @protected
   void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-          Value self, SseSerializer serializer);
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    Value self,
+    SseSerializer serializer,
+  );
 
   @protected
   void
-      sse_encode_Map_String_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue_None(
-          Map<String, Value> self, SseSerializer serializer);
+  sse_encode_Map_String_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue_None(
+    Map<String, Value> self,
+    SseSerializer serializer,
+  );
 
   @protected
   void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-          Value self, SseSerializer serializer);
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    Value self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_String(String self, SseSerializer serializer);
@@ -302,15 +320,21 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
 
   @protected
   void sse_encode_box_autoadd_config_info(
-      ConfigInfo self, SseSerializer serializer);
+    ConfigInfo self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_i_64(
-      PlatformInt64 self, SseSerializer serializer);
+    PlatformInt64 self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_proxy_server_config(
-      ProxyServerConfig self, SseSerializer serializer);
+    ProxyServerConfig self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_u_32(int self, SseSerializer serializer);
@@ -320,11 +344,15 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
 
   @protected
   void sse_encode_connection_info(
-      ConnectionInfo self, SseSerializer serializer);
+    ConnectionInfo self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_connection_status(
-      ConnectionStatus self, SseSerializer serializer);
+    ConnectionStatus self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
@@ -337,57 +365,77 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
 
   @protected
   void sse_encode_list_config_info(
-      List<ConfigInfo> self, SseSerializer serializer);
+    List<ConfigInfo> self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_prim_u_8_strict(
-      Uint8List self, SseSerializer serializer);
+    Uint8List self,
+    SseSerializer serializer,
+  );
 
   @protected
   void
-      sse_encode_list_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
-          List<(String, Value)> self, SseSerializer serializer);
+  sse_encode_list_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
+    List<(String, Value)> self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_server_info(
-      List<ServerInfo> self, SseSerializer serializer);
+    List<ServerInfo> self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_subscription_info(
-      List<SubscriptionInfo> self, SseSerializer serializer);
+    List<SubscriptionInfo> self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_i_64(
-      PlatformInt64? self, SseSerializer serializer);
+    PlatformInt64? self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_opt_box_autoadd_u_32(int? self, SseSerializer serializer);
 
   @protected
   void sse_encode_platform_capabilities(
-      PlatformCapabilities self, SseSerializer serializer);
+    PlatformCapabilities self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_platform_info(PlatformInfo self, SseSerializer serializer);
 
   @protected
   void sse_encode_proxy_server_config(
-      ProxyServerConfig self, SseSerializer serializer);
+    ProxyServerConfig self,
+    SseSerializer serializer,
+  );
 
   @protected
   void
-      sse_encode_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
-          (String, Value) self, SseSerializer serializer);
+  sse_encode_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
+    (String, Value) self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_server_info(ServerInfo self, SseSerializer serializer);
 
   @protected
   void sse_encode_subscription_info(
-      SubscriptionInfo self, SseSerializer serializer);
+    SubscriptionInfo self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_traffic_stats(TrafficStats self, SseSerializer serializer);
@@ -416,46 +464,52 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
 class V8RayBridgeWire implements BaseWire {
   /// The symbols are looked up in [dynamicLibrary].
   V8RayBridgeWire(ffi.DynamicLibrary dynamicLibrary)
-      : _lookup = dynamicLibrary.lookup;
+    : _lookup = dynamicLibrary.lookup;
 
   factory V8RayBridgeWire.fromExternalLibrary(ExternalLibrary lib) =>
       V8RayBridgeWire(lib.ffiDynamicLibrary);
 
   /// Holds the symbol lookup function.
   final ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName)
-      _lookup;
+  _lookup;
 
-  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+  void
+  rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
     ffi.Pointer<ffi.Void> ptr,
   ) =>
       _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
         ptr,
       );
 
-  late final ffi
-      .Pointer<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>
-      _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValuePtr =
+  late final ffi.Pointer<
+    ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>
+  >
+  _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValuePtr =
       _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
-          'frbgen_v8ray_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue');
+        'frbgen_v8ray_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue',
+      );
   late final void Function(ffi.Pointer<ffi.Void>)
-      _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue =
+  _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue =
       _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValuePtr
           .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
 
-  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+  void
+  rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
     ffi.Pointer<ffi.Void> ptr,
   ) =>
       _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
         ptr,
       );
 
-  late final ffi
-      .Pointer<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>
-      _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValuePtr =
+  late final ffi.Pointer<
+    ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>
+  >
+  _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValuePtr =
       _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
-          'frbgen_v8ray_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue');
+        'frbgen_v8ray_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue',
+      );
   late final void Function(ffi.Pointer<ffi.Void>)
-      _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue =
+  _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue =
       _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValuePtr
           .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
 }

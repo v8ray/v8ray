@@ -56,11 +56,14 @@ class ServerState {
   bool get hasServers => servers.isNotEmpty;
 
   /// 是否有选中的服务器
-  bool get hasSelectedServer => selectedServerId != null && selectedServer != null;
+  bool get hasSelectedServer =>
+      selectedServerId != null && selectedServer != null;
 }
 
 /// 服务器状态Provider
-final serverProvider = StateNotifierProvider<ServerNotifier, ServerState>((ref) {
+final serverProvider = StateNotifierProvider<ServerNotifier, ServerState>((
+  ref,
+) {
   return ServerNotifier();
 });
 
@@ -76,20 +79,14 @@ class ServerNotifier extends StateNotifier<ServerState> {
     try {
       appLogger.info('Loading servers...');
 
-      state = state.copyWith(
-        isLoading: true,
-        errorMessage: null,
-      );
+      state = state.copyWith(isLoading: true, errorMessage: null);
 
       // 调用 Rust FFI 获取服务器列表
       final servers = await api.getServers();
 
       appLogger.info('Loaded ${servers.length} servers');
 
-      state = state.copyWith(
-        servers: servers,
-        isLoading: false,
-      );
+      state = state.copyWith(servers: servers, isLoading: false);
 
       // 如果有服务器但没有选中的，自动选择第一个
       if (servers.isNotEmpty && state.selectedServerId == null) {
@@ -98,10 +95,7 @@ class ServerNotifier extends StateNotifier<ServerState> {
     } catch (e, stackTrace) {
       appLogger.error('Failed to load servers', e, stackTrace);
 
-      state = state.copyWith(
-        isLoading: false,
-        errorMessage: e.toString(),
-      );
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
     }
   }
 
@@ -110,10 +104,7 @@ class ServerNotifier extends StateNotifier<ServerState> {
     try {
       appLogger.info('Loading servers for subscription: $subscriptionId');
 
-      state = state.copyWith(
-        isLoading: true,
-        errorMessage: null,
-      );
+      state = state.copyWith(isLoading: true, errorMessage: null);
 
       // 调用 Rust FFI 获取服务器列表
       final servers = await api.getServersForSubscription(
@@ -122,10 +113,7 @@ class ServerNotifier extends StateNotifier<ServerState> {
 
       appLogger.info('Loaded ${servers.length} servers for subscription');
 
-      state = state.copyWith(
-        servers: servers,
-        isLoading: false,
-      );
+      state = state.copyWith(servers: servers, isLoading: false);
 
       // 如果有服务器但没有选中的，自动选择第一个
       if (servers.isNotEmpty && state.selectedServerId == null) {
@@ -134,10 +122,7 @@ class ServerNotifier extends StateNotifier<ServerState> {
     } catch (e, stackTrace) {
       appLogger.error('Failed to load servers for subscription', e, stackTrace);
 
-      state = state.copyWith(
-        isLoading: false,
-        errorMessage: e.toString(),
-      );
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
     }
   }
 
@@ -145,10 +130,7 @@ class ServerNotifier extends StateNotifier<ServerState> {
   void selectServer(String serverId) {
     appLogger.info('Selecting server: $serverId');
 
-    state = state.copyWith(
-      selectedServerId: serverId,
-      errorMessage: null,
-    );
+    state = state.copyWith(selectedServerId: serverId, errorMessage: null);
   }
 
   /// 自动选择最优服务器
@@ -177,4 +159,3 @@ class ServerNotifier extends StateNotifier<ServerState> {
     await loadServers();
   }
 }
-

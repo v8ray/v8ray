@@ -10,10 +10,7 @@ class ErrorMessages {
   ErrorMessages._();
 
   /// 获取用户友好的错误消息
-  static String getUserFriendlyMessage(
-    AppLocalizations l10n,
-    Object error,
-  ) {
+  static String getUserFriendlyMessage(AppLocalizations l10n, Object error) {
     if (error is AppError) {
       return _getAppErrorMessage(l10n, error);
     }
@@ -23,10 +20,7 @@ class ErrorMessages {
   }
 
   /// 获取应用错误消息
-  static String _getAppErrorMessage(
-    AppLocalizations l10n,
-    AppError error,
-  ) {
+  static String _getAppErrorMessage(AppLocalizations l10n, AppError error) {
     if (error is NetworkError) {
       return _getNetworkErrorMessage(l10n, error);
     } else if (error is SubscriptionError) {
@@ -55,8 +49,8 @@ class ErrorMessages {
       return l10n.dnsResolutionError;
     } else if (message.contains('connection refused')) {
       return l10n.connectionRefusedError;
-    } else if (message.contains('no internet') || 
-               message.contains('network unavailable')) {
+    } else if (message.contains('no internet') ||
+        message.contains('network unavailable')) {
       return l10n.noInternetError;
     } else if (message.contains('ssl') || message.contains('certificate')) {
       return l10n.sslCertificateError;
@@ -144,10 +138,7 @@ class ErrorMessages {
   }
 
   /// 获取错误建议
-  static String? getErrorSuggestion(
-    AppLocalizations l10n,
-    Object error,
-  ) {
+  static String? getErrorSuggestion(AppLocalizations l10n, Object error) {
     if (error is NetworkError) {
       return l10n.networkErrorSuggestion;
     } else if (error is SubscriptionError) {
@@ -161,4 +152,3 @@ class ErrorMessages {
     return null;
   }
 }
-

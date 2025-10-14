@@ -123,11 +123,7 @@ class InlineLoadingIndicator extends StatelessWidget {
   /// 大小
   final double size;
 
-  const InlineLoadingIndicator({
-    this.message,
-    this.size = 24,
-    super.key,
-  });
+  const InlineLoadingIndicator({this.message, this.size = 24, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -143,10 +139,7 @@ class InlineLoadingIndicator extends StatelessWidget {
         ),
         if (message != null) ...[
           const SizedBox(width: 12),
-          Text(
-            message!,
-            style: theme.textTheme.bodyMedium,
-          ),
+          Text(message!, style: theme.textTheme.bodyMedium),
         ],
       ],
     );
@@ -188,9 +181,10 @@ class _SkeletonLoaderState extends State<SkeletonLoader>
       vsync: this,
     )..repeat();
 
-    _animation = Tween<double>(begin: -1, end: 2).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _animation = Tween<double>(
+      begin: -1,
+      end: 2,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -215,22 +209,24 @@ class _SkeletonLoaderState extends State<SkeletonLoader>
             gradient: LinearGradient(
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
-              colors: isDark
-                  ? [
-                      Colors.grey[800]!,
-                      Colors.grey[700]!,
-                      Colors.grey[800]!,
-                    ]
-                  : [
-                      Colors.grey[300]!,
-                      Colors.grey[200]!,
-                      Colors.grey[300]!,
-                    ],
-              stops: [
-                _animation.value - 0.3,
-                _animation.value,
-                _animation.value + 0.3,
-              ].map((e) => e.clamp(0.0, 1.0)).toList(),
+              colors:
+                  isDark
+                      ? [
+                        Colors.grey[800]!,
+                        Colors.grey[700]!,
+                        Colors.grey[800]!,
+                      ]
+                      : [
+                        Colors.grey[300]!,
+                        Colors.grey[200]!,
+                        Colors.grey[300]!,
+                      ],
+              stops:
+                  [
+                    _animation.value - 0.3,
+                    _animation.value,
+                    _animation.value + 0.3,
+                  ].map((e) => e.clamp(0.0, 1.0)).toList(),
             ),
           ),
         );
@@ -265,12 +261,8 @@ class ListSkeletonLoader extends StatelessWidget {
       itemCount: itemCount,
       separatorBuilder: (context, index) => SizedBox(height: spacing),
       itemBuilder: (context, index) {
-        return SkeletonLoader(
-          height: itemHeight,
-          borderRadius: 8,
-        );
+        return SkeletonLoader(height: itemHeight, borderRadius: 8);
       },
     );
   }
 }
-

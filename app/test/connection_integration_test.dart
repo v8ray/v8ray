@@ -136,10 +136,7 @@ void main() {
       });
 
       test('确保断开连接', () async {
-        await expectLater(
-          () => api.disconnect(),
-          returnsNormally,
-        );
+        await expectLater(() => api.disconnect(), returnsNormally);
         print('✓ 断开连接成功');
       });
     });
@@ -155,10 +152,7 @@ void main() {
       });
 
       test('重置流量统计', () async {
-        await expectLater(
-          () => api.resetTrafficStats(),
-          returnsNormally,
-        );
+        await expectLater(() => api.resetTrafficStats(), returnsNormally);
         print('✓ 流量统计重置成功');
       });
 
@@ -199,7 +193,9 @@ void main() {
       test('获取订阅列表', () async {
         final subscriptions = await api.getSubscriptions();
         expect(subscriptions, isNotEmpty);
-        final foundSubscription = subscriptions.any((sub) => sub.id == testSubscriptionId);
+        final foundSubscription = subscriptions.any(
+          (sub) => sub.id == testSubscriptionId,
+        );
         expect(foundSubscription, isTrue);
         print('✓ 订阅列表获取成功，找到测试订阅');
       });
@@ -248,7 +244,9 @@ void main() {
 
       test('验证订阅删除', () async {
         final subscriptions = await api.getSubscriptions();
-        final foundSubscription = subscriptions.any((sub) => sub.id == testSubscriptionId);
+        final foundSubscription = subscriptions.any(
+          (sub) => sub.id == testSubscriptionId,
+        );
         expect(foundSubscription, isFalse);
         print('✓ 订阅删除验证成功');
       });

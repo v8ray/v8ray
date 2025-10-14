@@ -52,8 +52,8 @@ class ErrorDisplay extends StatelessWidget {
             Text(
               error.message,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
               textAlign: TextAlign.center,
             ),
 
@@ -69,9 +69,9 @@ class ErrorDisplay extends StatelessWidget {
                 child: Text(
                   error.originalError.toString(),
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onErrorContainer,
-                        fontFamily: 'monospace',
-                      ),
+                    color: Theme.of(context).colorScheme.onErrorContainer,
+                    fontFamily: 'monospace',
+                  ),
                 ),
               ),
             ],
@@ -134,11 +134,7 @@ class ErrorDialog extends StatelessWidget {
   /// 是否显示详细信息
   final bool showDetails;
 
-  const ErrorDialog({
-    required this.error,
-    this.showDetails = false,
-    super.key,
-  });
+  const ErrorDialog({required this.error, this.showDetails = false, super.key});
 
   /// 显示错误对话框
   static Future<void> show(
@@ -148,10 +144,7 @@ class ErrorDialog extends StatelessWidget {
   }) {
     return showDialog(
       context: context,
-      builder: (context) => ErrorDialog(
-        error: error,
-        showDetails: showDetails,
-      ),
+      builder: (context) => ErrorDialog(error: error, showDetails: showDetails),
     );
   }
 
@@ -219,9 +212,7 @@ class ErrorSnackBar {
               color: Theme.of(context).colorScheme.onError,
             ),
             const SizedBox(width: 12),
-            Expanded(
-              child: Text(error.message),
-            ),
+            Expanded(child: Text(error.message)),
           ],
         ),
         backgroundColor: Theme.of(context).colorScheme.error,

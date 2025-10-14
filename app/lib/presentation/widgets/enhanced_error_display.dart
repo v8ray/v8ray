@@ -37,13 +37,15 @@ class EnhancedErrorDisplay extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
 
-    final message = error is AppError
-        ? ErrorMessages.getUserFriendlyMessage(l10n, error)
-        : error.toString();
+    final message =
+        error is AppError
+            ? ErrorMessages.getUserFriendlyMessage(l10n, error)
+            : error.toString();
 
-    final suggestion = error is AppError
-        ? ErrorMessages.getErrorSuggestion(l10n, error)
-        : null;
+    final suggestion =
+        error is AppError
+            ? ErrorMessages.getErrorSuggestion(l10n, error)
+            : null;
 
     return Center(
       child: Padding(
@@ -93,7 +95,7 @@ class EnhancedErrorDisplay extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  (error as AppError).originalError?.toString() ?? 
+                  (error as AppError).originalError?.toString() ??
                       error.toString(),
                   style: theme.textTheme.bodySmall?.copyWith(
                     fontFamily: 'monospace',
@@ -174,19 +176,16 @@ class _AutoRetryErrorDisplayState extends State<AutoRetryErrorDisplay> {
       _countdown = widget.retryDelay;
     });
 
-    _countdownTimer = Timer.periodic(
-      const Duration(seconds: 1),
-      (timer) {
-        if (_countdown > 1) {
-          setState(() {
-            _countdown--;
-          });
-        } else {
-          timer.cancel();
-          _handleRetry();
-        }
-      },
-    );
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_countdown > 1) {
+        setState(() {
+          _countdown--;
+        });
+      } else {
+        timer.cancel();
+        _handleRetry();
+      }
+    });
   }
 
   Future<void> _handleRetry() async {
@@ -218,13 +217,15 @@ class _AutoRetryErrorDisplayState extends State<AutoRetryErrorDisplay> {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
 
-    final message = widget.error is AppError
-        ? ErrorMessages.getUserFriendlyMessage(l10n, widget.error)
-        : widget.error.toString();
+    final message =
+        widget.error is AppError
+            ? ErrorMessages.getUserFriendlyMessage(l10n, widget.error)
+            : widget.error.toString();
 
-    final suggestion = widget.error is AppError
-        ? ErrorMessages.getErrorSuggestion(l10n, widget.error)
-        : null;
+    final suggestion =
+        widget.error is AppError
+            ? ErrorMessages.getErrorSuggestion(l10n, widget.error)
+            : null;
 
     final canRetry = _retryCount < widget.maxRetries;
 
@@ -235,11 +236,7 @@ class _AutoRetryErrorDisplayState extends State<AutoRetryErrorDisplay> {
           mainAxisSize: MainAxisSize.min,
           children: [
             // 错误图标
-            Icon(
-              Icons.error_outline,
-              size: 48,
-              color: theme.colorScheme.error,
-            ),
+            Icon(Icons.error_outline, size: 48, color: theme.colorScheme.error),
             const SizedBox(height: 16),
 
             // 错误消息
@@ -271,10 +268,7 @@ class _AutoRetryErrorDisplayState extends State<AutoRetryErrorDisplay> {
                 children: [
                   const CircularProgressIndicator(),
                   const SizedBox(height: 12),
-                  Text(
-                    l10n.retrying,
-                    style: theme.textTheme.bodyMedium,
-                  ),
+                  Text(l10n.retrying, style: theme.textTheme.bodyMedium),
                 ],
               )
             else if (_countdown > 0)
@@ -313,4 +307,3 @@ class _AutoRetryErrorDisplayState extends State<AutoRetryErrorDisplay> {
     );
   }
 }
-

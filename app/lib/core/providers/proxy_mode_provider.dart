@@ -9,8 +9,9 @@ import '../constants/app_constants.dart';
 import '../utils/logger.dart';
 
 /// 代理模式Provider
-final proxyModeProvider =
-    StateNotifierProvider<ProxyModeNotifier, ProxyMode>((ref) {
+final proxyModeProvider = StateNotifierProvider<ProxyModeNotifier, ProxyMode>((
+  ref,
+) {
   return ProxyModeNotifier();
 });
 

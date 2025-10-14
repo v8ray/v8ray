@@ -38,11 +38,13 @@ class _RippleAnimationState extends State<RippleAnimation>
       ),
     );
 
-    _animations = _controllers.map((controller) {
-      return Tween<double>(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(parent: controller, curve: Curves.easeOut),
-      );
-    }).toList();
+    _animations =
+        _controllers.map((controller) {
+          return Tween<double>(
+            begin: 0.0,
+            end: 1.0,
+          ).animate(CurvedAnimation(parent: controller, curve: Curves.easeOut));
+        }).toList();
 
     // 错开启动每个波纹
     for (int i = 0; i < _controllers.length; i++) {
@@ -69,24 +71,25 @@ class _RippleAnimationState extends State<RippleAnimation>
       height: widget.size,
       child: Stack(
         alignment: Alignment.center,
-        children: _animations.map((animation) {
-          return AnimatedBuilder(
-            animation: animation,
-            builder: (context, child) {
-              return Container(
-                width: widget.size * animation.value,
-                height: widget.size * animation.value,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: widget.color.withOpacity(1.0 - animation.value),
-                    width: 2.0,
-                  ),
-                ),
+        children:
+            _animations.map((animation) {
+              return AnimatedBuilder(
+                animation: animation,
+                builder: (context, child) {
+                  return Container(
+                    width: widget.size * animation.value,
+                    height: widget.size * animation.value,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: widget.color.withOpacity(1.0 - animation.value),
+                        width: 2.0,
+                      ),
+                    ),
+                  );
+                },
               );
-            },
-          );
-        }).toList(),
+            }).toList(),
       ),
     );
   }
@@ -162,11 +165,12 @@ class _RingPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
+    final paint =
+        Paint()
+          ..color = color
+          ..strokeWidth = strokeWidth
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
 
     final center = Offset(size.width / 2, size.height / 2);
     final radius = (size.width - strokeWidth) / 2;
@@ -215,9 +219,10 @@ class _DataFlowAnimationState extends State<DataFlowAnimation>
       vsync: this,
     )..repeat();
 
-    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _animation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -257,27 +262,25 @@ class _DataFlowPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.fill;
+    final paint =
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.fill;
 
     final dotCount = 3;
     final spacing = size.height / (dotCount + 1);
 
     for (int i = 0; i < dotCount; i++) {
       final offset = (progress + i / dotCount) % 1.0;
-      final y = isUpload
-          ? size.height - (offset * size.height)
-          : offset * size.height;
+      final y =
+          isUpload
+              ? size.height - (offset * size.height)
+              : offset * size.height;
 
       final opacity = 1.0 - (offset * 0.7);
       paint.color = color.withOpacity(opacity);
 
-      canvas.drawCircle(
-        Offset(size.width / 2, y),
-        3.0,
-        paint,
-      );
+      canvas.drawCircle(Offset(size.width / 2, y), 3.0, paint);
     }
   }
 
@@ -290,11 +293,7 @@ class SuccessAnimation extends StatefulWidget {
   final Color color;
   final double size;
 
-  const SuccessAnimation({
-    required this.color,
-    this.size = 60,
-    super.key,
-  });
+  const SuccessAnimation({required this.color, this.size = 60, super.key});
 
   @override
   State<SuccessAnimation> createState() => _SuccessAnimationState();
@@ -313,9 +312,10 @@ class _SuccessAnimationState extends State<SuccessAnimation>
       vsync: this,
     );
 
-    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _animation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _controller.forward();
   }
@@ -347,18 +347,16 @@ class _CheckMarkPainter extends CustomPainter {
   final Color color;
   final double progress;
 
-  _CheckMarkPainter({
-    required this.color,
-    required this.progress,
-  });
+  _CheckMarkPainter({required this.color, required this.progress});
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 4.0
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
+    final paint =
+        Paint()
+          ..color = color
+          ..strokeWidth = 4.0
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
 
     final path = Path();
     final checkSize = size.width * 0.6;
@@ -369,10 +367,7 @@ class _CheckMarkPainter extends CustomPainter {
     if (progress < 0.5) {
       final p = progress * 2;
       path.moveTo(startX, startY);
-      path.lineTo(
-        startX + checkSize * 0.3 * p,
-        startY + checkSize * 0.3 * p,
-      );
+      path.lineTo(startX + checkSize * 0.3 * p, startY + checkSize * 0.3 * p);
     } else {
       // 第二段（向上）
       final p = (progress - 0.5) * 2;
@@ -390,4 +385,3 @@ class _CheckMarkPainter extends CustomPainter {
   @override
   bool shouldRepaint(_CheckMarkPainter oldDelegate) => true;
 }
-

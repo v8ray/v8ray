@@ -21,7 +21,8 @@ class ConnectionButton extends ConsumerWidget {
     final subscriptionUrl = ref.watch(subscriptionUrlProvider);
 
     // 判断是否可以连接
-    final canConnect = subscriptionUrl.isNotEmpty &&
+    final canConnect =
+        subscriptionUrl.isNotEmpty &&
         !connectionState.isConnecting &&
         !connectionState.isDisconnecting;
 
@@ -33,21 +34,22 @@ class ConnectionButton extends ConsumerWidget {
       height: 56,
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: UIConstants.animationDuration),
-        child: connectionState.isConnected || connectionState.isConnecting
-            ? _buildDisconnectButton(
-                context,
-                l10n,
-                ref,
-                canDisconnect,
-                connectionState.isDisconnecting,
-              )
-            : _buildConnectButton(
-                context,
-                l10n,
-                ref,
-                canConnect,
-                connectionState.isConnecting,
-              ),
+        child:
+            connectionState.isConnected || connectionState.isConnecting
+                ? _buildDisconnectButton(
+                  context,
+                  l10n,
+                  ref,
+                  canDisconnect,
+                  connectionState.isDisconnecting,
+                )
+                : _buildConnectButton(
+                  context,
+                  l10n,
+                  ref,
+                  canConnect,
+                  connectionState.isConnecting,
+                ),
       ),
     );
   }
@@ -63,22 +65,20 @@ class ConnectionButton extends ConsumerWidget {
     return FilledButton.icon(
       key: const ValueKey('connect'),
       onPressed: enabled ? () => _handleConnect(context, ref) : null,
-      icon: isConnecting
-          ? const SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: Colors.white,
-              ),
-            )
-          : const Icon(Icons.play_arrow),
+      icon:
+          isConnecting
+              ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
+              : const Icon(Icons.play_arrow),
       label: Text(
         l10n.connect,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
       ),
       style: FilledButton.styleFrom(
         minimumSize: const Size(double.infinity, 56),
@@ -98,22 +98,20 @@ class ConnectionButton extends ConsumerWidget {
     return FilledButton.icon(
       key: const ValueKey('disconnect'),
       onPressed: enabled ? () => _handleDisconnect(ref) : null,
-      icon: isDisconnecting
-          ? const SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: Colors.white,
-              ),
-            )
-          : const Icon(Icons.stop),
+      icon:
+          isDisconnecting
+              ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
+              : const Icon(Icons.stop),
       label: Text(
         l10n.disconnect,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
       ),
       style: FilledButton.styleFrom(
         minimumSize: const Size(double.infinity, 56),

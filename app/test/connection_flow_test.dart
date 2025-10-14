@@ -33,9 +33,7 @@ void main() {
       final state = container.read(connectionProvider);
 
       // 已连接状态
-      final connectedState = state.copyWith(
-        status: ConnectionStatus.connected,
-      );
+      final connectedState = state.copyWith(status: ConnectionStatus.connected);
       expect(connectedState.isConnected, isTrue);
       expect(connectedState.isConnecting, isFalse);
 
@@ -143,10 +141,7 @@ void main() {
     test('流量应该可以更新', () {
       final state = container.read(connectionProvider);
 
-      final newState = state.copyWith(
-        uploadBytes: 1024,
-        downloadBytes: 2048,
-      );
+      final newState = state.copyWith(uploadBytes: 1024, downloadBytes: 2048);
 
       expect(newState.uploadBytes, equals(1024));
       expect(newState.downloadBytes, equals(2048));
@@ -237,9 +232,7 @@ void main() {
     test('错误应该可以清除', () {
       final state = container.read(connectionProvider);
 
-      final errorState = state.copyWith(
-        errorMessage: 'Test error',
-      );
+      final errorState = state.copyWith(errorMessage: 'Test error');
       expect(errorState.errorMessage, isNotNull);
 
       final clearedState = errorState.copyWith(clearError: true);
@@ -353,4 +346,3 @@ void main() {
     });
   });
 }
-

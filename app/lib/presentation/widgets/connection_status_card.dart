@@ -44,8 +44,8 @@ class ConnectionStatusCard extends ConsumerWidget {
               Text(
                 l10n.disconnected,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
           ],
@@ -105,9 +105,10 @@ class ConnectionStatusCard extends ConsumerWidget {
         Material(
           color: Colors.transparent,
           child: InkWell(
-            onTap: canInteract
-                ? () => _handleStatusTap(context, ref, state)
-                : null,
+            onTap:
+                canInteract
+                    ? () => _handleStatusTap(context, ref, state)
+                    : null,
             borderRadius: BorderRadius.circular(60),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 300),
@@ -115,22 +116,24 @@ class ConnectionStatusCard extends ConsumerWidget {
               height: 120,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isDisconnected
-                    ? statusColor.withOpacity(0.15)
-                    : statusColor.withOpacity(0.1),
+                color:
+                    isDisconnected
+                        ? statusColor.withOpacity(0.15)
+                        : statusColor.withOpacity(0.1),
                 border: Border.all(
                   color: statusColor,
                   width: isDisconnected ? 4 : 3,
                 ),
-                boxShadow: isDisconnected
-                    ? [
-                        BoxShadow(
-                          color: statusColor.withOpacity(0.3),
-                          blurRadius: 12,
-                          spreadRadius: 2,
-                        ),
-                      ]
-                    : null,
+                boxShadow:
+                    isDisconnected
+                        ? [
+                          BoxShadow(
+                            color: statusColor.withOpacity(0.3),
+                            blurRadius: 12,
+                            spreadRadius: 2,
+                          ),
+                        ]
+                        : null,
               ),
               child: Stack(
                 alignment: Alignment.center,
@@ -147,17 +150,11 @@ class ConnectionStatusCard extends ConsumerWidget {
                     const SizedBox(
                       width: 120,
                       height: 120,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 3,
-                      ),
+                      child: CircularProgressIndicator(strokeWidth: 3),
                     ),
                   // 未连接时的脉冲动画提示
                   if (isDisconnected)
-                    Positioned.fill(
-                      child: _PulseAnimation(
-                        color: statusColor,
-                      ),
-                    ),
+                    Positioned.fill(child: _PulseAnimation(color: statusColor)),
                 ],
               ),
             ),
@@ -169,10 +166,10 @@ class ConnectionStatusCard extends ConsumerWidget {
         Text(
           statusText,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: statusColor,
-                fontWeight: FontWeight.bold,
-                fontSize: isDisconnected ? 22 : 20,
-              ),
+            color: statusColor,
+            fontWeight: FontWeight.bold,
+            fontSize: isDisconnected ? 22 : 20,
+          ),
         ),
 
         // 提示文本
@@ -181,13 +178,15 @@ class ConnectionStatusCard extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
             decoration: BoxDecoration(
-              color: isDisconnected
-                  ? statusColor.withOpacity(0.15)
-                  : Colors.transparent,
+              color:
+                  isDisconnected
+                      ? statusColor.withOpacity(0.15)
+                      : Colors.transparent,
               borderRadius: BorderRadius.circular(16),
-              border: isDisconnected
-                  ? Border.all(color: statusColor.withOpacity(0.3))
-                  : null,
+              border:
+                  isDisconnected
+                      ? Border.all(color: statusColor.withOpacity(0.3))
+                      : null,
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -205,11 +204,10 @@ class ConnectionStatusCard extends ConsumerWidget {
                       ? l10n.disconnect
                       : l10n.connect,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: statusColor,
-                        fontWeight: isDisconnected
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                      ),
+                    color: statusColor,
+                    fontWeight:
+                        isDisconnected ? FontWeight.bold : FontWeight.normal,
+                  ),
                 ),
               ],
             ),
@@ -222,8 +220,8 @@ class ConnectionStatusCard extends ConsumerWidget {
           Text(
             Formatters.formatDuration(state.connectedDuration!),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
         ],
       ],
@@ -323,8 +321,8 @@ class ConnectionStatusCard extends ConsumerWidget {
                 Text(
                   l10n.currentNode,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -336,10 +334,7 @@ class ConnectionStatusCard extends ConsumerWidget {
           ),
           if (state.latency != null) ...[
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 4,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 color: AppColors.getLatencyColor(state.latency),
                 borderRadius: BorderRadius.circular(4),
@@ -406,27 +401,20 @@ class ConnectionStatusCard extends ConsumerWidget {
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: color.withOpacity(0.3),
-          width: 1,
-        ),
+        border: Border.all(color: color.withOpacity(0.3), width: 1),
       ),
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                size: 16,
-                color: color,
-              ),
+              Icon(icon, size: 16, color: color),
               const SizedBox(width: 4),
               Text(
                 label,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: color,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: color),
               ),
             ],
           ),
@@ -434,9 +422,9 @@ class ConnectionStatusCard extends ConsumerWidget {
           Text(
             value,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: color,
-                  fontWeight: FontWeight.bold,
-                ),
+              color: color,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),
@@ -467,9 +455,10 @@ class _PulseAnimationState extends State<_PulseAnimation>
       vsync: this,
     )..repeat();
 
-    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _animation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
   @override

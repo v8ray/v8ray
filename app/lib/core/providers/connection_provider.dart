@@ -97,8 +97,8 @@ class ProxyConnectionState {
 /// 连接状态Provider
 final connectionProvider =
     StateNotifierProvider<ConnectionNotifier, ProxyConnectionState>((ref) {
-  return ConnectionNotifier(ref);
-});
+      return ConnectionNotifier(ref);
+    });
 
 /// 连接状态管理
 class ConnectionNotifier extends StateNotifier<ProxyConnectionState> {
@@ -118,7 +118,7 @@ class ConnectionNotifier extends StateNotifier<ProxyConnectionState> {
 
       state = state.copyWith(
         status: ConnectionStatus.connecting,
-        nodeName: serverConfig.name,  // 使用服务器名称而不是 ID
+        nodeName: serverConfig.name, // 使用服务器名称而不是 ID
         errorMessage: null,
       );
 
@@ -181,9 +181,7 @@ class ConnectionNotifier extends StateNotifier<ProxyConnectionState> {
     try {
       appLogger.info('Disconnecting...');
 
-      state = state.copyWith(
-        status: ConnectionStatus.disconnecting,
-      );
+      state = state.copyWith(status: ConnectionStatus.disconnecting);
 
       // 停止统计数据定时器
       _stopStatsTimer();
@@ -201,9 +199,7 @@ class ConnectionNotifier extends StateNotifier<ProxyConnectionState> {
         // 不影响断开状态，只记录警告
       }
 
-      state = const ProxyConnectionState(
-        status: ConnectionStatus.disconnected,
-      );
+      state = const ProxyConnectionState(status: ConnectionStatus.disconnected);
 
       appLogger.info('Disconnected');
     } catch (e, stackTrace) {

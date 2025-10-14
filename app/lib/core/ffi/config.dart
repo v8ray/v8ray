@@ -10,10 +10,7 @@ import 'lib.dart';
 
 /// gRPC settings
 class GrpcSettings {
-  const GrpcSettings({
-    required this.serviceName,
-    required this.multiMode,
-  });
+  const GrpcSettings({required this.serviceName, required this.multiMode});
 
   /// Service name
   final String serviceName;
@@ -52,7 +49,6 @@ enum ProxyProtocol {
 
   /// SOCKS proxy
   socks,
-  ;
 }
 
 /// Proxy server configuration
@@ -234,10 +230,7 @@ class TlsSettings {
 
 /// WebSocket settings
 class WsSettings {
-  const WsSettings({
-    required this.path,
-    required this.headers,
-  });
+  const WsSettings({required this.path, required this.headers});
 
   /// WebSocket path
   final String path;

@@ -94,10 +94,13 @@ Future<bool> validateConfig({required ConfigInfo config}) =>
 /// # 返回
 /// - `Ok(())`: 缓存成功
 /// - `Err(e)`: 缓存失败
-Future<void> cacheProxyConfig(
-        {required String configId, required ProxyServerConfig config}) =>
-    V8RayBridge.instance.api
-        .crateBridgeApiCacheProxyConfig(configId: configId, config: config);
+Future<void> cacheProxyConfig({
+  required String configId,
+  required ProxyServerConfig config,
+}) => V8RayBridge.instance.api.crateBridgeApiCacheProxyConfig(
+  configId: configId,
+  config: config,
+);
 
 /// 设置代理模式
 ///
@@ -172,9 +175,10 @@ Future<void> resetTrafficStats() =>
 /// # 返回
 /// - `Ok(())`: 初始化成功
 /// - `Err(e)`: 初始化失败
-Future<void> initSubscriptionManager({required String dbPath}) =>
-    V8RayBridge.instance.api
-        .crateBridgeApiInitSubscriptionManager(dbPath: dbPath);
+Future<void> initSubscriptionManager({required String dbPath}) => V8RayBridge
+    .instance
+    .api
+    .crateBridgeApiInitSubscriptionManager(dbPath: dbPath);
 
 /// 添加订阅
 ///
@@ -186,8 +190,10 @@ Future<void> initSubscriptionManager({required String dbPath}) =>
 /// - `Ok(id)`: 订阅 ID
 /// - `Err(e)`: 添加失败
 Future<String> addSubscription({required String name, required String url}) =>
-    V8RayBridge.instance.api
-        .crateBridgeApiAddSubscription(name: name, url: url);
+    V8RayBridge.instance.api.crateBridgeApiAddSubscription(
+      name: name,
+      url: url,
+    );
 
 /// 删除订阅
 ///
@@ -243,10 +249,11 @@ Future<List<ServerInfo>> getServers() =>
 /// # 返回
 /// - `Ok(servers)`: 服务器列表
 /// - `Err(e)`: 获取失败
-Future<List<ServerInfo>> getServersForSubscription(
-        {required String subscriptionId}) =>
-    V8RayBridge.instance.api.crateBridgeApiGetServersForSubscription(
-        subscriptionId: subscriptionId);
+Future<List<ServerInfo>> getServersForSubscription({
+  required String subscriptionId,
+}) => V8RayBridge.instance.api.crateBridgeApiGetServersForSubscription(
+  subscriptionId: subscriptionId,
+);
 
 /// 获取服务器配置
 ///
@@ -277,8 +284,10 @@ Future<void> loadSubscriptionsFromStorage() =>
 /// - `Ok(())`: 设置成功
 /// - `Err(e)`: 设置失败
 void setSystemProxy({required int httpPort, required int socksPort}) =>
-    V8RayBridge.instance.api
-        .crateBridgeApiSetSystemProxy(httpPort: httpPort, socksPort: socksPort);
+    V8RayBridge.instance.api.crateBridgeApiSetSystemProxy(
+      httpPort: httpPort,
+      socksPort: socksPort,
+    );
 
 /// 清除系统代理
 ///
@@ -443,7 +452,6 @@ enum ConnectionStatus {
 
   /// 错误
   error,
-  ;
 }
 
 /// 简化的代理服务器配置（用于 FFI）

@@ -73,11 +73,7 @@ void main() {
     });
 
     test('应该识别配置错误', () {
-      const errors = [
-        'invalid config',
-        'missing parameter',
-        'invalid port',
-      ];
+      const errors = ['invalid config', 'missing parameter', 'invalid port'];
 
       for (final error in errors) {
         expect(error.isNotEmpty, isTrue);
@@ -173,11 +169,7 @@ void main() {
 
   group('错误分类测试', () {
     test('致命错误应该被识别', () {
-      const fatalErrors = [
-        'out of memory',
-        'system error',
-        'critical failure',
-      ];
+      const fatalErrors = ['out of memory', 'system error', 'critical failure'];
 
       for (final error in fatalErrors) {
         expect(error.isNotEmpty, isTrue);
@@ -297,13 +289,15 @@ void main() {
   group('错误格式化测试', () {
     test('错误应该格式化为用户友好的消息', () {
       const technicalError = 'ECONNREFUSED 127.0.0.1:8080';
-      const userFriendlyError = 'Connection refused. Please check if the server is running.';
+      const userFriendlyError =
+          'Connection refused. Please check if the server is running.';
 
       expect(userFriendlyError.length, greaterThan(technicalError.length));
     });
 
     test('错误应该包含解决建议', () {
-      const errorWithSuggestion = 'Network timeout. Please check your internet connection and try again.';
+      const errorWithSuggestion =
+          'Network timeout. Please check your internet connection and try again.';
       expect(errorWithSuggestion.contains('try again'), isTrue);
     });
   });
@@ -338,4 +332,3 @@ void main() {
     });
   });
 }
-

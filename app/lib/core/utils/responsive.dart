@@ -75,12 +75,7 @@ class Responsive {
   bool get isUltraWide => width >= Breakpoints.ultraWide;
 
   /// 根据屏幕宽度返回值
-  T valueWhen<T>({
-    required T mobile,
-    T? tablet,
-    T? desktop,
-    T? ultraWide,
-  }) {
+  T valueWhen<T>({required T mobile, T? tablet, T? desktop, T? ultraWide}) {
     if (width >= Breakpoints.ultraWide && ultraWide != null) {
       return ultraWide;
     } else if (width >= Breakpoints.desktop && desktop != null) {
@@ -94,12 +89,7 @@ class Responsive {
   }
 
   /// 根据设备类型返回值
-  T deviceValue<T>({
-    required T mobile,
-    T? tablet,
-    T? desktop,
-    T? ultraWide,
-  }) {
+  T deviceValue<T>({required T mobile, T? tablet, T? desktop, T? ultraWide}) {
     switch (deviceType) {
       case DeviceType.mobile:
         return mobile;
@@ -114,21 +104,12 @@ class Responsive {
 
   /// 获取响应式内边距
   EdgeInsets get padding {
-    return EdgeInsets.all(valueWhen(
-      mobile: 16.0,
-      tablet: 24.0,
-      desktop: 32.0,
-    ));
+    return EdgeInsets.all(valueWhen(mobile: 16.0, tablet: 24.0, desktop: 32.0));
   }
 
   /// 获取响应式列数
   int get columns {
-    return valueWhen(
-      mobile: 1,
-      tablet: 2,
-      desktop: 3,
-      ultraWide: 4,
-    );
+    return valueWhen(mobile: 1, tablet: 2, desktop: 3, ultraWide: 4);
   }
 
   /// 获取响应式最大宽度
@@ -146,10 +127,7 @@ class Responsive {
 class ResponsiveBuilder extends StatelessWidget {
   final Widget Function(BuildContext context, DeviceType deviceType) builder;
 
-  const ResponsiveBuilder({
-    required this.builder,
-    super.key,
-  });
+  const ResponsiveBuilder({required this.builder, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -272,29 +250,22 @@ class ResponsiveSpacing {
 
   /// 小间距
   double get small {
-    return Responsive(context).valueWhen(
-      mobile: 8.0,
-      tablet: 12.0,
-      desktop: 16.0,
-    );
+    return Responsive(
+      context,
+    ).valueWhen(mobile: 8.0, tablet: 12.0, desktop: 16.0);
   }
 
   /// 中等间距
   double get medium {
-    return Responsive(context).valueWhen(
-      mobile: 16.0,
-      tablet: 24.0,
-      desktop: 32.0,
-    );
+    return Responsive(
+      context,
+    ).valueWhen(mobile: 16.0, tablet: 24.0, desktop: 32.0);
   }
 
   /// 大间距
   double get large {
-    return Responsive(context).valueWhen(
-      mobile: 24.0,
-      tablet: 32.0,
-      desktop: 48.0,
-    );
+    return Responsive(
+      context,
+    ).valueWhen(mobile: 24.0, tablet: 32.0, desktop: 48.0);
   }
 }
-
