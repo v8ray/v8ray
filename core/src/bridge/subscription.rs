@@ -2,7 +2,7 @@
 //!
 //! This module provides FFI interfaces for subscription management.
 
-use crate::bridge::api::{ServerInfo, SubscriptionInfo};
+use crate::bridge::api::{ProxyServerConfig, ServerInfo, SubscriptionInfo};
 use crate::subscription::{
     SchedulerConfig, SubscriptionManager, SubscriptionScheduler, SubscriptionStatus,
     SubscriptionStorage,
@@ -191,6 +191,34 @@ pub async fn get_servers() -> Result<Vec<ServerInfo>> {
         .collect();
 
     Ok(servers)
+}
+
+/// Get server configuration by ID
+pub async fn get_server_config(server_id: String) -> Result<ProxyServerConfig> {
+    let id = Uuid::parse_str(&server_id)?;
+
+    let manager_guard = SUBSCRIPTION_MANAGER.read().await;
+    let manager = manager_guard
+        .as_ref()
+        .ok_or_else(|| anyhow::anyhow!("Subscription manager not initialized"))?;
+
+    // Find the server
+    let server = manager
+        .get_servers()
+        .iter()
+        .find(|s| s.id == id)
+        .ok_or_else(|| anyhow::anyhow!("Server not found: {}", server_id))?;
+
+    // Convert Server to ProxyServerConfig (simplified FFI version)
+    Ok(ProxyServerConfig {
+        id: server.id.to_string(),
+        name: server.name.clone(),
+        address: server.address.clone(),
+        port: server.port,
+        protocol: server.protocol.clone(),
+        settings: server.config.clone(),
+        tags: vec![],
+    })
 }
 
 /// Get servers for a specific subscription

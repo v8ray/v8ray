@@ -8,8 +8,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/l10n/app_localizations.dart';
 import '../../core/router/app_router.dart';
+import '../../core/utils/responsive.dart';
+import '../widgets/animated_list_item.dart';
 import '../widgets/connection_status_card.dart';
 import '../widgets/language_selector.dart';
+import '../widgets/node_selector.dart';
 import '../widgets/proxy_mode_selector.dart';
 import '../widgets/subscription_input.dart';
 
@@ -34,32 +37,54 @@ class SimpleModePage extends ConsumerWidget {
             tooltip: l10n.switchToAdvancedMode,
             onPressed: () => context.goToAdvancedMode(),
           ),
-
-          // 设置
-          IconButton(
-            icon: const Icon(Icons.settings),
-            tooltip: l10n.settings,
-            onPressed: () => context.goToSettings(),
-          ),
         ],
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(UIConstants.defaultPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // 连接状态卡片
-              const ConnectionStatusCard(),
-              const SizedBox(height: UIConstants.largePadding),
+        child: ResponsiveContainer(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(
+              Responsive(context).valueWhen(
+                mobile: UIConstants.defaultPadding,
+                tablet: UIConstants.largePadding,
+                desktop: UIConstants.largePadding * 1.5,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // 连接状态卡片（带动画）
+                AnimatedListItem(
+                  index: 0,
+                  child: const ConnectionStatusCard(),
+                ),
+                SizedBox(
+                  height: Responsive(context).valueWhen(
+                    mobile: UIConstants.largePadding,
+                    tablet: UIConstants.largePadding * 1.5,
+                  ),
+                ),
 
-              // 订阅链接输入
-              const SubscriptionInput(),
-              const SizedBox(height: UIConstants.defaultPadding),
+                // 订阅链接输入（带动画）
+                AnimatedListItem(
+                  index: 1,
+                  child: const SubscriptionInput(),
+                ),
+                const SizedBox(height: UIConstants.defaultPadding),
 
-              // 代理模式选择
-              const ProxyModeSelector(),
-            ],
+                // 节点选择器（带动画）
+                AnimatedListItem(
+                  index: 2,
+                  child: const NodeSelector(),
+                ),
+                const SizedBox(height: UIConstants.defaultPadding),
+
+                // 代理模式选择（带动画）
+                AnimatedListItem(
+                  index: 3,
+                  child: const ProxyModeSelector(),
+                ),
+              ],
+            ),
           ),
         ),
       ),

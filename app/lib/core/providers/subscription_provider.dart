@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/app_constants.dart';
+import '../ffi/bridge/api.dart' as api;
 import '../utils/logger.dart';
 import '../utils/validators.dart';
 
@@ -84,33 +85,46 @@ class SubscriptionUpdateState {
   /// 错误消息
   final String? errorMessage;
 
+  /// 错误对象
+  final Object? error;
+
   /// 最后更新时间
   final DateTime? lastUpdateTime;
 
   /// 节点数量
   final int nodeCount;
 
+  /// 重试次数
+  final int retryCount;
+
   const SubscriptionUpdateState({
     this.isUpdating = false,
     this.progress = 0.0,
     this.errorMessage,
+    this.error,
     this.lastUpdateTime,
     this.nodeCount = 0,
+    this.retryCount = 0,
   });
 
   SubscriptionUpdateState copyWith({
     bool? isUpdating,
     double? progress,
     String? errorMessage,
+    Object? error,
     DateTime? lastUpdateTime,
     int? nodeCount,
+    int? retryCount,
+    bool clearError = false,
   }) {
     return SubscriptionUpdateState(
       isUpdating: isUpdating ?? this.isUpdating,
       progress: progress ?? this.progress,
-      errorMessage: errorMessage ?? this.errorMessage,
+      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
+      error: clearError ? null : (error ?? this.error),
       lastUpdateTime: lastUpdateTime ?? this.lastUpdateTime,
       nodeCount: nodeCount ?? this.nodeCount,
+      retryCount: retryCount ?? this.retryCount,
     );
   }
 }
@@ -127,38 +141,70 @@ class SubscriptionUpdateNotifier
   SubscriptionUpdateNotifier() : super(const SubscriptionUpdateState());
 
   /// 更新订阅
-  Future<void> updateSubscription(String url) async {
+  Future<void> updateSubscription(String url, {int retryCount = 0}) async {
     try {
-      appLogger.info('Updating subscription...');
+      appLogger.info('Updating subscription... (attempt ${retryCount + 1})');
 
       state = state.copyWith(
         isUpdating: true,
         progress: 0.0,
-        errorMessage: null,
+        clearError: true,
+        retryCount: retryCount,
       );
 
-      // TODO: 实际的订阅更新逻辑将在后续Sprint中实现
-      // 这里只是模拟更新过程
-      for (var i = 0; i <= 100; i += 10) {
-        await Future<void>.delayed(const Duration(milliseconds: 200));
-        state = state.copyWith(progress: i / 100);
+      // 调用 Rust FFI 添加或更新订阅
+      state = state.copyWith(progress: 0.3);
+
+      // 首先获取现有订阅
+      final subscriptions = await api.getSubscriptions();
+      String? subscriptionId;
+
+      // 检查是否已存在相同URL的订阅
+      final existing = subscriptions.where((s) => s.url == url).firstOrNull;
+
+      if (existing != null) {
+        // 更新现有订阅
+        subscriptionId = existing.id;
+        appLogger.info('Updating existing subscription: $subscriptionId');
+        await api.updateSubscription(id: subscriptionId);
+      } else {
+        // 添加新订阅
+        appLogger.info('Adding new subscription');
+        subscriptionId = await api.addSubscription(
+          name: 'My Subscription',
+          url: url,
+        );
+        appLogger.info('Subscription added: $subscriptionId');
       }
+
+      state = state.copyWith(progress: 0.7);
+
+      // 获取服务器列表
+      final servers = await api.getServersForSubscription(
+        subscriptionId: subscriptionId,
+      );
 
       state = state.copyWith(
         isUpdating: false,
         progress: 1.0,
         lastUpdateTime: DateTime.now(),
-        nodeCount: 25, // 模拟数据
+        nodeCount: servers.length,
+        retryCount: 0,
       );
 
-      appLogger.info('Subscription updated successfully');
+      appLogger.info('Subscription updated successfully: ${servers.length} servers');
     } catch (e, stackTrace) {
       appLogger.error('Failed to update subscription', e, stackTrace);
 
       state = state.copyWith(
         isUpdating: false,
         errorMessage: e.toString(),
+        error: e,
+        retryCount: retryCount,
       );
+
+      // 重新抛出错误以便上层处理
+      rethrow;
     }
   }
 

@@ -266,7 +266,7 @@ mod tests {
         let collector = TrafficStatsCollector::new(3);
 
         // Take multiple snapshots
-        for i in 1..=5 {
+        for _i in 1..=5 {
             collector.update_traffic(100, 200).await;
             tokio::time::sleep(Duration::from_millis(10)).await;
             collector.take_snapshot().await;

@@ -15,15 +15,14 @@ pub mod subscription;
 pub mod utils;
 pub mod xray;
 
-// Flutter Rust Bridge 初始化
-// 由于 Windows 路径问题，我们手动导出必要的 FFI 函数
-#[no_mangle]
-pub extern "C" fn frb_get_rust_content_hash() -> i32 {
-    // 返回 Dart 端期望的哈希值
-    // 这个值来自 flutter_rust_bridge 生成的代码
-    -1770232759
-}
+// Flutter Rust Bridge 生成的代码
+mod frb_generated;
 
+// 为 flutter_rust_bridge 生成的代码提供类型别名
+/// Type alias for JSON values
+pub type Value = serde_json::Value;
+
+// Flutter Rust Bridge 初始化
 // Re-export commonly used types
 pub use config::Config;
 pub use connection::{Connection, ConnectionManager, ConnectionState};
@@ -37,7 +36,7 @@ pub use utils::{init_logger, LogConfig, LogLevel};
 pub use xray::{XrayCore, XrayError as XrayCoreError};
 
 /// Result type used throughout the library
-pub type Result<T> = std::result::Result<T, V8RayError>;
+pub type V8RayResult<T> = std::result::Result<T, V8RayError>;
 
 /// Initialize the V8Ray core library
 ///
@@ -46,7 +45,7 @@ pub type Result<T> = std::result::Result<T, V8RayError>;
 ///
 /// # Returns
 /// Result indicating success or failure
-pub fn init(log_config: Option<LogConfig>) -> Result<()> {
+pub fn init(log_config: Option<LogConfig>) -> V8RayResult<()> {
     // Initialize logging (ignore errors if already initialized)
     let config = log_config.unwrap_or_default();
     let log_result = std::panic::catch_unwind(|| utils::logger::init_logger(&config));
@@ -63,7 +62,7 @@ pub fn init(log_config: Option<LogConfig>) -> Result<()> {
 }
 
 /// Initialize the V8Ray core library with simple logging
-pub fn init_simple() -> Result<()> {
+pub fn init_simple() -> V8RayResult<()> {
     init(None)
 }
 

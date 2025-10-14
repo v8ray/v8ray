@@ -93,7 +93,7 @@ impl SubscriptionManager {
     }
 
     /// Create a new subscription manager with custom HTTP client config
-    pub fn with_http_config(config: HttpClientConfig) -> crate::Result<Self> {
+    pub fn with_http_config(config: HttpClientConfig) -> crate::V8RayResult<Self> {
         Ok(Self {
             subscriptions: Vec::new(),
             servers: Vec::new(),
@@ -102,7 +102,11 @@ impl SubscriptionManager {
     }
 
     /// Add a new subscription
-    pub async fn add_subscription(&mut self, name: String, url: String) -> crate::Result<Uuid> {
+    pub async fn add_subscription(
+        &mut self,
+        name: String,
+        url: String,
+    ) -> crate::V8RayResult<Uuid> {
         let subscription = Subscription {
             id: Uuid::new_v4(),
             name,
@@ -124,7 +128,7 @@ impl SubscriptionManager {
     }
 
     /// Remove a subscription
-    pub fn remove_subscription(&mut self, id: Uuid) -> crate::Result<()> {
+    pub fn remove_subscription(&mut self, id: Uuid) -> crate::V8RayResult<()> {
         // Remove subscription
         self.subscriptions.retain(|s| s.id != id);
 
@@ -135,7 +139,7 @@ impl SubscriptionManager {
     }
 
     /// Update a specific subscription
-    pub async fn update_subscription(&mut self, id: Uuid) -> crate::Result<()> {
+    pub async fn update_subscription(&mut self, id: Uuid) -> crate::V8RayResult<()> {
         let subscription = self
             .subscriptions
             .iter_mut()
@@ -203,7 +207,7 @@ impl SubscriptionManager {
     }
 
     /// Update all subscriptions
-    pub async fn update_all_subscriptions(&mut self) -> crate::Result<()> {
+    pub async fn update_all_subscriptions(&mut self) -> crate::V8RayResult<()> {
         let subscription_ids: Vec<Uuid> = self.subscriptions.iter().map(|s| s.id).collect();
 
         for id in subscription_ids {

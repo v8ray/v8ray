@@ -1,2 +1,8 @@
-https://github.com/XTLS/Xray-core/releases/latest/download/Xray-windows-64.zip
-windows-64
+{
+  "arch": "64",
+  "binary_name": "xray",
+  "extension": ".zip",
+  "os": "linux",
+  "url": "https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip",
+  "version": "latest"
+}

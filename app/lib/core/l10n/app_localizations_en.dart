@@ -12,6 +12,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appName => 'V8Ray';
 
   @override
+  String get errorAdminPrivilegesRequired =>
+      'Administrator Privileges Required';
+
+  @override
+  String get errorAdminPrivilegesMessage =>
+      'V8Ray requires administrator/root privileges to manage system proxy settings.\n\nPlease run the application with administrator privileges:\n• Linux/macOS: sudo ./v8ray\n• Windows: Right-click and select \"Run as administrator\"';
+
+  @override
+  String get errorInitializationFailed => 'Initialization Failed';
+
+  @override
+  String get errorPermissionCheckFailed => 'Permission Check Failed';
+
+  @override
+  String get exit => 'Exit';
+
+  @override
   String get simpleMode => 'Simple Mode';
 
   @override
@@ -150,7 +167,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clear => 'Clear';
 
   @override
+  String get close => 'Close';
+
+  @override
+  String get moreInfo => 'More Info';
+
+  @override
   String get paste => 'Paste';
+
+  @override
+  String get noAdminPrivileges => 'Not running with administrator privileges';
+
+  @override
+  String get noAdminPrivilegesHint =>
+      'System proxy settings may require administrator privileges. If you encounter issues, please restart the application as administrator.';
+
+  @override
+  String get adminPrivilegesRequired => 'Administrator Privileges Required';
+
+  @override
+  String get adminPrivilegesExplanation =>
+      'Modifying system proxy settings typically requires administrator privileges. If you encounter permission errors when enabling system proxy, please follow the instructions below to run the application as administrator.';
+
+  @override
+  String get howToRunAsAdmin => 'How to Run as Administrator';
+
+  @override
+  String get windowsAdminInstructions =>
+      'Right-click the application icon and select \'Run as administrator\'';
+
+  @override
+  String get macosAdminInstructions =>
+      'Run with sudo command in Terminal, or grant permissions in System Preferences';
+
+  @override
+  String get linuxAdminInstructions =>
+      'Run with sudo command, or add user to appropriate permission groups';
 
   @override
   String get globalModeDescription => 'All traffic goes through proxy';
@@ -170,4 +222,186 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saveSuccess => 'Saved successfully';
+
+  @override
+  String get nodeSelection => 'Node Selection';
+
+  @override
+  String get selectNode => 'Select Node';
+
+  @override
+  String get pleaseSelectNode => 'Please select a node first';
+
+  @override
+  String get noServersAvailable => 'No servers available';
+
+  @override
+  String get pleaseUpdateSubscription =>
+      'Please update subscription to get servers';
+
+  @override
+  String get totalServers => 'Total Servers';
+
+  @override
+  String get refresh => 'Refresh';
+
+  @override
+  String get change => 'Change';
+
+  @override
+  String get unknownError => 'An unknown error occurred';
+
+  @override
+  String get networkError => 'Network Error';
+
+  @override
+  String get networkTimeoutError =>
+      'Network request timed out. Please check your internet connection and try again.';
+
+  @override
+  String get dnsResolutionError =>
+      'Failed to resolve domain name. Please check your DNS settings.';
+
+  @override
+  String get connectionRefusedError =>
+      'Connection refused. The server may be down or unreachable.';
+
+  @override
+  String get noInternetError =>
+      'No internet connection. Please check your network settings.';
+
+  @override
+  String get sslCertificateError =>
+      'SSL certificate verification failed. The connection may not be secure.';
+
+  @override
+  String get subscriptionError => 'Subscription Error';
+
+  @override
+  String get invalidSubscriptionUrl =>
+      'Invalid subscription URL. Please check the URL and try again.';
+
+  @override
+  String get subscriptionParseError =>
+      'Failed to parse subscription data. The subscription format may be incorrect.';
+
+  @override
+  String get emptySubscriptionError =>
+      'No servers found in subscription. Please check the subscription URL.';
+
+  @override
+  String get subscriptionNotFoundError =>
+      'Subscription not found. The URL may be incorrect or expired.';
+
+  @override
+  String get subscriptionUnauthorizedError =>
+      'Unauthorized access to subscription. Please check your credentials.';
+
+  @override
+  String get connectionError => 'Connection Error';
+
+  @override
+  String get connectionTimeoutError =>
+      'Connection timed out. Please try again.';
+
+  @override
+  String get noServerSelectedError =>
+      'No server selected. Please select a server first.';
+
+  @override
+  String get alreadyConnectedError =>
+      'Already connected. Please disconnect first.';
+
+  @override
+  String get notConnectedError => 'Not connected. Please connect first.';
+
+  @override
+  String get configError => 'Configuration Error';
+
+  @override
+  String get invalidConfigError =>
+      'Invalid configuration. Please check your settings.';
+
+  @override
+  String get missingConfigError =>
+      'Missing required configuration. Please complete your settings.';
+
+  @override
+  String get permissionError => 'Permission Error';
+
+  @override
+  String get vpnPermissionError =>
+      'VPN permission denied. Please grant VPN permission in system settings.';
+
+  @override
+  String get networkPermissionError =>
+      'Network permission denied. Please grant network permission.';
+
+  @override
+  String get storagePermissionError =>
+      'Storage permission denied. Please grant storage permission.';
+
+  @override
+  String get networkErrorSuggestion =>
+      'Please check your internet connection and try again.';
+
+  @override
+  String get subscriptionErrorSuggestion =>
+      'Please verify the subscription URL and try updating again.';
+
+  @override
+  String get connectionErrorSuggestion =>
+      'Please check your server settings and network connection.';
+
+  @override
+  String get permissionErrorSuggestion =>
+      'Please grant the required permissions in system settings.';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get retrying => 'Retrying...';
+
+  @override
+  String retryIn(int seconds) {
+    return 'Retry in ${seconds}s';
+  }
+
+  @override
+  String get loading => 'Loading...';
+
+  @override
+  String get pleaseWait => 'Please wait...';
+
+  @override
+  String get operationInProgress => 'Operation in progress...';
+
+  @override
+  String get systemProxy => 'System Proxy';
+
+  @override
+  String get proxySettings => 'Proxy Settings';
+
+  @override
+  String get systemProxyEnabled => 'System proxy is enabled';
+
+  @override
+  String get systemProxyDisabled => 'System proxy is disabled';
+
+  @override
+  String get systemProxyEnabledSuccess => 'System proxy enabled successfully';
+
+  @override
+  String get systemProxyDisabledSuccess => 'System proxy disabled successfully';
+
+  @override
+  String get systemProxyError => 'Failed to change system proxy settings';
+
+  @override
+  String get autoSetSystemProxy => 'Auto set system proxy';
+
+  @override
+  String get autoSetSystemProxyDescription =>
+      'Automatically set system proxy when connected';
 }

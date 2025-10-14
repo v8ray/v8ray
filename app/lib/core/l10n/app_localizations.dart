@@ -104,6 +104,36 @@ abstract class AppLocalizations {
   /// **'V8Ray'**
   String get appName;
 
+  /// Error title when admin privileges are required
+  ///
+  /// In en, this message translates to:
+  /// **'Administrator Privileges Required'**
+  String get errorAdminPrivilegesRequired;
+
+  /// Error message when admin privileges are required
+  ///
+  /// In en, this message translates to:
+  /// **'V8Ray requires administrator/root privileges to manage system proxy settings.\n\nPlease run the application with administrator privileges:\n• Linux/macOS: sudo ./v8ray\n• Windows: Right-click and select \"Run as administrator\"'**
+  String get errorAdminPrivilegesMessage;
+
+  /// Error title when initialization fails
+  ///
+  /// In en, this message translates to:
+  /// **'Initialization Failed'**
+  String get errorInitializationFailed;
+
+  /// Error title when permission check fails
+  ///
+  /// In en, this message translates to:
+  /// **'Permission Check Failed'**
+  String get errorPermissionCheckFailed;
+
+  /// Exit button
+  ///
+  /// In en, this message translates to:
+  /// **'Exit'**
+  String get exit;
+
   /// Simple mode label
   ///
   /// In en, this message translates to:
@@ -380,11 +410,71 @@ abstract class AppLocalizations {
   /// **'Clear'**
   String get clear;
 
+  /// Close button
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// More information button
+  ///
+  /// In en, this message translates to:
+  /// **'More Info'**
+  String get moreInfo;
+
   /// Paste button
   ///
   /// In en, this message translates to:
   /// **'Paste'**
   String get paste;
+
+  /// Warning when app is not running as admin
+  ///
+  /// In en, this message translates to:
+  /// **'Not running with administrator privileges'**
+  String get noAdminPrivileges;
+
+  /// Hint for running as administrator
+  ///
+  /// In en, this message translates to:
+  /// **'System proxy settings may require administrator privileges. If you encounter issues, please restart the application as administrator.'**
+  String get noAdminPrivilegesHint;
+
+  /// Dialog title for admin privileges
+  ///
+  /// In en, this message translates to:
+  /// **'Administrator Privileges Required'**
+  String get adminPrivilegesRequired;
+
+  /// Explanation of why admin privileges are needed
+  ///
+  /// In en, this message translates to:
+  /// **'Modifying system proxy settings typically requires administrator privileges. If you encounter permission errors when enabling system proxy, please follow the instructions below to run the application as administrator.'**
+  String get adminPrivilegesExplanation;
+
+  /// Section title for admin instructions
+  ///
+  /// In en, this message translates to:
+  /// **'How to Run as Administrator'**
+  String get howToRunAsAdmin;
+
+  /// Instructions for Windows
+  ///
+  /// In en, this message translates to:
+  /// **'Right-click the application icon and select \'Run as administrator\''**
+  String get windowsAdminInstructions;
+
+  /// Instructions for macOS
+  ///
+  /// In en, this message translates to:
+  /// **'Run with sudo command in Terminal, or grant permissions in System Preferences'**
+  String get macosAdminInstructions;
+
+  /// Instructions for Linux
+  ///
+  /// In en, this message translates to:
+  /// **'Run with sudo command, or add user to appropriate permission groups'**
+  String get linuxAdminInstructions;
 
   /// Global mode description
   ///
@@ -421,6 +511,318 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Saved successfully'**
   String get saveSuccess;
+
+  /// Node selection label
+  ///
+  /// In en, this message translates to:
+  /// **'Node Selection'**
+  String get nodeSelection;
+
+  /// Select node button
+  ///
+  /// In en, this message translates to:
+  /// **'Select Node'**
+  String get selectNode;
+
+  /// Please select node error message
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a node first'**
+  String get pleaseSelectNode;
+
+  /// No servers available message
+  ///
+  /// In en, this message translates to:
+  /// **'No servers available'**
+  String get noServersAvailable;
+
+  /// Please update subscription hint
+  ///
+  /// In en, this message translates to:
+  /// **'Please update subscription to get servers'**
+  String get pleaseUpdateSubscription;
+
+  /// Total servers label
+  ///
+  /// In en, this message translates to:
+  /// **'Total Servers'**
+  String get totalServers;
+
+  /// Refresh button
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get refresh;
+
+  /// Change button
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get change;
+
+  /// Unknown error message
+  ///
+  /// In en, this message translates to:
+  /// **'An unknown error occurred'**
+  String get unknownError;
+
+  /// Network error title
+  ///
+  /// In en, this message translates to:
+  /// **'Network Error'**
+  String get networkError;
+
+  /// Network timeout error message
+  ///
+  /// In en, this message translates to:
+  /// **'Network request timed out. Please check your internet connection and try again.'**
+  String get networkTimeoutError;
+
+  /// DNS resolution error message
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to resolve domain name. Please check your DNS settings.'**
+  String get dnsResolutionError;
+
+  /// Connection refused error message
+  ///
+  /// In en, this message translates to:
+  /// **'Connection refused. The server may be down or unreachable.'**
+  String get connectionRefusedError;
+
+  /// No internet error message
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection. Please check your network settings.'**
+  String get noInternetError;
+
+  /// SSL certificate error message
+  ///
+  /// In en, this message translates to:
+  /// **'SSL certificate verification failed. The connection may not be secure.'**
+  String get sslCertificateError;
+
+  /// Subscription error title
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription Error'**
+  String get subscriptionError;
+
+  /// Invalid subscription URL error message
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid subscription URL. Please check the URL and try again.'**
+  String get invalidSubscriptionUrl;
+
+  /// Subscription parse error message
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to parse subscription data. The subscription format may be incorrect.'**
+  String get subscriptionParseError;
+
+  /// Empty subscription error message
+  ///
+  /// In en, this message translates to:
+  /// **'No servers found in subscription. Please check the subscription URL.'**
+  String get emptySubscriptionError;
+
+  /// Subscription not found error message
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription not found. The URL may be incorrect or expired.'**
+  String get subscriptionNotFoundError;
+
+  /// Subscription unauthorized error message
+  ///
+  /// In en, this message translates to:
+  /// **'Unauthorized access to subscription. Please check your credentials.'**
+  String get subscriptionUnauthorizedError;
+
+  /// Connection error title
+  ///
+  /// In en, this message translates to:
+  /// **'Connection Error'**
+  String get connectionError;
+
+  /// Connection timeout error message
+  ///
+  /// In en, this message translates to:
+  /// **'Connection timed out. Please try again.'**
+  String get connectionTimeoutError;
+
+  /// No server selected error message
+  ///
+  /// In en, this message translates to:
+  /// **'No server selected. Please select a server first.'**
+  String get noServerSelectedError;
+
+  /// Already connected error message
+  ///
+  /// In en, this message translates to:
+  /// **'Already connected. Please disconnect first.'**
+  String get alreadyConnectedError;
+
+  /// Not connected error message
+  ///
+  /// In en, this message translates to:
+  /// **'Not connected. Please connect first.'**
+  String get notConnectedError;
+
+  /// Configuration error title
+  ///
+  /// In en, this message translates to:
+  /// **'Configuration Error'**
+  String get configError;
+
+  /// Invalid config error message
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid configuration. Please check your settings.'**
+  String get invalidConfigError;
+
+  /// Missing config error message
+  ///
+  /// In en, this message translates to:
+  /// **'Missing required configuration. Please complete your settings.'**
+  String get missingConfigError;
+
+  /// Permission error title
+  ///
+  /// In en, this message translates to:
+  /// **'Permission Error'**
+  String get permissionError;
+
+  /// VPN permission error message
+  ///
+  /// In en, this message translates to:
+  /// **'VPN permission denied. Please grant VPN permission in system settings.'**
+  String get vpnPermissionError;
+
+  /// Network permission error message
+  ///
+  /// In en, this message translates to:
+  /// **'Network permission denied. Please grant network permission.'**
+  String get networkPermissionError;
+
+  /// Storage permission error message
+  ///
+  /// In en, this message translates to:
+  /// **'Storage permission denied. Please grant storage permission.'**
+  String get storagePermissionError;
+
+  /// Network error suggestion
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your internet connection and try again.'**
+  String get networkErrorSuggestion;
+
+  /// Subscription error suggestion
+  ///
+  /// In en, this message translates to:
+  /// **'Please verify the subscription URL and try updating again.'**
+  String get subscriptionErrorSuggestion;
+
+  /// Connection error suggestion
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your server settings and network connection.'**
+  String get connectionErrorSuggestion;
+
+  /// Permission error suggestion
+  ///
+  /// In en, this message translates to:
+  /// **'Please grant the required permissions in system settings.'**
+  String get permissionErrorSuggestion;
+
+  /// Retry button text
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// Retrying status text
+  ///
+  /// In en, this message translates to:
+  /// **'Retrying...'**
+  String get retrying;
+
+  /// Retry countdown text
+  ///
+  /// In en, this message translates to:
+  /// **'Retry in {seconds}s'**
+  String retryIn(int seconds);
+
+  /// Loading text
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get loading;
+
+  /// Please wait text
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait...'**
+  String get pleaseWait;
+
+  /// Operation in progress text
+  ///
+  /// In en, this message translates to:
+  /// **'Operation in progress...'**
+  String get operationInProgress;
+
+  /// System proxy title
+  ///
+  /// In en, this message translates to:
+  /// **'System Proxy'**
+  String get systemProxy;
+
+  /// Proxy settings title
+  ///
+  /// In en, this message translates to:
+  /// **'Proxy Settings'**
+  String get proxySettings;
+
+  /// System proxy enabled status
+  ///
+  /// In en, this message translates to:
+  /// **'System proxy is enabled'**
+  String get systemProxyEnabled;
+
+  /// System proxy disabled status
+  ///
+  /// In en, this message translates to:
+  /// **'System proxy is disabled'**
+  String get systemProxyDisabled;
+
+  /// System proxy enabled success message
+  ///
+  /// In en, this message translates to:
+  /// **'System proxy enabled successfully'**
+  String get systemProxyEnabledSuccess;
+
+  /// System proxy disabled success message
+  ///
+  /// In en, this message translates to:
+  /// **'System proxy disabled successfully'**
+  String get systemProxyDisabledSuccess;
+
+  /// System proxy error message
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to change system proxy settings'**
+  String get systemProxyError;
+
+  /// Auto set system proxy option
+  ///
+  /// In en, this message translates to:
+  /// **'Auto set system proxy'**
+  String get autoSetSystemProxy;
+
+  /// Auto set system proxy description
+  ///
+  /// In en, this message translates to:
+  /// **'Automatically set system proxy when connected'**
+  String get autoSetSystemProxyDescription;
 }
 
 class _AppLocalizationsDelegate

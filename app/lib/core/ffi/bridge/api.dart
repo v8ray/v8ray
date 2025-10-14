@@ -5,12 +5,12 @@
 
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-import '../config.dart';
 import '../frb_generated.dart';
 import '../lib.dart';
+import '../platform.dart';
 
 // These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `V8RayEvent`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`
 // These functions have error during generation (see debug logs or enable `stop_on_error: true` for more details): `create_event_stream`
 
 /// 初始化 V8Ray Core
@@ -29,7 +29,8 @@ Future<void> initV8Ray() => V8RayBridge.instance.api.crateBridgeApiInitV8Ray();
 /// # 返回
 /// - `Ok(())`: 关闭成功
 /// - `Err(e)`: 关闭失败
-Future<void> shutdownV8Ray() => V8RayBridge.instance.api.crateBridgeApiShutdownV8Ray();
+Future<void> shutdownV8Ray() =>
+    V8RayBridge.instance.api.crateBridgeApiShutdownV8Ray();
 
 /// 加载配置
 ///
@@ -69,7 +70,8 @@ Future<void> deleteConfig({required String configId}) =>
 /// # 返回
 /// - `Ok(configs)`: 配置列表
 /// - `Err(e)`: 列出失败
-Future<List<ConfigInfo>> listConfigs() => V8RayBridge.instance.api.crateBridgeApiListConfigs();
+Future<List<ConfigInfo>> listConfigs() =>
+    V8RayBridge.instance.api.crateBridgeApiListConfigs();
 
 /// 验证配置
 ///
@@ -92,8 +94,21 @@ Future<bool> validateConfig({required ConfigInfo config}) =>
 /// # 返回
 /// - `Ok(())`: 缓存成功
 /// - `Err(e)`: 缓存失败
-Future<void> cacheProxyConfig({required String configId, required ProxyServerConfig config}) =>
-    V8RayBridge.instance.api.crateBridgeApiCacheProxyConfig(configId: configId, config: config);
+Future<void> cacheProxyConfig(
+        {required String configId, required ProxyServerConfig config}) =>
+    V8RayBridge.instance.api
+        .crateBridgeApiCacheProxyConfig(configId: configId, config: config);
+
+/// 设置代理模式
+///
+/// # 参数
+/// - `mode`: 代理模式 ("global", "smart", "direct")
+///
+/// # 返回
+/// - `Ok(())`: 设置成功
+/// - `Err(e)`: 设置失败
+Future<void> setProxyMode({required String mode}) =>
+    V8RayBridge.instance.api.crateBridgeApiSetProxyMode(mode: mode);
 
 /// 连接到服务器
 ///
@@ -103,21 +118,24 @@ Future<void> cacheProxyConfig({required String configId, required ProxyServerCon
 /// # 返回
 /// - `Ok(())`: 连接成功
 /// - `Err(e)`: 连接失败
-Future<void> connect({required String configId}) => V8RayBridge.instance.api.crateBridgeApiConnect(configId: configId);
+Future<void> connect({required String configId}) =>
+    V8RayBridge.instance.api.crateBridgeApiConnect(configId: configId);
 
 /// 断开连接
 ///
 /// # 返回
 /// - `Ok(())`: 断开成功
 /// - `Err(e)`: 断开失败
-Future<void> disconnect() => V8RayBridge.instance.api.crateBridgeApiDisconnect();
+Future<void> disconnect() =>
+    V8RayBridge.instance.api.crateBridgeApiDisconnect();
 
 /// 获取连接信息
 ///
 /// # 返回
 /// - `Ok(info)`: 连接信息
 /// - `Err(e)`: 获取失败
-Future<ConnectionInfo> getConnectionInfo() => V8RayBridge.instance.api.crateBridgeApiGetConnectionInfo();
+Future<ConnectionInfo> getConnectionInfo() =>
+    V8RayBridge.instance.api.crateBridgeApiGetConnectionInfo();
 
 /// 测试连接延迟
 ///
@@ -135,14 +153,16 @@ Future<int> testLatency({required String configId}) =>
 /// # 返回
 /// - `Ok(stats)`: 流量统计
 /// - `Err(e)`: 获取失败
-Future<TrafficStats> getTrafficStats() => V8RayBridge.instance.api.crateBridgeApiGetTrafficStats();
+Future<TrafficStats> getTrafficStats() =>
+    V8RayBridge.instance.api.crateBridgeApiGetTrafficStats();
 
 /// 重置流量统计
 ///
 /// # 返回
 /// - `Ok(())`: 重置成功
 /// - `Err(e)`: 重置失败
-Future<void> resetTrafficStats() => V8RayBridge.instance.api.crateBridgeApiResetTrafficStats();
+Future<void> resetTrafficStats() =>
+    V8RayBridge.instance.api.crateBridgeApiResetTrafficStats();
 
 /// 初始化订阅管理器
 ///
@@ -153,7 +173,8 @@ Future<void> resetTrafficStats() => V8RayBridge.instance.api.crateBridgeApiReset
 /// - `Ok(())`: 初始化成功
 /// - `Err(e)`: 初始化失败
 Future<void> initSubscriptionManager({required String dbPath}) =>
-    V8RayBridge.instance.api.crateBridgeApiInitSubscriptionManager(dbPath: dbPath);
+    V8RayBridge.instance.api
+        .crateBridgeApiInitSubscriptionManager(dbPath: dbPath);
 
 /// 添加订阅
 ///
@@ -165,7 +186,8 @@ Future<void> initSubscriptionManager({required String dbPath}) =>
 /// - `Ok(id)`: 订阅 ID
 /// - `Err(e)`: 添加失败
 Future<String> addSubscription({required String name, required String url}) =>
-    V8RayBridge.instance.api.crateBridgeApiAddSubscription(name: name, url: url);
+    V8RayBridge.instance.api
+        .crateBridgeApiAddSubscription(name: name, url: url);
 
 /// 删除订阅
 ///
@@ -194,21 +216,24 @@ Future<void> updateSubscription({required String id}) =>
 /// # 返回
 /// - `Ok(())`: 更新成功
 /// - `Err(e)`: 更新失败
-Future<void> updateAllSubscriptions() => V8RayBridge.instance.api.crateBridgeApiUpdateAllSubscriptions();
+Future<void> updateAllSubscriptions() =>
+    V8RayBridge.instance.api.crateBridgeApiUpdateAllSubscriptions();
 
 /// 获取所有订阅
 ///
 /// # 返回
 /// - `Ok(subscriptions)`: 订阅列表
 /// - `Err(e)`: 获取失败
-Future<List<SubscriptionInfo>> getSubscriptions() => V8RayBridge.instance.api.crateBridgeApiGetSubscriptions();
+Future<List<SubscriptionInfo>> getSubscriptions() =>
+    V8RayBridge.instance.api.crateBridgeApiGetSubscriptions();
 
 /// 获取所有服务器
 ///
 /// # 返回
 /// - `Ok(servers)`: 服务器列表
 /// - `Err(e)`: 获取失败
-Future<List<ServerInfo>> getServers() => V8RayBridge.instance.api.crateBridgeApiGetServers();
+Future<List<ServerInfo>> getServers() =>
+    V8RayBridge.instance.api.crateBridgeApiGetServers();
 
 /// 获取指定订阅的服务器
 ///
@@ -218,15 +243,75 @@ Future<List<ServerInfo>> getServers() => V8RayBridge.instance.api.crateBridgeApi
 /// # 返回
 /// - `Ok(servers)`: 服务器列表
 /// - `Err(e)`: 获取失败
-Future<List<ServerInfo>> getServersForSubscription({required String subscriptionId}) =>
-    V8RayBridge.instance.api.crateBridgeApiGetServersForSubscription(subscriptionId: subscriptionId);
+Future<List<ServerInfo>> getServersForSubscription(
+        {required String subscriptionId}) =>
+    V8RayBridge.instance.api.crateBridgeApiGetServersForSubscription(
+        subscriptionId: subscriptionId);
+
+/// 获取服务器配置
+///
+/// # 参数
+/// - `server_id`: 服务器 ID
+///
+/// # 返回
+/// - `Ok(config)`: 服务器配置
+/// - `Err(e)`: 获取失败
+Future<ProxyServerConfig> getServerConfig({required String serverId}) =>
+    V8RayBridge.instance.api.crateBridgeApiGetServerConfig(serverId: serverId);
 
 /// 从存储加载订阅
 ///
 /// # 返回
 /// - `Ok(())`: 加载成功
 /// - `Err(e)`: 加载失败
-Future<void> loadSubscriptionsFromStorage() => V8RayBridge.instance.api.crateBridgeApiLoadSubscriptionsFromStorage();
+Future<void> loadSubscriptionsFromStorage() =>
+    V8RayBridge.instance.api.crateBridgeApiLoadSubscriptionsFromStorage();
+
+/// 设置系统代理
+///
+/// # 参数
+/// - `http_port`: HTTP 代理端口
+/// - `socks_port`: SOCKS 代理端口
+///
+/// # 返回
+/// - `Ok(())`: 设置成功
+/// - `Err(e)`: 设置失败
+void setSystemProxy({required int httpPort, required int socksPort}) =>
+    V8RayBridge.instance.api
+        .crateBridgeApiSetSystemProxy(httpPort: httpPort, socksPort: socksPort);
+
+/// 清除系统代理
+///
+/// # 返回
+/// - `Ok(())`: 清除成功
+/// - `Err(e)`: 清除失败
+void clearSystemProxy() =>
+    V8RayBridge.instance.api.crateBridgeApiClearSystemProxy();
+
+/// 检查系统代理是否已设置
+///
+/// # 返回
+/// - `Ok(true)`: 代理已设置
+/// - `Ok(false)`: 代理未设置
+/// - `Err(e)`: 检查失败
+bool isSystemProxySet() =>
+    V8RayBridge.instance.api.crateBridgeApiIsSystemProxySet();
+
+/// 获取平台信息
+///
+/// # 返回
+/// 平台信息，包括操作系统、架构、版本和功能支持
+PlatformInfo getPlatformInfo() =>
+    V8RayBridge.instance.api.crateBridgeApiGetPlatformInfo();
+
+/// 检查是否有管理员权限
+///
+/// # 返回
+/// * `Ok(true)` - 有管理员权限
+/// * `Ok(false)` - 没有管理员权限
+/// * `Err(String)` - 检查失败
+bool hasAdminPrivileges() =>
+    V8RayBridge.instance.api.crateBridgeApiHasAdminPrivileges();
 
 /// 配置信息
 class ConfigInfo {
@@ -361,6 +446,63 @@ enum ConnectionStatus {
   ;
 }
 
+/// 简化的代理服务器配置（用于 FFI）
+class ProxyServerConfig {
+  const ProxyServerConfig({
+    required this.id,
+    required this.name,
+    required this.address,
+    required this.port,
+    required this.protocol,
+    required this.settings,
+    required this.tags,
+  });
+
+  /// 服务器 ID
+  final String id;
+
+  /// 服务器名称
+  final String name;
+
+  /// 服务器地址
+  final String address;
+
+  /// 服务器端口
+  final int port;
+
+  /// 协议类型
+  final String protocol;
+
+  /// 协议特定设置
+  final Map<String, Value> settings;
+
+  /// 标签
+  final List<String> tags;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      name.hashCode ^
+      address.hashCode ^
+      port.hashCode ^
+      protocol.hashCode ^
+      settings.hashCode ^
+      tags.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ProxyServerConfig &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name &&
+          address == other.address &&
+          port == other.port &&
+          protocol == other.protocol &&
+          settings == other.settings &&
+          tags == other.tags;
+}
+
 /// 服务器信息
 class ServerInfo {
   const ServerInfo({
@@ -392,7 +534,12 @@ class ServerInfo {
 
   @override
   int get hashCode =>
-      id.hashCode ^ subscriptionId.hashCode ^ name.hashCode ^ address.hashCode ^ port.hashCode ^ protocol.hashCode;
+      id.hashCode ^
+      subscriptionId.hashCode ^
+      name.hashCode ^
+      address.hashCode ^
+      port.hashCode ^
+      protocol.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -438,7 +585,12 @@ class SubscriptionInfo {
 
   @override
   int get hashCode =>
-      id.hashCode ^ name.hashCode ^ url.hashCode ^ lastUpdate.hashCode ^ serverCount.hashCode ^ status.hashCode;
+      id.hashCode ^
+      name.hashCode ^
+      url.hashCode ^
+      lastUpdate.hashCode ^
+      serverCount.hashCode ^
+      status.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -475,7 +627,11 @@ class TrafficStats {
   final BigInt totalDownload;
 
   @override
-  int get hashCode => uploadSpeed.hashCode ^ downloadSpeed.hashCode ^ totalUpload.hashCode ^ totalDownload.hashCode;
+  int get hashCode =>
+      uploadSpeed.hashCode ^
+      downloadSpeed.hashCode ^
+      totalUpload.hashCode ^
+      totalDownload.hashCode;
 
   @override
   bool operator ==(Object other) =>

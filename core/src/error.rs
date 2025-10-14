@@ -221,7 +221,7 @@ pub enum StorageError {
 }
 
 /// Result type alias for V8Ray operations
-pub type Result<T> = std::result::Result<T, V8RayError>;
+pub type V8RayResult<T> = std::result::Result<T, V8RayError>;
 
 /// Result type alias for configuration operations
 pub type ConfigResult<T> = std::result::Result<T, ConfigError>;
@@ -243,6 +243,13 @@ pub type NetworkResult<T> = std::result::Result<T, NetworkError>;
 
 /// Result type alias for storage operations
 pub type StorageResult<T> = std::result::Result<T, StorageError>;
+
+impl From<anyhow::Error> for V8RayError {
+    fn from(err: anyhow::Error) -> Self {
+        // 简单地将 anyhow::Error 转换为通用错误
+        V8RayError::Generic(err.to_string())
+    }
+}
 
 #[cfg(test)]
 mod tests {

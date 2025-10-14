@@ -9,6 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants/app_constants.dart';
 import '../ffi/bridge/api.dart' as api;
 import '../utils/logger.dart';
+import 'proxy_mode_provider.dart';
+import 'system_proxy_provider.dart';
 
 /// 连接状态数据模型
 class ProxyConnectionState {
@@ -95,38 +97,63 @@ class ProxyConnectionState {
 /// 连接状态Provider
 final connectionProvider =
     StateNotifierProvider<ConnectionNotifier, ProxyConnectionState>((ref) {
-  return ConnectionNotifier();
+  return ConnectionNotifier(ref);
 });
 
 /// 连接状态管理
 class ConnectionNotifier extends StateNotifier<ProxyConnectionState> {
-  ConnectionNotifier() : super(const ProxyConnectionState());
+  ConnectionNotifier(this._ref) : super(const ProxyConnectionState());
 
+  final Ref _ref;
   Timer? _statsTimer;
 
   /// 开始连接
-  Future<void> connect(String nodeName) async {
+  Future<void> connect(String serverId) async {
     try {
-      appLogger.info('Connecting to node: $nodeName');
+      appLogger.info('Connecting to server: $serverId');
+
+      // 1. 从数据库获取服务器配置（先获取以便显示节点名称）
+      final serverConfig = await api.getServerConfig(serverId: serverId);
+      appLogger.info('Retrieved server config: ${serverConfig.name}');
 
       state = state.copyWith(
         status: ConnectionStatus.connecting,
-        nodeName: nodeName,
+        nodeName: serverConfig.name,  // 使用服务器名称而不是 ID
         errorMessage: null,
       );
 
-      // 调用 Rust FFI 连接函数
-      await api.connect(configId: nodeName);
+      // 2. 获取当前代理模式
+      final proxyMode = _ref.read(proxyModeProvider);
+      final modeString = _proxyModeToString(proxyMode);
+      appLogger.info('Setting proxy mode: $modeString');
+      await api.setProxyMode(mode: modeString);
+
+      // 3. 缓存配置到连接管理器
+      await api.cacheProxyConfig(configId: serverId, config: serverConfig);
+      appLogger.info('Config cached for server: $serverId');
+
+      // 4. 调用 Rust FFI 连接函数
+      await api.connect(configId: serverId);
 
       state = state.copyWith(
         status: ConnectionStatus.connected,
         connectedDuration: Duration.zero,
       );
 
+      // 5. 自动启用系统代理
+      try {
+        appLogger.info('Auto-enabling system proxy...');
+        await _ref.read(systemProxyProvider.notifier).enableSystemProxy();
+        appLogger.info('System proxy enabled automatically');
+      } catch (e) {
+        appLogger.warning('Failed to enable system proxy automatically: $e');
+        // 不影响连接状态，只记录警告
+      }
+
       // 启动统计数据定时更新
       _startStatsTimer();
 
-      appLogger.info('Connected to node: $nodeName');
+      appLogger.info('Connected to server: $serverId');
     } catch (e, stackTrace) {
       appLogger.error('Failed to connect', e, stackTrace);
 
@@ -134,6 +161,18 @@ class ConnectionNotifier extends StateNotifier<ProxyConnectionState> {
         status: ConnectionStatus.error,
         errorMessage: e.toString(),
       );
+    }
+  }
+
+  /// 将代理模式转换为字符串
+  String _proxyModeToString(ProxyMode mode) {
+    switch (mode) {
+      case ProxyMode.global:
+        return 'global';
+      case ProxyMode.smart:
+        return 'smart';
+      case ProxyMode.direct:
+        return 'direct';
     }
   }
 
@@ -151,6 +190,16 @@ class ConnectionNotifier extends StateNotifier<ProxyConnectionState> {
 
       // 调用 Rust FFI 断开函数
       await api.disconnect();
+
+      // 自动禁用系统代理
+      try {
+        appLogger.info('Auto-disabling system proxy...');
+        await _ref.read(systemProxyProvider.notifier).disableSystemProxy();
+        appLogger.info('System proxy disabled automatically');
+      } catch (e) {
+        appLogger.warning('Failed to disable system proxy automatically: $e');
+        // 不影响断开状态，只记录警告
+      }
 
       state = const ProxyConnectionState(
         status: ConnectionStatus.disconnected,

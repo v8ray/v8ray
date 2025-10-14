@@ -6,13 +6,47 @@ use std::sync::Arc;
 use std::time::Instant;
 use tokio::sync::RwLock;
 
-use super::api::{ConnectionInfo, ConnectionStatus};
-use crate::config::ProxyServerConfig;
+use super::api::{ConnectionInfo, ConnectionStatus, ProxyServerConfig};
+use crate::config::{ProxyProtocol, ProxyServerConfig as CoreProxyServerConfig};
 use crate::connection::ConnectionManager as CoreConnectionManager;
+use chrono::Utc;
 
 lazy_static::lazy_static! {
     static ref CONNECTION_MANAGER: Arc<RwLock<BridgeConnectionManager>> =
         Arc::new(RwLock::new(BridgeConnectionManager::new()));
+
+    static ref TOKIO_RUNTIME: tokio::runtime::Runtime = {
+        tokio::runtime::Builder::new_multi_thread()
+            .enable_all()
+            .build()
+            .expect("Failed to create Tokio runtime")
+    };
+}
+
+/// 将简化配置转换为核心配置
+fn convert_to_core_config(config: &ProxyServerConfig) -> CoreProxyServerConfig {
+    let protocol = match config.protocol.as_str() {
+        "vless" => ProxyProtocol::Vless,
+        "vmess" => ProxyProtocol::Vmess,
+        "trojan" => ProxyProtocol::Trojan,
+        "shadowsocks" => ProxyProtocol::Shadowsocks,
+        "socks" => ProxyProtocol::Socks,
+        "http" => ProxyProtocol::Http,
+        _ => ProxyProtocol::Vless, // 默认值
+    };
+
+    CoreProxyServerConfig {
+        id: config.id.clone(),
+        name: config.name.clone(),
+        server: config.address.clone(),
+        port: config.port,
+        protocol,
+        settings: config.settings.clone(),
+        stream_settings: None, // 简化版本不包含流设置
+        tags: config.tags.clone(),
+        created_at: Utc::now(),
+        updated_at: Utc::now(),
+    }
 }
 
 /// Bridge 连接管理器
@@ -20,6 +54,7 @@ struct BridgeConnectionManager {
     core_manager: Arc<CoreConnectionManager>,
     config_cache: HashMap<String, ProxyServerConfig>,
     connected_at: Option<Instant>,
+    proxy_mode: String, // "global", "smart", or "direct"
 }
 
 impl BridgeConnectionManager {
@@ -28,6 +63,7 @@ impl BridgeConnectionManager {
             core_manager: Arc::new(CoreConnectionManager::new()),
             config_cache: HashMap::new(),
             connected_at: None,
+            proxy_mode: "smart".to_string(), // Default to smart mode
         }
     }
 
@@ -36,15 +72,28 @@ impl BridgeConnectionManager {
         let config = self
             .config_cache
             .get(config_id)
-            .ok_or_else(|| anyhow!("Config not found: {}", config_id))?
-            .clone();
+            .ok_or_else(|| anyhow!("Config not found: {}", config_id))?;
 
-        // 使用核心管理器连接
-        self.core_manager.connect_with_config(config).await?;
+        // 转换为核心配置
+        let core_config = convert_to_core_config(config);
+
+        // 使用核心管理器连接，传递代理模式
+        self.core_manager
+            .connect_with_config_and_mode(core_config, &self.proxy_mode)
+            .await?;
         self.connected_at = Some(Instant::now());
 
-        tracing::info!("Connected to config: {}", config_id);
+        tracing::info!(
+            "Connected to config: {} with mode: {}",
+            config_id,
+            self.proxy_mode
+        );
         Ok(())
+    }
+
+    fn set_proxy_mode(&mut self, mode: String) {
+        self.proxy_mode = mode;
+        tracing::info!("Proxy mode set to: {}", self.proxy_mode);
     }
 
     async fn disconnect(&mut self) -> Result<()> {
@@ -114,6 +163,13 @@ pub fn shutdown() -> Result<()> {
     })
 }
 
+/// 设置代理模式
+pub fn set_proxy_mode(mode: String) -> Result<()> {
+    let mut manager = CONNECTION_MANAGER.blocking_write();
+    manager.set_proxy_mode(mode);
+    Ok(())
+}
+
 /// 缓存配置（在连接前调用）
 pub fn cache_proxy_config(config_id: String, config: ProxyServerConfig) -> Result<()> {
     let mut manager = CONNECTION_MANAGER.blocking_write();
@@ -123,7 +179,7 @@ pub fn cache_proxy_config(config_id: String, config: ProxyServerConfig) -> Resul
 
 /// 连接到服务器
 pub fn connect(config_id: &str) -> Result<()> {
-    tokio::runtime::Runtime::new()?.block_on(async {
+    TOKIO_RUNTIME.block_on(async {
         let mut manager = CONNECTION_MANAGER.write().await;
         manager.connect(config_id).await
     })
@@ -131,7 +187,7 @@ pub fn connect(config_id: &str) -> Result<()> {
 
 /// 断开连接
 pub fn disconnect() -> Result<()> {
-    tokio::runtime::Runtime::new()?.block_on(async {
+    TOKIO_RUNTIME.block_on(async {
         let mut manager = CONNECTION_MANAGER.write().await;
         manager.disconnect().await
     })
@@ -139,7 +195,7 @@ pub fn disconnect() -> Result<()> {
 
 /// 获取连接信息
 pub fn get_connection_info() -> Result<ConnectionInfo> {
-    tokio::runtime::Runtime::new()?.block_on(async {
+    TOKIO_RUNTIME.block_on(async {
         let manager = CONNECTION_MANAGER.read().await;
         Ok(manager.get_info().await)
     })

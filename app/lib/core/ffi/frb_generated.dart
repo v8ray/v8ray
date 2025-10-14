@@ -9,13 +9,15 @@ import 'dart:convert';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 import 'bridge/api.dart';
-import 'config.dart';
 import 'frb_generated.dart';
-import 'frb_generated.io.dart' if (dart.library.js_interop) 'frb_generated.web.dart';
+import 'frb_generated.io.dart'
+    if (dart.library.js_interop) 'frb_generated.web.dart';
 import 'lib.dart';
+import 'platform.dart';
 
 /// Main entrypoint of the Rust API
-class V8RayBridge extends BaseEntrypoint<V8RayBridgeApi, V8RayBridgeApiImpl, V8RayBridgeWire> {
+class V8RayBridge extends BaseEntrypoint<V8RayBridgeApi, V8RayBridgeApiImpl,
+    V8RayBridgeWire> {
   V8RayBridge._();
   @internal
   static final V8RayBridge instance = V8RayBridge._();
@@ -52,24 +54,28 @@ class V8RayBridge extends BaseEntrypoint<V8RayBridgeApi, V8RayBridgeApiImpl, V8R
   static void dispose() => instance.disposeImpl();
 
   @override
-  ApiImplConstructor<V8RayBridgeApiImpl, V8RayBridgeWire> get apiImplConstructor => V8RayBridgeApiImpl.new;
+  ApiImplConstructor<V8RayBridgeApiImpl, V8RayBridgeWire>
+      get apiImplConstructor => V8RayBridgeApiImpl.new;
 
   @override
-  WireConstructor<V8RayBridgeWire> get wireConstructor => V8RayBridgeWire.fromExternalLibrary;
+  WireConstructor<V8RayBridgeWire> get wireConstructor =>
+      V8RayBridgeWire.fromExternalLibrary;
 
   @override
   Future<void> executeRustInitializers() async {}
 
   @override
-  ExternalLibraryLoaderConfig get defaultExternalLibraryLoaderConfig => kDefaultExternalLibraryLoaderConfig;
+  ExternalLibraryLoaderConfig get defaultExternalLibraryLoaderConfig =>
+      kDefaultExternalLibraryLoaderConfig;
 
   @override
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -1770232759;
+  int get rustContentHash => 1507415328;
 
-  static const ExternalLibraryLoaderConfig kDefaultExternalLibraryLoaderConfig = ExternalLibraryLoaderConfig(
+  static const ExternalLibraryLoaderConfig kDefaultExternalLibraryLoaderConfig =
+      ExternalLibraryLoaderConfig(
     stem: 'v8ray_core',
     ioDirectory: '../core/target/release/',
     webPrefix: 'pkg/',
@@ -77,9 +83,13 @@ class V8RayBridge extends BaseEntrypoint<V8RayBridgeApi, V8RayBridgeApiImpl, V8R
 }
 
 abstract class V8RayBridgeApi extends BaseApi {
-  Future<String> crateBridgeApiAddSubscription({required String name, required String url});
+  Future<String> crateBridgeApiAddSubscription(
+      {required String name, required String url});
 
-  Future<void> crateBridgeApiCacheProxyConfig({required String configId, required ProxyServerConfig config});
+  Future<void> crateBridgeApiCacheProxyConfig(
+      {required String configId, required ProxyServerConfig config});
+
+  void crateBridgeApiClearSystemProxy();
 
   Future<void> crateBridgeApiConnect({required String configId});
 
@@ -89,17 +99,27 @@ abstract class V8RayBridgeApi extends BaseApi {
 
   Future<ConnectionInfo> crateBridgeApiGetConnectionInfo();
 
+  PlatformInfo crateBridgeApiGetPlatformInfo();
+
+  Future<ProxyServerConfig> crateBridgeApiGetServerConfig(
+      {required String serverId});
+
   Future<List<ServerInfo>> crateBridgeApiGetServers();
 
-  Future<List<ServerInfo>> crateBridgeApiGetServersForSubscription({required String subscriptionId});
+  Future<List<ServerInfo>> crateBridgeApiGetServersForSubscription(
+      {required String subscriptionId});
 
   Future<List<SubscriptionInfo>> crateBridgeApiGetSubscriptions();
 
   Future<TrafficStats> crateBridgeApiGetTrafficStats();
 
+  bool crateBridgeApiHasAdminPrivileges();
+
   Future<void> crateBridgeApiInitSubscriptionManager({required String dbPath});
 
   Future<void> crateBridgeApiInitV8Ray();
+
+  bool crateBridgeApiIsSystemProxySet();
 
   Future<List<ConfigInfo>> crateBridgeApiListConfigs();
 
@@ -112,6 +132,11 @@ abstract class V8RayBridgeApi extends BaseApi {
   Future<void> crateBridgeApiResetTrafficStats();
 
   Future<void> crateBridgeApiSaveConfig({required ConfigInfo config});
+
+  Future<void> crateBridgeApiSetProxyMode({required String mode});
+
+  void crateBridgeApiSetSystemProxy(
+      {required int httpPort, required int socksPort});
 
   Future<void> crateBridgeApiShutdownV8Ray();
 
@@ -130,7 +155,8 @@ abstract class V8RayBridgeApi extends BaseApi {
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_ValuePtr;
 }
 
-class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBridgeApi {
+class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform
+    implements V8RayBridgeApi {
   V8RayBridgeApiImpl({
     required super.handler,
     required super.wire,
@@ -139,13 +165,17 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   });
 
   @override
-  Future<String> crateBridgeApiAddSubscription({required String name, required String url}) => handler.executeNormal(
+  Future<String> crateBridgeApiAddSubscription(
+          {required String name, required String url}) =>
+      handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
             sse_encode_String(name, serializer);
             sse_encode_String(url, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1, port: port_);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 1, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_String,
@@ -157,20 +187,24 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
         ),
       );
 
-  TaskConstMeta get kCrateBridgeApiAddSubscriptionConstMeta => const TaskConstMeta(
+  TaskConstMeta get kCrateBridgeApiAddSubscriptionConstMeta =>
+      const TaskConstMeta(
         debugName: 'add_subscription',
         argNames: <String>['name', 'url'],
       );
 
   @override
-  Future<void> crateBridgeApiCacheProxyConfig({required String configId, required ProxyServerConfig config}) =>
+  Future<void> crateBridgeApiCacheProxyConfig(
+          {required String configId, required ProxyServerConfig config}) =>
       handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
             sse_encode_String(configId, serializer);
             sse_encode_box_autoadd_proxy_server_config(config, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2, port: port_);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 2, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_unit,
@@ -182,18 +216,47 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
         ),
       );
 
-  TaskConstMeta get kCrateBridgeApiCacheProxyConfigConstMeta => const TaskConstMeta(
+  TaskConstMeta get kCrateBridgeApiCacheProxyConfigConstMeta =>
+      const TaskConstMeta(
         debugName: 'cache_proxy_config',
         argNames: <String>['configId', 'config'],
       );
 
   @override
-  Future<void> crateBridgeApiConnect({required String configId}) => handler.executeNormal(
+  void crateBridgeApiClearSystemProxy() => handler.executeSync(
+        SyncTask(
+          callFfi: () {
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
+            return pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 3)!;
+          },
+          codec: SseCodec(
+            decodeSuccessData: sse_decode_unit,
+            decodeErrorData: sse_decode_String,
+          ),
+          constMeta: kCrateBridgeApiClearSystemProxyConstMeta,
+          argValues: <dynamic>[],
+          apiImpl: this,
+        ),
+      );
+
+  TaskConstMeta get kCrateBridgeApiClearSystemProxyConstMeta =>
+      const TaskConstMeta(
+        debugName: 'clear_system_proxy',
+        argNames: <String>[],
+      );
+
+  @override
+  Future<void> crateBridgeApiConnect({required String configId}) =>
+      handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
             sse_encode_String(configId, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3, port: port_);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 4, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_unit,
@@ -211,12 +274,15 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
       );
 
   @override
-  Future<void> crateBridgeApiDeleteConfig({required String configId}) => handler.executeNormal(
+  Future<void> crateBridgeApiDeleteConfig({required String configId}) =>
+      handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
             sse_encode_String(configId, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4, port: port_);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 5, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_unit,
@@ -237,8 +303,10 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   Future<void> crateBridgeApiDisconnect() => handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5, port: port_);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 6, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_unit,
@@ -256,11 +324,14 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
       );
 
   @override
-  Future<ConnectionInfo> crateBridgeApiGetConnectionInfo() => handler.executeNormal(
+  Future<ConnectionInfo> crateBridgeApiGetConnectionInfo() =>
+      handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 6, port: port_);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 7, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_connection_info,
@@ -272,17 +343,73 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
         ),
       );
 
-  TaskConstMeta get kCrateBridgeApiGetConnectionInfoConstMeta => const TaskConstMeta(
+  TaskConstMeta get kCrateBridgeApiGetConnectionInfoConstMeta =>
+      const TaskConstMeta(
         debugName: 'get_connection_info',
         argNames: <String>[],
+      );
+
+  @override
+  PlatformInfo crateBridgeApiGetPlatformInfo() => handler.executeSync(
+        SyncTask(
+          callFfi: () {
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
+            return pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 8)!;
+          },
+          codec: SseCodec(
+            decodeSuccessData: sse_decode_platform_info,
+            decodeErrorData: null,
+          ),
+          constMeta: kCrateBridgeApiGetPlatformInfoConstMeta,
+          argValues: <dynamic>[],
+          apiImpl: this,
+        ),
+      );
+
+  TaskConstMeta get kCrateBridgeApiGetPlatformInfoConstMeta =>
+      const TaskConstMeta(
+        debugName: 'get_platform_info',
+        argNames: <String>[],
+      );
+
+  @override
+  Future<ProxyServerConfig> crateBridgeApiGetServerConfig(
+          {required String serverId}) =>
+      handler.executeNormal(
+        NormalTask(
+          callFfi: (NativePortType port_) {
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
+            sse_encode_String(serverId, serializer);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 9, port: port_);
+          },
+          codec: SseCodec(
+            decodeSuccessData: sse_decode_proxy_server_config,
+            decodeErrorData: sse_decode_AnyhowException,
+          ),
+          constMeta: kCrateBridgeApiGetServerConfigConstMeta,
+          argValues: <dynamic>[serverId],
+          apiImpl: this,
+        ),
+      );
+
+  TaskConstMeta get kCrateBridgeApiGetServerConfigConstMeta =>
+      const TaskConstMeta(
+        debugName: 'get_server_config',
+        argNames: <String>['serverId'],
       );
 
   @override
   Future<List<ServerInfo>> crateBridgeApiGetServers() => handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 7, port: port_);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 10, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_list_server_info,
@@ -300,13 +427,16 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
       );
 
   @override
-  Future<List<ServerInfo>> crateBridgeApiGetServersForSubscription({required String subscriptionId}) =>
+  Future<List<ServerInfo>> crateBridgeApiGetServersForSubscription(
+          {required String subscriptionId}) =>
       handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
             sse_encode_String(subscriptionId, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 8, port: port_);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 11, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_list_server_info,
@@ -318,17 +448,21 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
         ),
       );
 
-  TaskConstMeta get kCrateBridgeApiGetServersForSubscriptionConstMeta => const TaskConstMeta(
+  TaskConstMeta get kCrateBridgeApiGetServersForSubscriptionConstMeta =>
+      const TaskConstMeta(
         debugName: 'get_servers_for_subscription',
         argNames: <String>['subscriptionId'],
       );
 
   @override
-  Future<List<SubscriptionInfo>> crateBridgeApiGetSubscriptions() => handler.executeNormal(
+  Future<List<SubscriptionInfo>> crateBridgeApiGetSubscriptions() =>
+      handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 9, port: port_);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 12, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_list_subscription_info,
@@ -340,7 +474,8 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
         ),
       );
 
-  TaskConstMeta get kCrateBridgeApiGetSubscriptionsConstMeta => const TaskConstMeta(
+  TaskConstMeta get kCrateBridgeApiGetSubscriptionsConstMeta =>
+      const TaskConstMeta(
         debugName: 'get_subscriptions',
         argNames: <String>[],
       );
@@ -349,8 +484,10 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   Future<TrafficStats> crateBridgeApiGetTrafficStats() => handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 10, port: port_);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 13, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_traffic_stats,
@@ -362,18 +499,48 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
         ),
       );
 
-  TaskConstMeta get kCrateBridgeApiGetTrafficStatsConstMeta => const TaskConstMeta(
+  TaskConstMeta get kCrateBridgeApiGetTrafficStatsConstMeta =>
+      const TaskConstMeta(
         debugName: 'get_traffic_stats',
         argNames: <String>[],
       );
 
   @override
-  Future<void> crateBridgeApiInitSubscriptionManager({required String dbPath}) => handler.executeNormal(
+  bool crateBridgeApiHasAdminPrivileges() => handler.executeSync(
+        SyncTask(
+          callFfi: () {
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
+            return pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 14)!;
+          },
+          codec: SseCodec(
+            decodeSuccessData: sse_decode_bool,
+            decodeErrorData: sse_decode_String,
+          ),
+          constMeta: kCrateBridgeApiHasAdminPrivilegesConstMeta,
+          argValues: <dynamic>[],
+          apiImpl: this,
+        ),
+      );
+
+  TaskConstMeta get kCrateBridgeApiHasAdminPrivilegesConstMeta =>
+      const TaskConstMeta(
+        debugName: 'has_admin_privileges',
+        argNames: <String>[],
+      );
+
+  @override
+  Future<void> crateBridgeApiInitSubscriptionManager(
+          {required String dbPath}) =>
+      handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
             sse_encode_String(dbPath, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11, port: port_);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 15, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_unit,
@@ -385,7 +552,8 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
         ),
       );
 
-  TaskConstMeta get kCrateBridgeApiInitSubscriptionManagerConstMeta => const TaskConstMeta(
+  TaskConstMeta get kCrateBridgeApiInitSubscriptionManagerConstMeta =>
+      const TaskConstMeta(
         debugName: 'init_subscription_manager',
         argNames: <String>['dbPath'],
       );
@@ -394,8 +562,10 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   Future<void> crateBridgeApiInitV8Ray() => handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 12, port: port_);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 16, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_unit,
@@ -413,11 +583,38 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
       );
 
   @override
+  bool crateBridgeApiIsSystemProxySet() => handler.executeSync(
+        SyncTask(
+          callFfi: () {
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
+            return pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 17)!;
+          },
+          codec: SseCodec(
+            decodeSuccessData: sse_decode_bool,
+            decodeErrorData: sse_decode_String,
+          ),
+          constMeta: kCrateBridgeApiIsSystemProxySetConstMeta,
+          argValues: <dynamic>[],
+          apiImpl: this,
+        ),
+      );
+
+  TaskConstMeta get kCrateBridgeApiIsSystemProxySetConstMeta =>
+      const TaskConstMeta(
+        debugName: 'is_system_proxy_set',
+        argNames: <String>[],
+      );
+
+  @override
   Future<List<ConfigInfo>> crateBridgeApiListConfigs() => handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 13, port: port_);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 18, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_list_config_info,
@@ -435,12 +632,15 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
       );
 
   @override
-  Future<ConfigInfo> crateBridgeApiLoadConfig({required String configId}) => handler.executeNormal(
+  Future<ConfigInfo> crateBridgeApiLoadConfig({required String configId}) =>
+      handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
             sse_encode_String(configId, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 14, port: port_);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 19, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_config_info,
@@ -458,11 +658,14 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
       );
 
   @override
-  Future<void> crateBridgeApiLoadSubscriptionsFromStorage() => handler.executeNormal(
+  Future<void> crateBridgeApiLoadSubscriptionsFromStorage() =>
+      handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 15, port: port_);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 20, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_unit,
@@ -474,18 +677,22 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
         ),
       );
 
-  TaskConstMeta get kCrateBridgeApiLoadSubscriptionsFromStorageConstMeta => const TaskConstMeta(
+  TaskConstMeta get kCrateBridgeApiLoadSubscriptionsFromStorageConstMeta =>
+      const TaskConstMeta(
         debugName: 'load_subscriptions_from_storage',
         argNames: <String>[],
       );
 
   @override
-  Future<void> crateBridgeApiRemoveSubscription({required String id}) => handler.executeNormal(
+  Future<void> crateBridgeApiRemoveSubscription({required String id}) =>
+      handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
             sse_encode_String(id, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 16, port: port_);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 21, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_unit,
@@ -497,7 +704,8 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
         ),
       );
 
-  TaskConstMeta get kCrateBridgeApiRemoveSubscriptionConstMeta => const TaskConstMeta(
+  TaskConstMeta get kCrateBridgeApiRemoveSubscriptionConstMeta =>
+      const TaskConstMeta(
         debugName: 'remove_subscription',
         argNames: <String>['id'],
       );
@@ -506,8 +714,10 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   Future<void> crateBridgeApiResetTrafficStats() => handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 17, port: port_);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 22, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_unit,
@@ -519,18 +729,22 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
         ),
       );
 
-  TaskConstMeta get kCrateBridgeApiResetTrafficStatsConstMeta => const TaskConstMeta(
+  TaskConstMeta get kCrateBridgeApiResetTrafficStatsConstMeta =>
+      const TaskConstMeta(
         debugName: 'reset_traffic_stats',
         argNames: <String>[],
       );
 
   @override
-  Future<void> crateBridgeApiSaveConfig({required ConfigInfo config}) => handler.executeNormal(
+  Future<void> crateBridgeApiSaveConfig({required ConfigInfo config}) =>
+      handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
             sse_encode_box_autoadd_config_info(config, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 18, port: port_);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 23, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_unit,
@@ -548,11 +762,68 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
       );
 
   @override
+  Future<void> crateBridgeApiSetProxyMode({required String mode}) =>
+      handler.executeNormal(
+        NormalTask(
+          callFfi: (NativePortType port_) {
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
+            sse_encode_String(mode, serializer);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 24, port: port_);
+          },
+          codec: SseCodec(
+            decodeSuccessData: sse_decode_unit,
+            decodeErrorData: sse_decode_AnyhowException,
+          ),
+          constMeta: kCrateBridgeApiSetProxyModeConstMeta,
+          argValues: <dynamic>[mode],
+          apiImpl: this,
+        ),
+      );
+
+  TaskConstMeta get kCrateBridgeApiSetProxyModeConstMeta => const TaskConstMeta(
+        debugName: 'set_proxy_mode',
+        argNames: <String>['mode'],
+      );
+
+  @override
+  void crateBridgeApiSetSystemProxy(
+          {required int httpPort, required int socksPort}) =>
+      handler.executeSync(
+        SyncTask(
+          callFfi: () {
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
+            sse_encode_u_16(httpPort, serializer);
+            sse_encode_u_16(socksPort, serializer);
+            return pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 25)!;
+          },
+          codec: SseCodec(
+            decodeSuccessData: sse_decode_unit,
+            decodeErrorData: sse_decode_String,
+          ),
+          constMeta: kCrateBridgeApiSetSystemProxyConstMeta,
+          argValues: <dynamic>[httpPort, socksPort],
+          apiImpl: this,
+        ),
+      );
+
+  TaskConstMeta get kCrateBridgeApiSetSystemProxyConstMeta =>
+      const TaskConstMeta(
+        debugName: 'set_system_proxy',
+        argNames: <String>['httpPort', 'socksPort'],
+      );
+
+  @override
   Future<void> crateBridgeApiShutdownV8Ray() => handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 19, port: port_);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 26, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_unit,
@@ -564,18 +835,22 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
         ),
       );
 
-  TaskConstMeta get kCrateBridgeApiShutdownV8RayConstMeta => const TaskConstMeta(
+  TaskConstMeta get kCrateBridgeApiShutdownV8RayConstMeta =>
+      const TaskConstMeta(
         debugName: 'shutdown_v8ray',
         argNames: <String>[],
       );
 
   @override
-  Future<int> crateBridgeApiTestLatency({required String configId}) => handler.executeNormal(
+  Future<int> crateBridgeApiTestLatency({required String configId}) =>
+      handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
             sse_encode_String(configId, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 20, port: port_);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 27, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_u_32,
@@ -596,8 +871,10 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   Future<void> crateBridgeApiUpdateAllSubscriptions() => handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 21, port: port_);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 28, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_unit,
@@ -609,18 +886,22 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
         ),
       );
 
-  TaskConstMeta get kCrateBridgeApiUpdateAllSubscriptionsConstMeta => const TaskConstMeta(
+  TaskConstMeta get kCrateBridgeApiUpdateAllSubscriptionsConstMeta =>
+      const TaskConstMeta(
         debugName: 'update_all_subscriptions',
         argNames: <String>[],
       );
 
   @override
-  Future<void> crateBridgeApiUpdateSubscription({required String id}) => handler.executeNormal(
+  Future<void> crateBridgeApiUpdateSubscription({required String id}) =>
+      handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
             sse_encode_String(id, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 22, port: port_);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 29, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_unit,
@@ -632,18 +913,22 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
         ),
       );
 
-  TaskConstMeta get kCrateBridgeApiUpdateSubscriptionConstMeta => const TaskConstMeta(
+  TaskConstMeta get kCrateBridgeApiUpdateSubscriptionConstMeta =>
+      const TaskConstMeta(
         debugName: 'update_subscription',
         argNames: <String>['id'],
       );
 
   @override
-  Future<bool> crateBridgeApiValidateConfig({required ConfigInfo config}) => handler.executeNormal(
+  Future<bool> crateBridgeApiValidateConfig({required ConfigInfo config}) =>
+      handler.executeNormal(
         NormalTask(
           callFfi: (NativePortType port_) {
-            final SseSerializer serializer = SseSerializer(generalizedFrbRustBinding);
+            final SseSerializer serializer =
+                SseSerializer(generalizedFrbRustBinding);
             sse_encode_box_autoadd_config_info(config, serializer);
-            pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 23, port: port_);
+            pdeCallFfi(generalizedFrbRustBinding, serializer,
+                funcId: 30, port: port_);
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_bool,
@@ -655,7 +940,8 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
         ),
       );
 
-  TaskConstMeta get kCrateBridgeApiValidateConfigConstMeta => const TaskConstMeta(
+  TaskConstMeta get kCrateBridgeApiValidateConfigConstMeta =>
+      const TaskConstMeta(
         debugName: 'validate_config',
         argNames: <String>['config'],
       );
@@ -673,20 +959,17 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  Value dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(raw) {
+  Value
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+          raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return ValueImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
-  DateTime dco_decode_Chrono_Utc(raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dcoDecodeTimestamp(ts: dco_decode_i_64(raw).toInt(), isUtc: true);
-  }
-
-  @protected
   Map<String, Value>
-      dco_decode_Map_String_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue_None(raw) {
+      dco_decode_Map_String_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue_None(
+          raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return Map.fromEntries(
         dco_decode_list_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
@@ -695,13 +978,9 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  Map<String, String> dco_decode_Map_String_String_None(raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return Map.fromEntries(dco_decode_list_record_string_string(raw).map(((String, String) e) => MapEntry(e.$1, e.$2)));
-  }
-
-  @protected
-  Value dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(raw) {
+  Value
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+          raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return ValueImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
@@ -719,21 +998,9 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  Value dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(raw);
-  }
-
-  @protected
   ConfigInfo dco_decode_box_autoadd_config_info(raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_config_info(raw);
-  }
-
-  @protected
-  GrpcSettings dco_decode_box_autoadd_grpc_settings(raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_grpc_settings(raw);
   }
 
   @protected
@@ -749,34 +1016,17 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  StreamSettings dco_decode_box_autoadd_stream_settings(raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_stream_settings(raw);
-  }
-
-  @protected
-  TlsSettings dco_decode_box_autoadd_tls_settings(raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_tls_settings(raw);
-  }
-
-  @protected
   int dco_decode_box_autoadd_u_32(raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
   }
 
   @protected
-  WsSettings dco_decode_box_autoadd_ws_settings(raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_ws_settings(raw);
-  }
-
-  @protected
   ConfigInfo dco_decode_config_info(raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    final List arr = raw as List<dynamic>;
-    if (arr.length != 8) throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
+    final List<dynamic> arr = raw as List<dynamic>;
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
     return ConfigInfo(
       id: dco_decode_String(arr[0]),
       name: dco_decode_String(arr[1]),
@@ -792,8 +1042,9 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   @protected
   ConnectionInfo dco_decode_connection_info(raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    final List arr = raw as List<dynamic>;
-    if (arr.length != 6) throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    final List<dynamic> arr = raw as List<dynamic>;
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
     return ConnectionInfo(
       status: dco_decode_connection_status(arr[0]),
       serverAddress: dco_decode_opt_String(arr[1]),
@@ -808,17 +1059,6 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   ConnectionStatus dco_decode_connection_status(raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return ConnectionStatus.values[raw as int];
-  }
-
-  @protected
-  GrpcSettings dco_decode_grpc_settings(raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final List arr = raw as List<dynamic>;
-    if (arr.length != 2) throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-    return GrpcSettings(
-      serviceName: dco_decode_String(arr[0]),
-      multiMode: dco_decode_bool(arr[1]),
-    );
   }
 
   @protected
@@ -863,12 +1103,6 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  List<(String, String)> dco_decode_list_record_string_string(raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>).map(dco_decode_record_string_string).toList();
-  }
-
-  @protected
   List<ServerInfo> dco_decode_list_server_info(raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_server_info).toList();
@@ -887,36 +1121,9 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  Value? dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-      raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw == null
-        ? null
-        : dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(raw);
-  }
-
-  @protected
-  GrpcSettings? dco_decode_opt_box_autoadd_grpc_settings(raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw == null ? null : dco_decode_box_autoadd_grpc_settings(raw);
-  }
-
-  @protected
   PlatformInt64? dco_decode_opt_box_autoadd_i_64(raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_box_autoadd_i_64(raw);
-  }
-
-  @protected
-  StreamSettings? dco_decode_opt_box_autoadd_stream_settings(raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw == null ? null : dco_decode_box_autoadd_stream_settings(raw);
-  }
-
-  @protected
-  TlsSettings? dco_decode_opt_box_autoadd_tls_settings(raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw == null ? null : dco_decode_box_autoadd_tls_settings(raw);
   }
 
   @protected
@@ -926,35 +1133,49 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  WsSettings? dco_decode_opt_box_autoadd_ws_settings(raw) {
+  PlatformCapabilities dco_decode_platform_capabilities(raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw == null ? null : dco_decode_box_autoadd_ws_settings(raw);
+    final List<dynamic> arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return PlatformCapabilities(
+      systemProxy: dco_decode_bool(arr[0]),
+      vpnMode: dco_decode_bool(arr[1]),
+      tunMode: dco_decode_bool(arr[2]),
+      autoStart: dco_decode_bool(arr[3]),
+    );
   }
 
   @protected
-  ProxyProtocol dco_decode_proxy_protocol(raw) {
+  PlatformInfo dco_decode_platform_info(raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return ProxyProtocol.values[raw as int];
+    final List<dynamic> arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return PlatformInfo(
+      os: dco_decode_String(arr[0]),
+      arch: dco_decode_String(arr[1]),
+      version: dco_decode_String(arr[2]),
+      capabilities: dco_decode_platform_capabilities(arr[3]),
+    );
   }
 
   @protected
   ProxyServerConfig dco_decode_proxy_server_config(raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    final List arr = raw as List<dynamic>;
-    if (arr.length != 10) throw Exception('unexpected arr length: expect 10 but see ${arr.length}');
+    final List<dynamic> arr = raw as List<dynamic>;
+    if (arr.length != 7)
+      throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
     return ProxyServerConfig(
       id: dco_decode_String(arr[0]),
       name: dco_decode_String(arr[1]),
-      server: dco_decode_String(arr[2]),
+      address: dco_decode_String(arr[2]),
       port: dco_decode_u_16(arr[3]),
-      protocol: dco_decode_proxy_protocol(arr[4]),
+      protocol: dco_decode_String(arr[4]),
       settings:
           dco_decode_Map_String_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue_None(
               arr[5]),
-      streamSettings: dco_decode_opt_box_autoadd_stream_settings(arr[6]),
-      tags: dco_decode_list_String(arr[7]),
-      createdAt: dco_decode_Chrono_Utc(arr[8]),
-      updatedAt: dco_decode_Chrono_Utc(arr[9]),
+      tags: dco_decode_list_String(arr[6]),
     );
   }
 
@@ -962,36 +1183,26 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   (
     String,
     Value
-  ) dco_decode_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(raw) {
+  ) dco_decode_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
+      raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    final List arr = raw as List<dynamic>;
+    final List<dynamic> arr = raw as List<dynamic>;
     if (arr.length != 2) {
       throw Exception('Expected 2 elements, got ${arr.length}');
     }
     return (
       dco_decode_String(arr[0]),
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(arr[1]),
-    );
-  }
-
-  @protected
-  (String, String) dco_decode_record_string_string(raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final List arr = raw as List<dynamic>;
-    if (arr.length != 2) {
-      throw Exception('Expected 2 elements, got ${arr.length}');
-    }
-    return (
-      dco_decode_String(arr[0]),
-      dco_decode_String(arr[1]),
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+          arr[1]),
     );
   }
 
   @protected
   ServerInfo dco_decode_server_info(raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    final List arr = raw as List<dynamic>;
-    if (arr.length != 6) throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    final List<dynamic> arr = raw as List<dynamic>;
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
     return ServerInfo(
       id: dco_decode_String(arr[0]),
       subscriptionId: dco_decode_String(arr[1]),
@@ -1003,33 +1214,11 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  StreamSettings dco_decode_stream_settings(raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final List arr = raw as List<dynamic>;
-    if (arr.length != 8) throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
-    return StreamSettings(
-      network: dco_decode_String(arr[0]),
-      security: dco_decode_String(arr[1]),
-      tlsSettings: dco_decode_opt_box_autoadd_tls_settings(arr[2]),
-      tcpSettings:
-          dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-              arr[3]),
-      wsSettings: dco_decode_opt_box_autoadd_ws_settings(arr[4]),
-      httpSettings:
-          dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-              arr[5]),
-      quicSettings:
-          dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-              arr[6]),
-      grpcSettings: dco_decode_opt_box_autoadd_grpc_settings(arr[7]),
-    );
-  }
-
-  @protected
   SubscriptionInfo dco_decode_subscription_info(raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    final List arr = raw as List<dynamic>;
-    if (arr.length != 6) throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    final List<dynamic> arr = raw as List<dynamic>;
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
     return SubscriptionInfo(
       id: dco_decode_String(arr[0]),
       name: dco_decode_String(arr[1]),
@@ -1041,23 +1230,11 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  TlsSettings dco_decode_tls_settings(raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final List arr = raw as List<dynamic>;
-    if (arr.length != 4) throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
-    return TlsSettings(
-      serverName: dco_decode_opt_String(arr[0]),
-      allowInsecure: dco_decode_bool(arr[1]),
-      alpn: dco_decode_list_String(arr[2]),
-      fingerprint: dco_decode_opt_String(arr[3]),
-    );
-  }
-
-  @protected
   TrafficStats dco_decode_traffic_stats(raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    final List arr = raw as List<dynamic>;
-    if (arr.length != 4) throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    final List<dynamic> arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
     return TrafficStats(
       uploadSpeed: dco_decode_u_64(arr[0]),
       downloadSpeed: dco_decode_u_64(arr[1]),
@@ -1103,17 +1280,6 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  WsSettings dco_decode_ws_settings(raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final List arr = raw as List<dynamic>;
-    if (arr.length != 2) throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-    return WsSettings(
-      path: dco_decode_String(arr[0]),
-      headers: dco_decode_Map_String_String_None(arr[1]),
-    );
-  }
-
-  @protected
   AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     final String inner = sse_decode_String(deserializer);
@@ -1121,17 +1287,12 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  Value sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-      SseDeserializer deserializer) {
+  Value
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+          SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return ValueImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  DateTime sse_decode_Chrono_Utc(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    final PlatformInt64 inner = sse_decode_i_64(deserializer);
-    return DateTime.fromMicrosecondsSinceEpoch(inner.toInt(), isUtc: true);
+    return ValueImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
   @protected
@@ -1142,20 +1303,17 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
     final List<(String, Value)> inner =
         sse_decode_list_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
             deserializer);
-    return Map.fromEntries(inner.map(((String, Value) e) => MapEntry(e.$1, e.$2)));
+    return Map.fromEntries(
+        inner.map(((String, Value) e) => MapEntry(e.$1, e.$2)));
   }
 
   @protected
-  Map<String, String> sse_decode_Map_String_String_None(SseDeserializer deserializer) {
+  Value
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+          SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    final List<(String, String)> inner = sse_decode_list_record_string_string(deserializer);
-    return Map.fromEntries(inner.map(((String, String) e) => MapEntry(e.$1, e.$2)));
-  }
-
-  @protected
-  Value sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return ValueImpl.frbInternalSseDecode(sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+    return ValueImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
   @protected
@@ -1172,22 +1330,9 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  Value sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-      SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(deserializer);
-  }
-
-  @protected
   ConfigInfo sse_decode_box_autoadd_config_info(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return sse_decode_config_info(deserializer);
-  }
-
-  @protected
-  GrpcSettings sse_decode_box_autoadd_grpc_settings(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return sse_decode_grpc_settings(deserializer);
   }
 
   @protected
@@ -1197,33 +1342,16 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  ProxyServerConfig sse_decode_box_autoadd_proxy_server_config(SseDeserializer deserializer) {
+  ProxyServerConfig sse_decode_box_autoadd_proxy_server_config(
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return sse_decode_proxy_server_config(deserializer);
-  }
-
-  @protected
-  StreamSettings sse_decode_box_autoadd_stream_settings(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return sse_decode_stream_settings(deserializer);
-  }
-
-  @protected
-  TlsSettings sse_decode_box_autoadd_tls_settings(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return sse_decode_tls_settings(deserializer);
   }
 
   @protected
   int sse_decode_box_autoadd_u_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return sse_decode_u_32(deserializer);
-  }
-
-  @protected
-  WsSettings sse_decode_box_autoadd_ws_settings(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return sse_decode_ws_settings(deserializer);
   }
 
   @protected
@@ -1251,7 +1379,8 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   @protected
   ConnectionInfo sse_decode_connection_info(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    final ConnectionStatus var_status = sse_decode_connection_status(deserializer);
+    final ConnectionStatus var_status =
+        sse_decode_connection_status(deserializer);
     final String? var_serverAddress = sse_decode_opt_String(deserializer);
     final BigInt var_duration = sse_decode_u_64(deserializer);
     final BigInt var_uploadBytes = sse_decode_u_64(deserializer);
@@ -1271,14 +1400,6 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
     // Codec=Sse (Serialization based), see doc to use other codecs
     final int inner = sse_decode_i_32(deserializer);
     return ConnectionStatus.values[inner];
-  }
-
-  @protected
-  GrpcSettings sse_decode_grpc_settings(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    final String var_serviceName = sse_decode_String(deserializer);
-    final bool var_multiMode = sse_decode_bool(deserializer);
-    return GrpcSettings(serviceName: var_serviceName, multiMode: var_multiMode);
   }
 
   @protected
@@ -1341,18 +1462,6 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  List<(String, String)> sse_decode_list_record_string_string(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    final int len_ = sse_decode_i_32(deserializer);
-    final List<(String, String)> ans_ = <(String, String)>[];
-    for (int idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(sse_decode_record_string_string(deserializer));
-    }
-    return ans_;
-  }
-
-  @protected
   List<ServerInfo> sse_decode_list_server_info(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -1365,7 +1474,8 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  List<SubscriptionInfo> sse_decode_list_subscription_info(SseDeserializer deserializer) {
+  List<SubscriptionInfo> sse_decode_list_subscription_info(
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     final int len_ = sse_decode_i_32(deserializer);
@@ -1388,57 +1498,11 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  Value? sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-      SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    if (sse_decode_bool(deserializer)) {
-      return sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-          deserializer);
-    } else {
-      return null;
-    }
-  }
-
-  @protected
-  GrpcSettings? sse_decode_opt_box_autoadd_grpc_settings(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    if (sse_decode_bool(deserializer)) {
-      return sse_decode_box_autoadd_grpc_settings(deserializer);
-    } else {
-      return null;
-    }
-  }
-
-  @protected
   PlatformInt64? sse_decode_opt_box_autoadd_i_64(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     if (sse_decode_bool(deserializer)) {
       return sse_decode_box_autoadd_i_64(deserializer);
-    } else {
-      return null;
-    }
-  }
-
-  @protected
-  StreamSettings? sse_decode_opt_box_autoadd_stream_settings(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    if (sse_decode_bool(deserializer)) {
-      return sse_decode_box_autoadd_stream_settings(deserializer);
-    } else {
-      return null;
-    }
-  }
-
-  @protected
-  TlsSettings? sse_decode_opt_box_autoadd_tls_settings(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    if (sse_decode_bool(deserializer)) {
-      return sse_decode_box_autoadd_tls_settings(deserializer);
     } else {
       return null;
     }
@@ -1456,67 +1520,69 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  WsSettings? sse_decode_opt_box_autoadd_ws_settings(SseDeserializer deserializer) {
+  PlatformCapabilities sse_decode_platform_capabilities(
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-
-    if (sse_decode_bool(deserializer)) {
-      return sse_decode_box_autoadd_ws_settings(deserializer);
-    } else {
-      return null;
-    }
+    final bool var_systemProxy = sse_decode_bool(deserializer);
+    final bool var_vpnMode = sse_decode_bool(deserializer);
+    final bool var_tunMode = sse_decode_bool(deserializer);
+    final bool var_autoStart = sse_decode_bool(deserializer);
+    return PlatformCapabilities(
+        systemProxy: var_systemProxy,
+        vpnMode: var_vpnMode,
+        tunMode: var_tunMode,
+        autoStart: var_autoStart);
   }
 
   @protected
-  ProxyProtocol sse_decode_proxy_protocol(SseDeserializer deserializer) {
+  PlatformInfo sse_decode_platform_info(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    final int inner = sse_decode_i_32(deserializer);
-    return ProxyProtocol.values[inner];
+    final String var_os = sse_decode_String(deserializer);
+    final String var_arch = sse_decode_String(deserializer);
+    final String var_version = sse_decode_String(deserializer);
+    final PlatformCapabilities var_capabilities =
+        sse_decode_platform_capabilities(deserializer);
+    return PlatformInfo(
+        os: var_os,
+        arch: var_arch,
+        version: var_version,
+        capabilities: var_capabilities);
   }
 
   @protected
-  ProxyServerConfig sse_decode_proxy_server_config(SseDeserializer deserializer) {
+  ProxyServerConfig sse_decode_proxy_server_config(
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     final String var_id = sse_decode_String(deserializer);
     final String var_name = sse_decode_String(deserializer);
-    final String var_server = sse_decode_String(deserializer);
+    final String var_address = sse_decode_String(deserializer);
     final int var_port = sse_decode_u_16(deserializer);
-    final ProxyProtocol var_protocol = sse_decode_proxy_protocol(deserializer);
+    final String var_protocol = sse_decode_String(deserializer);
     final Map<String, Value> var_settings =
         sse_decode_Map_String_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue_None(
             deserializer);
-    final StreamSettings? var_streamSettings = sse_decode_opt_box_autoadd_stream_settings(deserializer);
     final List<String> var_tags = sse_decode_list_String(deserializer);
-    final DateTime var_createdAt = sse_decode_Chrono_Utc(deserializer);
-    final DateTime var_updatedAt = sse_decode_Chrono_Utc(deserializer);
     return ProxyServerConfig(
         id: var_id,
         name: var_name,
-        server: var_server,
+        address: var_address,
         port: var_port,
         protocol: var_protocol,
         settings: var_settings,
-        streamSettings: var_streamSettings,
-        tags: var_tags,
-        createdAt: var_createdAt,
-        updatedAt: var_updatedAt);
+        tags: var_tags);
   }
 
   @protected
-  (String, Value)
-      sse_decode_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
-          SseDeserializer deserializer) {
+  (
+    String,
+    Value
+  ) sse_decode_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     final String var_field0 = sse_decode_String(deserializer);
     final Value var_field1 =
-        sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(deserializer);
-    return (var_field0, var_field1);
-  }
-
-  @protected
-  (String, String) sse_decode_record_string_string(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    final String var_field0 = sse_decode_String(deserializer);
-    final String var_field1 = sse_decode_String(deserializer);
+        sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+            deserializer);
     return (var_field0, var_field1);
   }
 
@@ -1539,40 +1605,13 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  StreamSettings sse_decode_stream_settings(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    final String var_network = sse_decode_String(deserializer);
-    final String var_security = sse_decode_String(deserializer);
-    final TlsSettings? var_tlsSettings = sse_decode_opt_box_autoadd_tls_settings(deserializer);
-    final Value? var_tcpSettings =
-        sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-            deserializer);
-    final WsSettings? var_wsSettings = sse_decode_opt_box_autoadd_ws_settings(deserializer);
-    final Value? var_httpSettings =
-        sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-            deserializer);
-    final Value? var_quicSettings =
-        sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-            deserializer);
-    final GrpcSettings? var_grpcSettings = sse_decode_opt_box_autoadd_grpc_settings(deserializer);
-    return StreamSettings(
-        network: var_network,
-        security: var_security,
-        tlsSettings: var_tlsSettings,
-        tcpSettings: var_tcpSettings,
-        wsSettings: var_wsSettings,
-        httpSettings: var_httpSettings,
-        quicSettings: var_quicSettings,
-        grpcSettings: var_grpcSettings);
-  }
-
-  @protected
   SubscriptionInfo sse_decode_subscription_info(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     final String var_id = sse_decode_String(deserializer);
     final String var_name = sse_decode_String(deserializer);
     final String var_url = sse_decode_String(deserializer);
-    final PlatformInt64? var_lastUpdate = sse_decode_opt_box_autoadd_i_64(deserializer);
+    final PlatformInt64? var_lastUpdate =
+        sse_decode_opt_box_autoadd_i_64(deserializer);
     final int var_serverCount = sse_decode_i_32(deserializer);
     final String var_status = sse_decode_String(deserializer);
     return SubscriptionInfo(
@@ -1582,17 +1621,6 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
         lastUpdate: var_lastUpdate,
         serverCount: var_serverCount,
         status: var_status);
-  }
-
-  @protected
-  TlsSettings sse_decode_tls_settings(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    final String? var_serverName = sse_decode_opt_String(deserializer);
-    final bool var_allowInsecure = sse_decode_bool(deserializer);
-    final List<String> var_alpn = sse_decode_list_String(deserializer);
-    final String? var_fingerprint = sse_decode_opt_String(deserializer);
-    return TlsSettings(
-        serverName: var_serverName, allowInsecure: var_allowInsecure, alpn: var_alpn, fingerprint: var_fingerprint);
   }
 
   @protected
@@ -1645,50 +1673,37 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  WsSettings sse_decode_ws_settings(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    final String var_path = sse_decode_String(deserializer);
-    final Map<String, String> var_headers = sse_decode_Map_String_String_None(deserializer);
-    return WsSettings(path: var_path, headers: var_headers);
-  }
-
-  @protected
-  void sse_encode_AnyhowException(AnyhowException self, SseSerializer serializer) {
+  void sse_encode_AnyhowException(
+      AnyhowException self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.message, serializer);
   }
 
   @protected
-  void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-      Value self, SseSerializer serializer) {
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+          Value self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize((self as ValueImpl).frbInternalSseEncode(move: true), serializer);
+    sse_encode_usize(
+        (self as ValueImpl).frbInternalSseEncode(move: true), serializer);
   }
 
   @protected
-  void sse_encode_Chrono_Utc(DateTime self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_64(PlatformInt64Util.from(self.microsecondsSinceEpoch), serializer);
-  }
-
-  @protected
-  void sse_encode_Map_String_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue_None(
-      Map<String, Value> self, SseSerializer serializer) {
+  void
+      sse_encode_Map_String_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue_None(
+          Map<String, Value> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
-        self.entries.map((MapEntry<String, Value> e) => (e.key, e.value)).toList(), serializer);
+        self.entries
+            .map((MapEntry<String, Value> e) => (e.key, e.value))
+            .toList(),
+        serializer);
   }
 
   @protected
-  void sse_encode_Map_String_String_None(Map<String, String> self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_list_record_string_string(
-        self.entries.map((MapEntry<String, String> e) => (e.key, e.value)).toList(), serializer);
-  }
-
-  @protected
-  void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-      Value self, SseSerializer serializer) {
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+          Value self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize((self as ValueImpl).frbInternalSseEncode(), serializer);
   }
@@ -1706,58 +1721,30 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  void sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-      Value self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(self, serializer);
-  }
-
-  @protected
-  void sse_encode_box_autoadd_config_info(ConfigInfo self, SseSerializer serializer) {
+  void sse_encode_box_autoadd_config_info(
+      ConfigInfo self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_config_info(self, serializer);
   }
 
   @protected
-  void sse_encode_box_autoadd_grpc_settings(GrpcSettings self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_grpc_settings(self, serializer);
-  }
-
-  @protected
-  void sse_encode_box_autoadd_i_64(PlatformInt64 self, SseSerializer serializer) {
+  void sse_encode_box_autoadd_i_64(
+      PlatformInt64 self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_64(self, serializer);
   }
 
   @protected
-  void sse_encode_box_autoadd_proxy_server_config(ProxyServerConfig self, SseSerializer serializer) {
+  void sse_encode_box_autoadd_proxy_server_config(
+      ProxyServerConfig self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_proxy_server_config(self, serializer);
-  }
-
-  @protected
-  void sse_encode_box_autoadd_stream_settings(StreamSettings self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_stream_settings(self, serializer);
-  }
-
-  @protected
-  void sse_encode_box_autoadd_tls_settings(TlsSettings self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_tls_settings(self, serializer);
   }
 
   @protected
   void sse_encode_box_autoadd_u_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_u_32(self, serializer);
-  }
-
-  @protected
-  void sse_encode_box_autoadd_ws_settings(WsSettings self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_ws_settings(self, serializer);
   }
 
   @protected
@@ -1774,7 +1761,8 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  void sse_encode_connection_info(ConnectionInfo self, SseSerializer serializer) {
+  void sse_encode_connection_info(
+      ConnectionInfo self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_connection_status(self.status, serializer);
     sse_encode_opt_String(self.serverAddress, serializer);
@@ -1785,16 +1773,10 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  void sse_encode_connection_status(ConnectionStatus self, SseSerializer serializer) {
+  void sse_encode_connection_status(
+      ConnectionStatus self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.index, serializer);
-  }
-
-  @protected
-  void sse_encode_grpc_settings(GrpcSettings self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_String(self.serviceName, serializer);
-    sse_encode_bool(self.multiMode, serializer);
   }
 
   @protected
@@ -1819,7 +1801,8 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  void sse_encode_list_config_info(List<ConfigInfo> self, SseSerializer serializer) {
+  void sse_encode_list_config_info(
+      List<ConfigInfo> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     for (final ConfigInfo item in self) {
@@ -1828,7 +1811,8 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  void sse_encode_list_prim_u_8_strict(Uint8List self, SseSerializer serializer) {
+  void sse_encode_list_prim_u_8_strict(
+      Uint8List self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     serializer.buffer.putUint8List(self);
@@ -1847,16 +1831,8 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  void sse_encode_list_record_string_string(List<(String, String)> self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_32(self.length, serializer);
-    for (final (String, String) item in self) {
-      sse_encode_record_string_string(item, serializer);
-    }
-  }
-
-  @protected
-  void sse_encode_list_server_info(List<ServerInfo> self, SseSerializer serializer) {
+  void sse_encode_list_server_info(
+      List<ServerInfo> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     for (final ServerInfo item in self) {
@@ -1865,7 +1841,8 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  void sse_encode_list_subscription_info(List<SubscriptionInfo> self, SseSerializer serializer) {
+  void sse_encode_list_subscription_info(
+      List<SubscriptionInfo> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     for (final SubscriptionInfo item in self) {
@@ -1884,54 +1861,13 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  void sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-      Value? self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    sse_encode_bool(self != null, serializer);
-    if (self != null) {
-      sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-          self, serializer);
-    }
-  }
-
-  @protected
-  void sse_encode_opt_box_autoadd_grpc_settings(GrpcSettings? self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    sse_encode_bool(self != null, serializer);
-    if (self != null) {
-      sse_encode_box_autoadd_grpc_settings(self, serializer);
-    }
-  }
-
-  @protected
-  void sse_encode_opt_box_autoadd_i_64(PlatformInt64? self, SseSerializer serializer) {
+  void sse_encode_opt_box_autoadd_i_64(
+      PlatformInt64? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     sse_encode_bool(self != null, serializer);
     if (self != null) {
       sse_encode_box_autoadd_i_64(self, serializer);
-    }
-  }
-
-  @protected
-  void sse_encode_opt_box_autoadd_stream_settings(StreamSettings? self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    sse_encode_bool(self != null, serializer);
-    if (self != null) {
-      sse_encode_box_autoadd_stream_settings(self, serializer);
-    }
-  }
-
-  @protected
-  void sse_encode_opt_box_autoadd_tls_settings(TlsSettings? self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    sse_encode_bool(self != null, serializer);
-    if (self != null) {
-      sse_encode_box_autoadd_tls_settings(self, serializer);
     }
   }
 
@@ -1946,50 +1882,46 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  void sse_encode_opt_box_autoadd_ws_settings(WsSettings? self, SseSerializer serializer) {
+  void sse_encode_platform_capabilities(
+      PlatformCapabilities self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-
-    sse_encode_bool(self != null, serializer);
-    if (self != null) {
-      sse_encode_box_autoadd_ws_settings(self, serializer);
-    }
+    sse_encode_bool(self.systemProxy, serializer);
+    sse_encode_bool(self.vpnMode, serializer);
+    sse_encode_bool(self.tunMode, serializer);
+    sse_encode_bool(self.autoStart, serializer);
   }
 
   @protected
-  void sse_encode_proxy_protocol(ProxyProtocol self, SseSerializer serializer) {
+  void sse_encode_platform_info(PlatformInfo self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_32(self.index, serializer);
+    sse_encode_String(self.os, serializer);
+    sse_encode_String(self.arch, serializer);
+    sse_encode_String(self.version, serializer);
+    sse_encode_platform_capabilities(self.capabilities, serializer);
   }
 
   @protected
-  void sse_encode_proxy_server_config(ProxyServerConfig self, SseSerializer serializer) {
+  void sse_encode_proxy_server_config(
+      ProxyServerConfig self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.id, serializer);
     sse_encode_String(self.name, serializer);
-    sse_encode_String(self.server, serializer);
+    sse_encode_String(self.address, serializer);
     sse_encode_u_16(self.port, serializer);
-    sse_encode_proxy_protocol(self.protocol, serializer);
+    sse_encode_String(self.protocol, serializer);
     sse_encode_Map_String_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue_None(
         self.settings, serializer);
-    sse_encode_opt_box_autoadd_stream_settings(self.streamSettings, serializer);
     sse_encode_list_String(self.tags, serializer);
-    sse_encode_Chrono_Utc(self.createdAt, serializer);
-    sse_encode_Chrono_Utc(self.updatedAt, serializer);
   }
 
   @protected
-  void sse_encode_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
-      (String, Value) self, SseSerializer serializer) {
+  void
+      sse_encode_record_string_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_value(
+          (String, Value) self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.$1, serializer);
-    sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(self.$2, serializer);
-  }
-
-  @protected
-  void sse_encode_record_string_string((String, String) self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_String(self.$1, serializer);
-    sse_encode_String(self.$2, serializer);
+    sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+        self.$2, serializer);
   }
 
   @protected
@@ -2004,23 +1936,8 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
   }
 
   @protected
-  void sse_encode_stream_settings(StreamSettings self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_String(self.network, serializer);
-    sse_encode_String(self.security, serializer);
-    sse_encode_opt_box_autoadd_tls_settings(self.tlsSettings, serializer);
-    sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-        self.tcpSettings, serializer);
-    sse_encode_opt_box_autoadd_ws_settings(self.wsSettings, serializer);
-    sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-        self.httpSettings, serializer);
-    sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-        self.quicSettings, serializer);
-    sse_encode_opt_box_autoadd_grpc_settings(self.grpcSettings, serializer);
-  }
-
-  @protected
-  void sse_encode_subscription_info(SubscriptionInfo self, SseSerializer serializer) {
+  void sse_encode_subscription_info(
+      SubscriptionInfo self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.id, serializer);
     sse_encode_String(self.name, serializer);
@@ -2028,15 +1945,6 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
     sse_encode_opt_box_autoadd_i_64(self.lastUpdate, serializer);
     sse_encode_i_32(self.serverCount, serializer);
     sse_encode_String(self.status, serializer);
-  }
-
-  @protected
-  void sse_encode_tls_settings(TlsSettings self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_opt_String(self.serverName, serializer);
-    sse_encode_bool(self.allowInsecure, serializer);
-    sse_encode_list_String(self.alpn, serializer);
-    sse_encode_opt_String(self.fingerprint, serializer);
   }
 
   @protected
@@ -2082,27 +1990,24 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform implements V8RayBrid
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putBigUint64(self);
   }
-
-  @protected
-  void sse_encode_ws_settings(WsSettings self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_String(self.path, serializer);
-    sse_encode_Map_String_String_None(self.headers, serializer);
-  }
 }
 
 @sealed
 class ValueImpl extends RustOpaque implements Value {
   // Not to be used by end users
-  ValueImpl.frbInternalDcoDecode(List<dynamic> wire) : super.frbInternalDcoDecode(wire, _kStaticData);
+  ValueImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
 
   // Not to be used by end users
   ValueImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
       : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
 
-  static final RustArcStaticData _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount: V8RayBridge.instance.api.rust_arc_increment_strong_count_Value,
-    rustArcDecrementStrongCount: V8RayBridge.instance.api.rust_arc_decrement_strong_count_Value,
-    rustArcDecrementStrongCountPtr: V8RayBridge.instance.api.rust_arc_decrement_strong_count_ValuePtr,
+  static final RustArcStaticData<dynamic> _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        V8RayBridge.instance.api.rust_arc_increment_strong_count_Value,
+    rustArcDecrementStrongCount:
+        V8RayBridge.instance.api.rust_arc_decrement_strong_count_Value,
+    rustArcDecrementStrongCountPtr:
+        V8RayBridge.instance.api.rust_arc_decrement_strong_count_ValuePtr,
   );
 }

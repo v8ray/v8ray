@@ -93,7 +93,7 @@ impl From<LogRotation> for Rotation {
 impl Default for LogConfig {
     fn default() -> Self {
         Self {
-            level: LogLevel::Info,
+            level: LogLevel::Info,  // 使用 Info 级别，在 release 模式下也能显示
             console: true,
             file: false,
             file_dir: None,

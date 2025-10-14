@@ -5,7 +5,7 @@
 /// 2. Xray Core binary download and integration
 use std::env;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 fn main() {
     // 只在需要时重新运行
@@ -23,24 +23,16 @@ fn main() {
     }
 
     // Xray Core 集成
-    // 仅在 release 构建时下载 Xray Core
-    let profile = env::var("PROFILE").unwrap_or_else(|_| "debug".to_string());
+    // 生成下载信息，供 Flutter 构建脚本使用
+    println!("cargo:warning=Generating Xray Core download information");
 
-    if profile == "release" || env::var("DOWNLOAD_XRAY").is_ok() {
-        println!("cargo:warning=Downloading Xray Core for {} build", profile);
-
-        if let Err(e) = download_xray_core() {
-            println!("cargo:warning=Failed to download Xray Core: {}", e);
-            println!("cargo:warning=Application will try to find Xray Core at runtime");
-        }
-    } else {
-        println!("cargo:warning=Skipping Xray Core download in debug build");
-        println!("cargo:warning=Set DOWNLOAD_XRAY=1 to force download in debug build");
+    if let Err(e) = generate_xray_download_info() {
+        println!("cargo:warning=Failed to generate Xray download info: {}", e);
     }
 }
 
-/// Download Xray Core binary for the target platform
-fn download_xray_core() -> Result<(), Box<dyn std::error::Error>> {
+/// Generate Xray Core download information for Flutter build script
+fn generate_xray_download_info() -> Result<(), Box<dyn std::error::Error>> {
     // 获取目标平台信息
     let target_os = env::var("CARGO_CFG_TARGET_OS")?;
     let target_arch = env::var("CARGO_CFG_TARGET_ARCH")?;
@@ -79,32 +71,13 @@ fn download_xray_core() -> Result<(), Box<dyn std::error::Error>> {
         "xray"
     };
 
-    let binary_path = bin_dir.join(binary_name);
-
-    // 如果已存在，检查是否需要更新
-    if binary_path.exists() {
-        println!(
-            "cargo:warning=Xray Core binary already exists at {:?}",
-            binary_path
-        );
-
-        // 可以在这里添加版本检查逻辑
-        // 如果不强制更新，则跳过下载
-        if env::var("FORCE_UPDATE_XRAY").is_err() {
-            println!("cargo:warning=Skipping download. Set FORCE_UPDATE_XRAY=1 to force update");
-            return Ok(());
-        }
-    }
-
     // 构建下载 URL - 默认使用最新版本
-    // 用户可以通过环境变量 XRAY_VERSION 指定特定版本，如 XRAY_VERSION=v1.8.7
     let xray_version = env::var("XRAY_VERSION").unwrap_or_else(|_| "latest".to_string());
 
     println!("cargo:warning=Xray Core version: {}", xray_version);
     println!("cargo:warning=Platform: {}-{}", os_name, arch_name);
 
     // 构建下载 URL
-    // GitHub Releases 的 "latest" 会自动重定向到最新版本
     let download_url = if xray_version == "latest" {
         format!(
             "https://github.com/XTLS/Xray-core/releases/latest/download/Xray-{}-{}{}",
@@ -117,19 +90,31 @@ fn download_xray_core() -> Result<(), Box<dyn std::error::Error>> {
         )
     };
 
-    println!("cargo:warning=Download URL: {}", download_url);
-    println!("cargo:warning=Xray Core will be downloaded at first run if not present");
+    // 创建下载信息文件，供 Flutter 构建脚本使用
+    let info_file = bin_dir.join(".xray_download_info");
+    let download_info = serde_json::json!({
+        "url": download_url,
+        "os": os_name,
+        "arch": arch_name,
+        "extension": extension,
+        "binary_name": binary_name,
+        "version": xray_version,
+    });
 
-    // 创建一个标记文件，包含下载信息，供运行时使用
-    let marker_file = bin_dir.join(".xray_download_info");
-    let download_info = format!("{}\n{}-{}", download_url, os_name, arch_name);
-    fs::write(&marker_file, download_info)?;
+    fs::write(&info_file, serde_json::to_string_pretty(&download_info)?)?;
+
+    println!(
+        "cargo:warning=Generated Xray download info at {:?}",
+        info_file
+    );
+    println!("cargo:warning=Download URL: {}", download_url);
 
     Ok(())
 }
 
 // 设置可执行权限（仅 Unix 系统）
 #[cfg(unix)]
+#[allow(dead_code)]
 fn set_executable_permission(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
     use std::os::unix::fs::PermissionsExt;
 

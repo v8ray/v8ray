@@ -161,10 +161,12 @@ impl ConfigParser {
 
         let query_pairs: HashMap<String, String> = url.query_pairs().into_owned().collect();
 
-        let name = query_pairs
-            .get("remarks")
-            .or_else(|| query_pairs.get("name"))
-            .cloned()
+        // VLESS URL 的名称通常在 fragment (#后面)，也可能在 query 参数中
+        let name = url
+            .fragment()
+            .map(|s| urlencoding::decode(s).unwrap_or_else(|_| s.into()).to_string())
+            .or_else(|| query_pairs.get("remarks").cloned())
+            .or_else(|| query_pairs.get("name").cloned())
             .unwrap_or_else(|| "VLESS Server".to_string());
 
         let mut settings = HashMap::new();
@@ -257,11 +259,12 @@ impl ConfigParser {
 
         let query_pairs: HashMap<String, String> = url.query_pairs().into_owned().collect();
 
+        // Trojan URL 的名称通常在 fragment (#后面)
         let name = url
             .fragment()
-            .or_else(|| query_pairs.get("name").map(|s| s.as_str()))
-            .unwrap_or("Trojan Server")
-            .to_string();
+            .map(|s| urlencoding::decode(s).unwrap_or_else(|_| s.into()).to_string())
+            .or_else(|| query_pairs.get("name").cloned())
+            .unwrap_or_else(|| "Trojan Server".to_string());
 
         let mut settings = HashMap::new();
         settings.insert("password".to_string(), serde_json::json!(password));
@@ -297,7 +300,11 @@ impl ConfigParser {
             .port()
             .ok_or_else(|| ConfigError::MissingField("port".to_string()))?;
 
-        let name = url.fragment().unwrap_or("Shadowsocks Server").to_string();
+        // Shadowsocks URL 的名称在 fragment (#后面)
+        let name = url
+            .fragment()
+            .map(|s| urlencoding::decode(s).unwrap_or_else(|_| s.into()).to_string())
+            .unwrap_or_else(|| "Shadowsocks Server".to_string());
 
         // For now, return a basic config
         // Full implementation would decode the method:password from username

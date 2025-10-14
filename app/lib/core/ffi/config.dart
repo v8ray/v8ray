@@ -215,7 +215,11 @@ class TlsSettings {
   final String? fingerprint;
 
   @override
-  int get hashCode => serverName.hashCode ^ allowInsecure.hashCode ^ alpn.hashCode ^ fingerprint.hashCode;
+  int get hashCode =>
+      serverName.hashCode ^
+      allowInsecure.hashCode ^
+      alpn.hashCode ^
+      fingerprint.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -247,5 +251,8 @@ class WsSettings {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is WsSettings && runtimeType == other.runtimeType && path == other.path && headers == other.headers;
+      other is WsSettings &&
+          runtimeType == other.runtimeType &&
+          path == other.path &&
+          headers == other.headers;
 }

@@ -11,11 +11,12 @@ use crate::config::{ProxyProtocol, ProxyServerConfig};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use std::path::PathBuf;
-use std::process::{Child, Command, Stdio};
+use std::process::Stdio;
 use std::sync::Arc;
 use std::time::Duration;
 use thiserror::Error;
 use tokio::io::{AsyncBufReadExt, BufReader};
+use tokio::process::Command;
 use tokio::sync::{broadcast, RwLock};
 use tokio::time;
 
@@ -91,6 +92,9 @@ pub enum XrayEvent {
 pub struct XrayConfig {
     /// Log configuration
     pub log: LogConfig,
+    /// DNS configuration
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dns: Option<DnsConfig>,
     /// Inbound configurations
     pub inbounds: Vec<InboundConfig>,
     /// Outbound configurations
@@ -110,6 +114,13 @@ pub struct LogConfig {
     pub error: Option<String>,
 }
 
+/// DNS configuration
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DnsConfig {
+    /// DNS servers
+    pub servers: Vec<String>,
+}
+
 /// Inbound configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InboundConfig {
@@ -126,6 +137,9 @@ pub struct InboundConfig {
 /// Outbound configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OutboundConfig {
+    /// Tag (optional identifier for routing)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tag: Option<String>,
     /// Protocol
     pub protocol: String,
     /// Settings
@@ -147,8 +161,8 @@ pub struct RoutingConfig {
 pub struct XrayCore {
     /// Current status
     status: Arc<RwLock<XrayStatus>>,
-    /// Xray process
-    process: RwLock<Option<Child>>,
+    /// Xray process PID
+    process_pid: Arc<RwLock<Option<u32>>>,
     /// Current configuration
     config: Arc<RwLock<Option<XrayConfig>>>,
     /// Xray binary path
@@ -189,7 +203,7 @@ impl XrayCore {
 
         Self {
             status: Arc::new(RwLock::new(XrayStatus::Stopped)),
-            process: RwLock::new(None),
+            process_pid: Arc::new(RwLock::new(None)),
             config: Arc::new(RwLock::new(None)),
             binary_path: Arc::new(RwLock::new(None)),
             config_generator: Arc::new(XrayConfigGenerator::new()),
@@ -208,6 +222,15 @@ impl XrayCore {
     /// Generate Xray configuration from proxy config
     pub fn generate_config(&self, proxy_config: &ProxyServerConfig) -> XrayConfig {
         self.config_generator.generate(proxy_config)
+    }
+
+    /// Generate Xray configuration with specific proxy mode
+    pub fn generate_config_with_mode(
+        &self,
+        proxy_config: &ProxyServerConfig,
+        mode: &str,
+    ) -> XrayConfig {
+        self.config_generator.generate_with_mode(proxy_config, mode)
     }
 
     /// Get current status
@@ -255,18 +278,103 @@ impl XrayCore {
         let config_content =
             serde_json::to_string_pretty(&config).map_err(|e| XrayError::Config(e.to_string()))?;
 
-        // Write config to temporary file
-        let config_path = std::env::temp_dir().join("v8ray_xray_config.json");
-        std::fs::write(&config_path, config_content)?;
+        // Log the configuration for debugging
+        tracing::info!("Generated Xray configuration:\n{}", config_content);
+
+        // Write config to Xray binary directory
+        let xray_path_obj = std::path::Path::new(&xray_path);
+        let xray_dir = xray_path_obj
+            .parent()
+            .ok_or_else(|| XrayError::Process("Failed to get Xray directory".to_string()))?;
+        let config_path = xray_dir.join("config.json");
+
+        tracing::info!("Writing config to: {:?}", config_path);
+        tracing::info!("Xray directory: {:?}", xray_dir);
+
+        // 检查目录权限
+        if let Ok(metadata) = std::fs::metadata(xray_dir) {
+            tracing::info!("Xray directory permissions: {:?}", metadata.permissions());
+        } else {
+            tracing::error!("Failed to get xray directory metadata");
+        }
+
+        std::fs::write(&config_path, &config_content).map_err(|e| {
+            tracing::error!("Failed to write config file: {} (kind: {:?}, raw_os_error: {:?})",
+                e, e.kind(), e.raw_os_error());
+            e
+        })?;
+        tracing::info!("Xray config written to: {:?}", config_path);
 
         // Start Xray process
-        let mut child = Command::new(xray_path)
+        // Use nohup to detach the process completely
+        tracing::info!(
+            "Starting Xray process with command: {} -config {:?}",
+            xray_path,
+            config_path
+        );
+
+        // 检查 xray 文件权限
+        let xray_metadata = std::fs::metadata(&xray_path).map_err(|e| {
+            tracing::error!("Failed to get xray metadata: {}", e);
+            XrayError::Process(format!("Failed to get xray metadata: {}", e))
+        })?;
+        tracing::info!("Xray file permissions: {:?}", xray_metadata.permissions());
+
+        // 检查 config 文件权限
+        let config_metadata = std::fs::metadata(&config_path).map_err(|e| {
+            tracing::error!("Failed to get config metadata: {}", e);
+            XrayError::Process(format!("Failed to get config metadata: {}", e))
+        })?;
+        tracing::info!("Config file permissions: {:?}", config_metadata.permissions());
+
+        let mut child = Command::new(&xray_path)
             .arg("-config")
             .arg(&config_path)
             .stdin(Stdio::null())
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
-            .spawn()?;
+            .spawn()
+            .map_err(|e| {
+                tracing::error!("Failed to spawn Xray process: {} (kind: {:?}, raw_os_error: {:?})",
+                    e, e.kind(), e.raw_os_error());
+                XrayError::Process(format!("Failed to spawn Xray process: {}", e))
+            })?;
+
+        let pid = child
+            .id()
+            .ok_or_else(|| XrayError::Process("Failed to get process ID".to_string()))?;
+
+        tracing::info!("Xray process spawned with PID: {}", pid);
+
+        // Store PID
+        {
+            let mut process_pid = self.process_pid.write().await;
+            *process_pid = Some(pid);
+        }
+
+        // Wait a moment to check if process starts successfully
+        tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
+
+        // Check if process is still running
+        match child.try_wait() {
+            Ok(Some(status)) => {
+                tracing::error!("Xray process exited immediately with status: {}", status);
+                return Err(XrayError::Process(format!(
+                    "Xray process exited immediately with status: {}",
+                    status
+                )));
+            }
+            Ok(None) => {
+                tracing::info!("Xray process is running");
+            }
+            Err(e) => {
+                tracing::error!("Failed to check Xray process status: {}", e);
+                return Err(XrayError::Process(format!(
+                    "Failed to check process status: {}",
+                    e
+                )));
+            }
+        }
 
         // Get stdout and stderr for monitoring
         let stdout = child
@@ -278,20 +386,29 @@ impl XrayCore {
             .take()
             .ok_or_else(|| XrayError::Process("Failed to capture stderr".to_string()))?;
 
-        // Store process
-        {
-            let mut process = self.process.write().await;
-            *process = Some(child);
-        }
+        // Start log monitoring
+        Self::monitor_logs(stdout, stderr, self.event_tx.clone());
+
+        // Spawn a background task to wait for the child process
+        // This prevents zombie processes
+        let event_tx = self.event_tx.clone();
+        tokio::spawn(async move {
+            match child.wait().await {
+                Ok(status) => {
+                    tracing::warn!("Xray process exited with status: {}", status);
+                    let _ = event_tx.send(XrayEvent::StatusChanged(XrayStatus::Stopped));
+                }
+                Err(e) => {
+                    tracing::error!("Error waiting for Xray process: {}", e);
+                }
+            }
+        });
 
         // Record start time
         {
             let mut start_time = self.start_time.write().await;
             *start_time = Some(std::time::Instant::now());
         }
-
-        // Start log monitoring
-        Self::monitor_logs(stdout, stderr, self.event_tx.clone());
 
         // Start health monitoring
         self.start_monitoring();
@@ -314,12 +431,21 @@ impl XrayCore {
         // Update status to Stopping
         self.update_status(XrayStatus::Stopping).await;
 
-        // Kill process
+        // Kill process using PID
         {
-            let mut process = self.process.write().await;
-            if let Some(mut child) = process.take() {
-                child.kill()?;
-                child.wait()?;
+            let mut process_pid = self.process_pid.write().await;
+            if let Some(pid) = process_pid.take() {
+                tracing::info!("Killing Xray process with PID: {}", pid);
+                // Use kill command to terminate the process
+                unsafe {
+                    libc::kill(pid as i32, libc::SIGTERM);
+                }
+                // Wait a bit for graceful shutdown
+                tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;
+                // Force kill if still running
+                unsafe {
+                    libc::kill(pid as i32, libc::SIGKILL);
+                }
             }
         }
 
@@ -367,9 +493,13 @@ impl XrayCore {
 
         // Check application directory (bundled Xray Core)
         if let Ok(exe_path) = std::env::current_exe() {
+            tracing::info!("Current executable path: {:?}", exe_path);
             if let Some(exe_dir) = exe_path.parent() {
+                tracing::info!("Executable directory: {:?}", exe_dir);
+
                 // Priority 1: bin subdirectory
                 let app_binary = exe_dir.join("bin").join(binary_name);
+                tracing::info!("Checking for Xray at: {:?}", app_binary);
                 if app_binary.exists() {
                     tracing::info!("Found bundled Xray binary: {:?}", app_binary);
                     return Ok(app_binary.to_string_lossy().to_string());
@@ -377,11 +507,14 @@ impl XrayCore {
 
                 // Priority 2: same directory as executable
                 let same_dir_binary = exe_dir.join(binary_name);
+                tracing::info!("Checking for Xray at: {:?}", same_dir_binary);
                 if same_dir_binary.exists() {
                     tracing::info!("Found Xray binary in exe directory: {:?}", same_dir_binary);
                     return Ok(same_dir_binary.to_string_lossy().to_string());
                 }
             }
+        } else {
+            tracing::error!("Failed to get current executable path");
         }
 
         tracing::error!(
@@ -391,6 +524,7 @@ impl XrayCore {
     }
 
     /// Write configuration to temporary file
+    #[allow(dead_code)]
     async fn write_config_file(&self, config: &XrayConfig) -> Result<PathBuf, XrayError> {
         let config_content =
             serde_json::to_string_pretty(config).map_err(|e| XrayError::Config(e.to_string()))?;
@@ -398,7 +532,7 @@ impl XrayCore {
         let config_path = std::env::temp_dir().join("v8ray_xray_config.json");
         tokio::fs::write(&config_path, config_content)
             .await
-            .map_err(|e| XrayError::Io(e))?;
+            .map_err(XrayError::Io)?;
 
         tracing::debug!("Xray config written to: {:?}", config_path);
         Ok(config_path)
@@ -417,6 +551,7 @@ impl XrayCore {
         let output = Command::new(binary_path)
             .arg("version")
             .output()
+            .await
             .map_err(|e| XrayError::Process(e.to_string()))?;
 
         if output.status.success() {
@@ -481,14 +616,14 @@ impl XrayCore {
 
     /// Monitor process logs
     fn monitor_logs(
-        stdout: std::process::ChildStdout,
-        stderr: std::process::ChildStderr,
+        stdout: tokio::process::ChildStdout,
+        stderr: tokio::process::ChildStderr,
         event_tx: broadcast::Sender<XrayEvent>,
     ) {
         // Monitor stdout
         let event_tx_clone = event_tx.clone();
         tokio::spawn(async move {
-            let reader = BufReader::new(tokio::process::ChildStdout::from_std(stdout).unwrap());
+            let reader = BufReader::new(stdout);
             let mut lines = reader.lines();
 
             while let Ok(Some(line)) = lines.next_line().await {
@@ -499,7 +634,7 @@ impl XrayCore {
 
         // Monitor stderr
         tokio::spawn(async move {
-            let reader = BufReader::new(tokio::process::ChildStderr::from_std(stderr).unwrap());
+            let reader = BufReader::new(stderr);
             let mut lines = reader.lines();
 
             while let Ok(Some(line)) = lines.next_line().await {
@@ -560,6 +695,7 @@ impl Default for XrayConfig {
                 access: None,
                 error: None,
             },
+            dns: None,
             inbounds: vec![
                 InboundConfig {
                     port: 8080,
@@ -575,6 +711,7 @@ impl Default for XrayConfig {
                 },
             ],
             outbounds: vec![OutboundConfig {
+                tag: None,
                 protocol: "freedom".to_string(),
                 settings: None,
                 stream_settings: None,
@@ -627,10 +764,24 @@ impl XrayConfigGenerator {
 
     /// Generate Xray configuration from ProxyServerConfig
     pub fn generate(&self, proxy_config: &ProxyServerConfig) -> XrayConfig {
+        self.generate_with_mode(proxy_config, "global")
+    }
+
+    /// Generate Xray configuration with specific proxy mode
+    pub fn generate_with_mode(&self, proxy_config: &ProxyServerConfig, mode: &str) -> XrayConfig {
         let log = LogConfig {
             level: self.log_level.clone(),
             access: None,
             error: None,
+        };
+
+        // Add DNS configuration for smart mode
+        let dns = if mode == "smart" {
+            Some(DnsConfig {
+                servers: vec!["1.1.1.1".to_string(), "8.8.8.8".to_string()],
+            })
+        } else {
+            None
         };
 
         let inbounds = vec![
@@ -648,28 +799,82 @@ impl XrayConfigGenerator {
             },
         ];
 
-        let outbound = self.generate_outbound(proxy_config);
+        let mut outbound = self.generate_outbound(proxy_config);
+        outbound.tag = Some("proxy".to_string());
+
         let outbounds = vec![
             outbound,
-            // Add direct outbound as fallback
+            // Add direct outbound for routing rules
             OutboundConfig {
+                tag: Some("direct".to_string()),
                 protocol: "freedom".to_string(),
                 settings: None,
                 stream_settings: None,
             },
         ];
 
-        let routing = Some(RoutingConfig {
-            domain_strategy: Some("IPIfNonMatch".to_string()),
-            rules: vec![],
-        });
+        let routing = Some(self.generate_routing(mode));
 
         XrayConfig {
             log,
+            dns,
             inbounds,
             outbounds,
             routing,
         }
+    }
+
+    /// Generate routing configuration based on proxy mode
+    fn generate_routing(&self, mode: &str) -> RoutingConfig {
+        let rules = match mode {
+            "smart" => self.generate_smart_routing_rules(),
+            "global" => vec![], // Global mode: all traffic goes through proxy
+            "direct" => vec![
+                // Direct mode: all traffic goes direct
+                json!({
+                    "type": "field",
+                    "outboundTag": "direct",
+                    "network": "tcp,udp"
+                }),
+            ],
+            _ => vec![], // Default to global mode
+        };
+
+        RoutingConfig {
+            domain_strategy: Some("IPIfNonMatch".to_string()),
+            rules,
+        }
+    }
+
+    /// Generate smart routing rules (China direct, others proxy)
+    fn generate_smart_routing_rules(&self) -> Vec<serde_json::Value> {
+        vec![
+            // Private IP addresses go direct
+            json!({
+                "type": "field",
+                "outboundTag": "direct",
+                "ip": [
+                    "geoip:private"
+                ]
+            }),
+            // China domains go direct
+            json!({
+                "type": "field",
+                "outboundTag": "direct",
+                "domain": [
+                    "geosite:cn"
+                ]
+            }),
+            // China IPs go direct
+            json!({
+                "type": "field",
+                "outboundTag": "direct",
+                "ip": [
+                    "geoip:cn"
+                ]
+            }),
+            // Everything else goes through proxy (default, no rule needed)
+        ]
     }
 
     /// Generate outbound configuration based on protocol
@@ -680,6 +885,7 @@ impl XrayConfigGenerator {
             ProxyProtocol::Trojan => self.generate_trojan_outbound(proxy_config),
             ProxyProtocol::Shadowsocks => self.generate_shadowsocks_outbound(proxy_config),
             _ => OutboundConfig {
+                tag: None,
                 protocol: "freedom".to_string(),
                 settings: None,
                 stream_settings: None,
@@ -706,6 +912,7 @@ impl XrayConfigGenerator {
         let stream_settings = self.generate_stream_settings(proxy_config);
 
         OutboundConfig {
+            tag: None,
             protocol: "vmess".to_string(),
             settings: Some(settings),
             stream_settings,
@@ -731,6 +938,7 @@ impl XrayConfigGenerator {
         let stream_settings = self.generate_stream_settings(proxy_config);
 
         OutboundConfig {
+            tag: None,
             protocol: "vless".to_string(),
             settings: Some(settings),
             stream_settings,
@@ -752,6 +960,7 @@ impl XrayConfigGenerator {
         let stream_settings = self.generate_stream_settings(proxy_config);
 
         OutboundConfig {
+            tag: None,
             protocol: "trojan".to_string(),
             settings: Some(settings),
             stream_settings,
@@ -772,6 +981,7 @@ impl XrayConfigGenerator {
         });
 
         OutboundConfig {
+            tag: None,
             protocol: "shadowsocks".to_string(),
             settings: Some(settings),
             stream_settings: None,

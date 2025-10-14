@@ -183,6 +183,7 @@ v8ray/
 - Flutter SDK 3.16+
 - Rust 1.75+
 - Git
+- Dart SDK (Flutter 自带)
 
 1. **安装Flutter SDK**
 ```bash

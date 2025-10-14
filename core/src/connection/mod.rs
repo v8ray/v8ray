@@ -159,8 +159,20 @@ impl ConnectionManager {
     }
 
     /// Start a new connection with proxy configuration
-    pub async fn connect_with_config(&self, config: ProxyServerConfig) -> crate::Result<()> {
-        info!("Starting connection to: {}", config.name);
+    pub async fn connect_with_config(&self, config: ProxyServerConfig) -> crate::V8RayResult<()> {
+        self.connect_with_config_and_mode(config, "global").await
+    }
+
+    /// Start a new connection with proxy configuration and mode
+    pub async fn connect_with_config_and_mode(
+        &self,
+        config: ProxyServerConfig,
+        mode: &str,
+    ) -> crate::V8RayResult<()> {
+        info!(
+            "Starting connection to: {} with mode: {}",
+            config.name, mode
+        );
 
         // Disconnect existing connection if any
         if self.get_state().await != ConnectionState::Disconnected {
@@ -196,8 +208,8 @@ impl ConnectionManager {
             *current_config = Some(config.clone());
         }
 
-        // Generate Xray configuration
-        let xray_config = self.xray.generate_config(&config);
+        // Generate Xray configuration with mode
+        let xray_config = self.xray.generate_config_with_mode(&config, mode);
 
         // Start Xray with configuration
         match self.xray.start(xray_config).await {
@@ -225,7 +237,7 @@ impl ConnectionManager {
     }
 
     /// Start a new connection (legacy method for compatibility)
-    pub async fn connect(&self, name: String, server: String) -> crate::Result<()> {
+    pub async fn connect(&self, name: String, server: String) -> crate::V8RayResult<()> {
         warn!("Using legacy connect method, consider using connect_with_config");
 
         // Create a minimal config for legacy support
@@ -250,7 +262,7 @@ impl ConnectionManager {
     }
 
     /// Disconnect current connection
-    pub async fn disconnect(&self) -> crate::Result<()> {
+    pub async fn disconnect(&self) -> crate::V8RayResult<()> {
         info!("Disconnecting current connection");
 
         // Update state to disconnecting
@@ -308,7 +320,7 @@ impl ConnectionManager {
     }
 
     /// Update connection statistics
-    pub async fn update_stats(&self, upload: u64, download: u64) -> crate::Result<()> {
+    pub async fn update_stats(&self, upload: u64, download: u64) -> crate::V8RayResult<()> {
         // Update connection stats
         let mut current = self.current_connection.write().await;
         if let Some(ref mut conn) = *current {
@@ -457,7 +469,7 @@ impl ConnectionManager {
             return;
         }
 
-        let proxy_config = current_config.unwrap();
+        let _proxy_config = current_config.unwrap();
 
         info!("Starting auto-reconnect task");
 

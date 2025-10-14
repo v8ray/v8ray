@@ -126,3 +126,50 @@ if(NOT CMAKE_BUILD_TYPE MATCHES "Debug")
   install(FILES "${AOT_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
     COMPONENT Runtime)
 endif()
+
+# Install Rust library
+set(RUST_LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../core/target")
+if(CMAKE_BUILD_TYPE MATCHES "Release")
+  set(RUST_BUILD_TYPE "release")
+else()
+  set(RUST_BUILD_TYPE "debug")
+endif()
+
+set(RUST_LIBRARY "${RUST_LIB_DIR}/${RUST_BUILD_TYPE}/libv8ray_core.so")
+if(EXISTS "${RUST_LIBRARY}")
+  install(FILES "${RUST_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
+    COMPONENT Runtime)
+  message(STATUS "Will install Rust library: ${RUST_LIBRARY}")
+else()
+  message(WARNING "Rust library not found: ${RUST_LIBRARY}")
+endif()
+
+# Download Xray Core after installation
+set(PROJECT_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../..")
+set(POST_BUILD_SCRIPT "${PROJECT_ROOT}/scripts/post_build.sh")
+
+# Determine build mode for post_build.sh
+if(CMAKE_BUILD_TYPE MATCHES "Release")
+  set(BUILD_MODE "release")
+elseif(CMAKE_BUILD_TYPE MATCHES "Profile")
+  set(BUILD_MODE "profile")
+else()
+  set(BUILD_MODE "debug")
+endif()
+
+# Add custom command to download Xray Core after install
+install(CODE "
+  message(STATUS \"Downloading Xray Core...\")
+  execute_process(
+    COMMAND bash \"${POST_BUILD_SCRIPT}\" \"${BUILD_MODE}\"
+    WORKING_DIRECTORY \"${PROJECT_ROOT}\"
+    RESULT_VARIABLE XRAY_DOWNLOAD_RESULT
+    OUTPUT_VARIABLE XRAY_DOWNLOAD_OUTPUT
+    ERROR_VARIABLE XRAY_DOWNLOAD_ERROR
+  )
+  if(NOT XRAY_DOWNLOAD_RESULT EQUAL 0)
+    message(WARNING \"Failed to download Xray Core: \${XRAY_DOWNLOAD_ERROR}\")
+  else()
+    message(STATUS \"Xray Core downloaded successfully\")
+  endif()
+  " COMPONENT Runtime)

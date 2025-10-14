@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/l10n/app_localizations.dart';
+import '../../core/providers/server_provider.dart';
 import '../../core/providers/subscription_provider.dart';
 import '../../core/utils/validators.dart';
 
@@ -147,16 +148,44 @@ class SubscriptionInput extends ConsumerWidget {
       return;
     }
 
-    // 更新订阅
-    await ref.read(subscriptionUpdateProvider.notifier).updateSubscription(url);
+    try {
+      // 更新订阅
+      await ref.read(subscriptionUpdateProvider.notifier).updateSubscription(url);
 
-    if (context.mounted) {
-      final updateState = ref.read(subscriptionUpdateProvider);
-      if (updateState.errorMessage == null) {
+      if (context.mounted) {
+        // 刷新服务器列表
+        await ref.read(serverProvider.notifier).refreshServers();
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.updateSuccess),
             backgroundColor: Theme.of(context).colorScheme.primary,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      // 错误已在 provider 中记录，这里只显示用户提示
+      if (context.mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.error_outline, color: Colors.white),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(l10n.updateFailed),
+                ),
+              ],
+            ),
+            backgroundColor: Theme.of(context).colorScheme.error,
+            duration: const Duration(seconds: 4),
+            action: SnackBarAction(
+              label: l10n.retry,
+              textColor: Colors.white,
+              onPressed: () => _updateSubscription(context, ref),
+            ),
           ),
         );
       }

@@ -58,6 +58,15 @@ class StorageKeys {
 
   /// 开机启动
   static const String startOnBoot = 'start_on_boot';
+
+  /// HTTP 代理端口
+  static const String httpProxyPort = 'http_proxy_port';
+
+  /// SOCKS 代理端口
+  static const String socksProxyPort = 'socks_proxy_port';
+
+  /// 系统代理自动设置
+  static const String autoSetSystemProxy = 'auto_set_system_proxy';
 }
 
 /// 路由路径

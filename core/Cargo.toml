@@ -10,6 +10,9 @@ homepage = "https://github.com/v8ray/v8ray"
 keywords = ["proxy", "xray", "vpn", "network", "cross-platform"]
 categories = ["network-programming", "command-line-utilities"]
 
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
+
 [lib]
 name = "v8ray_core"
 crate-type = ["cdylib", "staticlib", "rlib"]
@@ -59,16 +62,20 @@ chrono = { version = "0.4", features = ["serde"] }
 
 # URL parsing
 url = "2.4"
+urlencoding = "2.1"
 
 # Process management
 subprocess = "0.2"
+flutter_rust_bridge = "=2.11.1"
 
 # Platform specific
 [target.'cfg(windows)'.dependencies]
-winapi = { version = "0.3", features = ["winuser", "winreg", "processthreadsapi"] }
+winapi = { version = "0.3", features = ["winuser", "winreg", "processthreadsapi", "securitybaseapi", "winnt", "handleapi"] }
+winreg = "0.52"
 
 [target.'cfg(unix)'.dependencies]
 nix = "0.27"
+libc = "0.2"
 
 [target.'cfg(target_os = "macos")'.dependencies]
 core-foundation = "0.9"
@@ -91,6 +98,7 @@ serial_test = "3.0"
 # Build dependencies
 [build-dependencies]
 flutter_rust_bridge_codegen = "2.11"
+serde_json = "1.0"
 
 # Features
 [features]
@@ -113,7 +121,7 @@ rpath = false
 
 [profile.release]
 opt-level = 3
-debug = false
+debug = true  # 保留调试信息，确保日志可用
 split-debuginfo = "packed"
 debug-assertions = false
 overflow-checks = false

@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/l10n/app_localizations.dart';
 import '../../core/providers/connection_provider.dart';
+import '../../core/providers/server_provider.dart';
 import '../../core/providers/subscription_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/formatters.dart';
@@ -248,13 +249,14 @@ class ConnectionStatusCard extends ConsumerWidget {
   /// 处理连接
   Future<void> _handleConnect(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context)!;
-    final subscriptionUrl = ref.read(subscriptionUrlProvider);
+    final serverState = ref.read(serverProvider);
 
-    if (subscriptionUrl.isEmpty) {
+    // 检查是否有选中的服务器
+    if (!serverState.hasSelectedServer) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(l10n.pleaseEnterUrl),
+            content: Text(l10n.pleaseSelectNode),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -262,9 +264,10 @@ class ConnectionStatusCard extends ConsumerWidget {
       return;
     }
 
-    // TODO: 实际应该从订阅中选择一个节点
-    // 这里暂时使用模拟数据
-    await ref.read(connectionProvider.notifier).connect('Test Node');
+    final selectedServer = serverState.selectedServer!;
+
+    // 使用选中的服务器ID进行连接
+    await ref.read(connectionProvider.notifier).connect(selectedServer.id);
 
     if (context.mounted) {
       final connectionState = ref.read(connectionProvider);

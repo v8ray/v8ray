@@ -5,6 +5,7 @@
 
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 // ============================================================================
 // 数据类型定义
@@ -61,6 +62,25 @@ pub struct ConfigInfo {
     pub created_at: i64,
     /// 更新时间（Unix 时间戳）
     pub updated_at: i64,
+}
+
+/// 简化的代理服务器配置（用于 FFI）
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProxyServerConfig {
+    /// 服务器 ID
+    pub id: String,
+    /// 服务器名称
+    pub name: String,
+    /// 服务器地址
+    pub address: String,
+    /// 服务器端口
+    pub port: u16,
+    /// 协议类型
+    pub protocol: String,
+    /// 协议特定设置
+    pub settings: HashMap<String, serde_json::Value>,
+    /// 标签
+    pub tags: Vec<String>,
 }
 
 /// 流量统计
@@ -238,8 +258,20 @@ pub fn validate_config(config: ConfigInfo) -> Result<bool> {
 /// # 返回
 /// - `Ok(())`: 缓存成功
 /// - `Err(e)`: 缓存失败
-pub fn cache_proxy_config(config_id: String, config: crate::config::ProxyServerConfig) -> Result<()> {
+pub fn cache_proxy_config(config_id: String, config: ProxyServerConfig) -> Result<()> {
     crate::bridge::connection::cache_proxy_config(config_id, config)
+}
+
+/// 设置代理模式
+///
+/// # 参数
+/// - `mode`: 代理模式 ("global", "smart", "direct")
+///
+/// # 返回
+/// - `Ok(())`: 设置成功
+/// - `Err(e)`: 设置失败
+pub fn set_proxy_mode(mode: String) -> Result<()> {
+    crate::bridge::connection::set_proxy_mode(mode)
 }
 
 /// 连接到服务器
@@ -412,6 +444,18 @@ pub async fn get_servers_for_subscription(subscription_id: String) -> Result<Vec
     crate::bridge::subscription::get_servers_for_subscription(subscription_id).await
 }
 
+/// 获取服务器配置
+///
+/// # 参数
+/// - `server_id`: 服务器 ID
+///
+/// # 返回
+/// - `Ok(config)`: 服务器配置
+/// - `Err(e)`: 获取失败
+pub async fn get_server_config(server_id: String) -> Result<ProxyServerConfig> {
+    crate::bridge::subscription::get_server_config(server_id).await
+}
+
 /// 从存储加载订阅
 ///
 /// # 返回
@@ -419,4 +463,74 @@ pub async fn get_servers_for_subscription(subscription_id: String) -> Result<Vec
 /// - `Err(e)`: 加载失败
 pub async fn load_subscriptions_from_storage() -> Result<()> {
     crate::bridge::subscription::load_subscriptions_from_storage().await
+}
+
+// ============================================================================
+// 平台相关 API
+// ============================================================================
+
+/// 设置系统代理
+///
+/// # 参数
+/// - `http_port`: HTTP 代理端口
+/// - `socks_port`: SOCKS 代理端口
+///
+/// # 返回
+/// - `Ok(())`: 设置成功
+/// - `Err(e)`: 设置失败
+#[flutter_rust_bridge::frb(sync)]
+pub fn set_system_proxy(http_port: u16, socks_port: u16) -> Result<(), String> {
+    tracing::info!(
+        "FFI: set_system_proxy called with http_port={}, socks_port={}",
+        http_port,
+        socks_port
+    );
+    let result = crate::bridge::platform::set_system_proxy(http_port, socks_port);
+    if let Err(ref e) = result {
+        tracing::error!("FFI: set_system_proxy failed: {}", e);
+    } else {
+        tracing::info!("FFI: set_system_proxy succeeded");
+    }
+    result
+}
+
+/// 清除系统代理
+///
+/// # 返回
+/// - `Ok(())`: 清除成功
+/// - `Err(e)`: 清除失败
+#[flutter_rust_bridge::frb(sync)]
+pub fn clear_system_proxy() -> Result<(), String> {
+    crate::bridge::platform::clear_system_proxy()
+}
+
+/// 检查系统代理是否已设置
+///
+/// # 返回
+/// - `Ok(true)`: 代理已设置
+/// - `Ok(false)`: 代理未设置
+/// - `Err(e)`: 检查失败
+#[flutter_rust_bridge::frb(sync)]
+pub fn is_system_proxy_set() -> Result<bool, String> {
+    crate::bridge::platform::is_system_proxy_set()
+}
+
+/// 获取平台信息
+///
+/// # 返回
+/// 平台信息，包括操作系统、架构、版本和功能支持
+#[flutter_rust_bridge::frb(sync)]
+pub fn get_platform_info() -> crate::platform::PlatformInfo {
+    crate::bridge::platform::get_platform_information()
+}
+
+/// 检查是否有管理员权限
+///
+/// # 返回
+/// * `Ok(true)` - 有管理员权限
+/// * `Ok(false)` - 没有管理员权限
+/// * `Err(String)` - 检查失败
+#[flutter_rust_bridge::frb(sync)]
+pub fn has_admin_privileges() -> Result<bool, String> {
+    crate::bridge::platform::has_admin_privileges()
 }

@@ -8,128 +8,91 @@ on:
 env:
   CARGO_TERM_COLOR: always
   FLUTTER_VERSION: '3.16.0'
-  RUST_VERSION: '1.75.0'
 
 jobs:
-  create-release:
-    name: Create Release
-    runs-on: ubuntu-latest
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Get version from tag
-      id: get_version
-      run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-    
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: V8Ray ${{ steps.get_version.outputs.VERSION }}
-        draft: false
-        prerelease: false
-
-  build-and-upload:
-    name: Build and Upload
-    needs: create-release
+  build-and-release:
+    name: Build and Release
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         include:
           - os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
             flutter-target: linux
             asset-name: v8ray-linux-x64
+            asset-ext: tar.gz
           - os: windows-latest
-            target: x86_64-pc-windows-msvc
             flutter-target: windows
             asset-name: v8ray-windows-x64
+            asset-ext: zip
           - os: macos-latest
-            target: x86_64-apple-darwin
             flutter-target: macos
             asset-name: v8ray-macos-x64
-    
+            asset-ext: tar.gz
+
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Install Rust
       uses: dtolnay/rust-toolchain@stable
-      with:
-        toolchain: ${{ env.RUST_VERSION }}
-        targets: ${{ matrix.target }}
-    
+
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
         flutter-version: ${{ env.FLUTTER_VERSION }}
         cache: true
-    
+
     - name: Install Linux dependencies
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update -y
         sudo apt-get install -y ninja-build libgtk-3-dev
-    
-    - name: Build Rust release
-      run: cargo build --release --target ${{ matrix.target }}
+
+    - name: Build Rust library (release)
+      run: cargo build --release --lib
       working-directory: ./core
-    
+
     - name: Install Flutter dependencies
       run: flutter pub get
       working-directory: ./app
-    
+
     - name: Build Flutter release
       run: flutter build ${{ matrix.flutter-target }} --release
       working-directory: ./app
-    
+
+    - name: Download Xray Core (Linux/macOS)
+      if: matrix.os != 'windows-latest'
+      run: bash scripts/post_build.sh release
+
+    - name: Download Xray Core (Windows)
+      if: matrix.os == 'windows-latest'
+      run: scripts\post_build.bat release
+      shell: cmd
+
     - name: Package release (Linux)
       if: matrix.os == 'ubuntu-latest'
       run: |
-        mkdir -p release
-        cp -r app/build/linux/x64/release/bundle/* release/
-        cp core/target/${{ matrix.target }}/release/v8ray-core release/
-        tar -czf ${{ matrix.asset-name }}.tar.gz -C release .
-    
+        cd app/build/linux/x64/release/bundle
+        tar -czf ../../../../../${{ matrix.asset-name }}.tar.gz .
+
     - name: Package release (Windows)
       if: matrix.os == 'windows-latest'
       run: |
-        mkdir release
-        Copy-Item -Recurse app/build/windows/x64/runner/Release/* release/
-        Copy-Item core/target/${{ matrix.target }}/release/v8ray-core.exe release/
-        Compress-Archive -Path release/* -DestinationPath ${{ matrix.asset-name }}.zip
-    
+        cd app/build/windows/x64/runner/Release
+        Compress-Archive -Path * -DestinationPath ../../../../../${{ matrix.asset-name }}.zip
+      shell: pwsh
+
     - name: Package release (macOS)
       if: matrix.os == 'macos-latest'
       run: |
-        mkdir -p release
-        cp -r app/build/macos/Build/Products/Release/* release/
-        cp core/target/${{ matrix.target }}/release/v8ray-core release/
-        tar -czf ${{ matrix.asset-name }}.tar.gz -C release .
-    
-    - name: Upload Release Asset (Linux/macOS)
-      if: matrix.os != 'windows-latest'
-      uses: actions/upload-release-asset@v1
+        cd app/build/macos/Build/Products/Release
+        tar -czf ../../../../../${{ matrix.asset-name }}.tar.gz .
+
+    - name: Upload Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: ${{ matrix.asset-name }}.${{ matrix.asset-ext }}
+        draft: false
+        prerelease: false
+        generate_release_notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ needs.create-release.outputs.upload_url }}
-        asset_path: ./${{ matrix.asset-name }}.tar.gz
-        asset_name: ${{ matrix.asset-name }}.tar.gz
-        asset_content_type: application/gzip
-    
-    - name: Upload Release Asset (Windows)
-      if: matrix.os == 'windows-latest'
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ needs.create-release.outputs.upload_url }}
-        asset_path: ./${{ matrix.asset-name }}.zip
-        asset_name: ${{ matrix.asset-name }}.zip
-        asset_content_type: application/zip

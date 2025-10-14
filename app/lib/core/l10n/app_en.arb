@@ -5,6 +5,31 @@
   "@appName": {
     "description": "Application name"
   },
+
+  "errorAdminPrivilegesRequired": "Administrator Privileges Required",
+  "@errorAdminPrivilegesRequired": {
+    "description": "Error title when admin privileges are required"
+  },
+
+  "errorAdminPrivilegesMessage": "V8Ray requires administrator/root privileges to manage system proxy settings.\n\nPlease run the application with administrator privileges:\n• Linux/macOS: sudo ./v8ray\n• Windows: Right-click and select \"Run as administrator\"",
+  "@errorAdminPrivilegesMessage": {
+    "description": "Error message when admin privileges are required"
+  },
+
+  "errorInitializationFailed": "Initialization Failed",
+  "@errorInitializationFailed": {
+    "description": "Error title when initialization fails"
+  },
+
+  "errorPermissionCheckFailed": "Permission Check Failed",
+  "@errorPermissionCheckFailed": {
+    "description": "Error title when permission check fails"
+  },
+
+  "exit": "Exit",
+  "@exit": {
+    "description": "Exit button"
+  },
   
   "simpleMode": "Simple Mode",
   "@simpleMode": {
@@ -235,10 +260,60 @@
   "@clear": {
     "description": "Clear button"
   },
-  
+
+  "close": "Close",
+  "@close": {
+    "description": "Close button"
+  },
+
+  "moreInfo": "More Info",
+  "@moreInfo": {
+    "description": "More information button"
+  },
+
   "paste": "Paste",
   "@paste": {
     "description": "Paste button"
+  },
+
+  "noAdminPrivileges": "Not running with administrator privileges",
+  "@noAdminPrivileges": {
+    "description": "Warning when app is not running as admin"
+  },
+
+  "noAdminPrivilegesHint": "System proxy settings may require administrator privileges. If you encounter issues, please restart the application as administrator.",
+  "@noAdminPrivilegesHint": {
+    "description": "Hint for running as administrator"
+  },
+
+  "adminPrivilegesRequired": "Administrator Privileges Required",
+  "@adminPrivilegesRequired": {
+    "description": "Dialog title for admin privileges"
+  },
+
+  "adminPrivilegesExplanation": "Modifying system proxy settings typically requires administrator privileges. If you encounter permission errors when enabling system proxy, please follow the instructions below to run the application as administrator.",
+  "@adminPrivilegesExplanation": {
+    "description": "Explanation of why admin privileges are needed"
+  },
+
+  "howToRunAsAdmin": "How to Run as Administrator",
+  "@howToRunAsAdmin": {
+    "description": "Section title for admin instructions"
+  },
+
+  "windowsAdminInstructions": "Right-click the application icon and select 'Run as administrator'",
+  "@windowsAdminInstructions": {
+    "description": "Instructions for Windows"
+  },
+
+  "macosAdminInstructions": "Run with sudo command in Terminal, or grant permissions in System Preferences",
+  "@macosAdminInstructions": {
+    "description": "Instructions for macOS"
+  },
+
+  "linuxAdminInstructions": "Run with sudo command, or add user to appropriate permission groups",
+  "@linuxAdminInstructions": {
+    "description": "Instructions for Linux"
   },
 
   "globalModeDescription": "All traffic goes through proxy",
@@ -269,6 +344,271 @@
   "saveSuccess": "Saved successfully",
   "@saveSuccess": {
     "description": "Save success message"
+  },
+
+  "nodeSelection": "Node Selection",
+  "@nodeSelection": {
+    "description": "Node selection label"
+  },
+
+  "selectNode": "Select Node",
+  "@selectNode": {
+    "description": "Select node button"
+  },
+
+  "pleaseSelectNode": "Please select a node first",
+  "@pleaseSelectNode": {
+    "description": "Please select node error message"
+  },
+
+  "noServersAvailable": "No servers available",
+  "@noServersAvailable": {
+    "description": "No servers available message"
+  },
+
+  "pleaseUpdateSubscription": "Please update subscription to get servers",
+  "@pleaseUpdateSubscription": {
+    "description": "Please update subscription hint"
+  },
+
+  "totalServers": "Total Servers",
+  "@totalServers": {
+    "description": "Total servers label"
+  },
+
+  "refresh": "Refresh",
+  "@refresh": {
+    "description": "Refresh button"
+  },
+
+  "change": "Change",
+  "@change": {
+    "description": "Change button"
+  },
+
+  "unknownError": "An unknown error occurred",
+  "@unknownError": {
+    "description": "Unknown error message"
+  },
+
+  "networkError": "Network Error",
+  "@networkError": {
+    "description": "Network error title"
+  },
+
+  "networkTimeoutError": "Network request timed out. Please check your internet connection and try again.",
+  "@networkTimeoutError": {
+    "description": "Network timeout error message"
+  },
+
+  "dnsResolutionError": "Failed to resolve domain name. Please check your DNS settings.",
+  "@dnsResolutionError": {
+    "description": "DNS resolution error message"
+  },
+
+  "connectionRefusedError": "Connection refused. The server may be down or unreachable.",
+  "@connectionRefusedError": {
+    "description": "Connection refused error message"
+  },
+
+  "noInternetError": "No internet connection. Please check your network settings.",
+  "@noInternetError": {
+    "description": "No internet error message"
+  },
+
+  "sslCertificateError": "SSL certificate verification failed. The connection may not be secure.",
+  "@sslCertificateError": {
+    "description": "SSL certificate error message"
+  },
+
+  "subscriptionError": "Subscription Error",
+  "@subscriptionError": {
+    "description": "Subscription error title"
+  },
+
+  "invalidSubscriptionUrl": "Invalid subscription URL. Please check the URL and try again.",
+  "@invalidSubscriptionUrl": {
+    "description": "Invalid subscription URL error message"
+  },
+
+  "subscriptionParseError": "Failed to parse subscription data. The subscription format may be incorrect.",
+  "@subscriptionParseError": {
+    "description": "Subscription parse error message"
+  },
+
+  "emptySubscriptionError": "No servers found in subscription. Please check the subscription URL.",
+  "@emptySubscriptionError": {
+    "description": "Empty subscription error message"
+  },
+
+  "subscriptionNotFoundError": "Subscription not found. The URL may be incorrect or expired.",
+  "@subscriptionNotFoundError": {
+    "description": "Subscription not found error message"
+  },
+
+  "subscriptionUnauthorizedError": "Unauthorized access to subscription. Please check your credentials.",
+  "@subscriptionUnauthorizedError": {
+    "description": "Subscription unauthorized error message"
+  },
+
+  "connectionError": "Connection Error",
+  "@connectionError": {
+    "description": "Connection error title"
+  },
+
+  "connectionTimeoutError": "Connection timed out. Please try again.",
+  "@connectionTimeoutError": {
+    "description": "Connection timeout error message"
+  },
+
+  "noServerSelectedError": "No server selected. Please select a server first.",
+  "@noServerSelectedError": {
+    "description": "No server selected error message"
+  },
+
+  "alreadyConnectedError": "Already connected. Please disconnect first.",
+  "@alreadyConnectedError": {
+    "description": "Already connected error message"
+  },
+
+  "notConnectedError": "Not connected. Please connect first.",
+  "@notConnectedError": {
+    "description": "Not connected error message"
+  },
+
+  "configError": "Configuration Error",
+  "@configError": {
+    "description": "Configuration error title"
+  },
+
+  "invalidConfigError": "Invalid configuration. Please check your settings.",
+  "@invalidConfigError": {
+    "description": "Invalid config error message"
+  },
+
+  "missingConfigError": "Missing required configuration. Please complete your settings.",
+  "@missingConfigError": {
+    "description": "Missing config error message"
+  },
+
+  "permissionError": "Permission Error",
+  "@permissionError": {
+    "description": "Permission error title"
+  },
+
+  "vpnPermissionError": "VPN permission denied. Please grant VPN permission in system settings.",
+  "@vpnPermissionError": {
+    "description": "VPN permission error message"
+  },
+
+  "networkPermissionError": "Network permission denied. Please grant network permission.",
+  "@networkPermissionError": {
+    "description": "Network permission error message"
+  },
+
+  "storagePermissionError": "Storage permission denied. Please grant storage permission.",
+  "@storagePermissionError": {
+    "description": "Storage permission error message"
+  },
+
+  "networkErrorSuggestion": "Please check your internet connection and try again.",
+  "@networkErrorSuggestion": {
+    "description": "Network error suggestion"
+  },
+
+  "subscriptionErrorSuggestion": "Please verify the subscription URL and try updating again.",
+  "@subscriptionErrorSuggestion": {
+    "description": "Subscription error suggestion"
+  },
+
+  "connectionErrorSuggestion": "Please check your server settings and network connection.",
+  "@connectionErrorSuggestion": {
+    "description": "Connection error suggestion"
+  },
+
+  "permissionErrorSuggestion": "Please grant the required permissions in system settings.",
+  "@permissionErrorSuggestion": {
+    "description": "Permission error suggestion"
+  },
+
+  "retry": "Retry",
+  "@retry": {
+    "description": "Retry button text"
+  },
+
+  "retrying": "Retrying...",
+  "@retrying": {
+    "description": "Retrying status text"
+  },
+
+  "retryIn": "Retry in {seconds}s",
+  "@retryIn": {
+    "description": "Retry countdown text",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+
+  "loading": "Loading...",
+  "@loading": {
+    "description": "Loading text"
+  },
+
+  "pleaseWait": "Please wait...",
+  "@pleaseWait": {
+    "description": "Please wait text"
+  },
+
+  "operationInProgress": "Operation in progress...",
+  "@operationInProgress": {
+    "description": "Operation in progress text"
+  },
+
+  "systemProxy": "System Proxy",
+  "@systemProxy": {
+    "description": "System proxy title"
+  },
+
+  "proxySettings": "Proxy Settings",
+  "@proxySettings": {
+    "description": "Proxy settings title"
+  },
+
+  "systemProxyEnabled": "System proxy is enabled",
+  "@systemProxyEnabled": {
+    "description": "System proxy enabled status"
+  },
+
+  "systemProxyDisabled": "System proxy is disabled",
+  "@systemProxyDisabled": {
+    "description": "System proxy disabled status"
+  },
+
+  "systemProxyEnabledSuccess": "System proxy enabled successfully",
+  "@systemProxyEnabledSuccess": {
+    "description": "System proxy enabled success message"
+  },
+
+  "systemProxyDisabledSuccess": "System proxy disabled successfully",
+  "@systemProxyDisabledSuccess": {
+    "description": "System proxy disabled success message"
+  },
+
+  "systemProxyError": "Failed to change system proxy settings",
+  "@systemProxyError": {
+    "description": "System proxy error message"
+  },
+
+  "autoSetSystemProxy": "Auto set system proxy",
+  "@autoSetSystemProxy": {
+    "description": "Auto set system proxy option"
+  },
+
+  "autoSetSystemProxyDescription": "Automatically set system proxy when connected",
+  "@autoSetSystemProxyDescription": {
+    "description": "Auto set system proxy description"
   }
 }
 

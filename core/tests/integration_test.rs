@@ -48,9 +48,9 @@ async fn test_config_integration() {
 #[tokio::test]
 #[ignore] // Requires Xray binary
 async fn test_connection_integration() {
+    use std::collections::HashMap;
     use v8ray_core::config::{ProxyProtocol, ProxyServerConfig};
     use v8ray_core::connection::*;
-    use std::collections::HashMap;
 
     let manager = ConnectionManager::new();
 

@@ -4,8 +4,12 @@
 
 use super::{Server, Subscription, SubscriptionStatus};
 use crate::error::{StorageError, StorageResult};
-use sqlx::{sqlite::SqlitePool, Row};
+use sqlx::{
+    sqlite::{SqliteConnectOptions, SqlitePool},
+    Row,
+};
 use std::path::Path;
+use std::str::FromStr;
 use tracing::{debug, info};
 use uuid::Uuid;
 
@@ -18,10 +22,14 @@ pub struct SubscriptionStorage {
 impl SubscriptionStorage {
     /// Create a new storage manager with the given database path
     pub async fn new<P: AsRef<Path>>(db_path: P) -> StorageResult<Self> {
-        let db_url = format!("sqlite:{}", db_path.as_ref().display());
-        info!("Opening subscription database: {}", db_url);
+        let path = db_path.as_ref();
+        info!("Opening subscription database: {}", path.display());
 
-        let pool = SqlitePool::connect(&db_url).await?;
+        // Use SqliteConnectOptions for better control
+        let options = SqliteConnectOptions::from_str(&format!("sqlite://{}", path.display()))?
+            .create_if_missing(true);
+
+        let pool = SqlitePool::connect_with(options).await?;
 
         let storage = Self { pool };
         storage.init_tables().await?;

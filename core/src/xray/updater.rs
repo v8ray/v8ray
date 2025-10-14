@@ -217,27 +217,23 @@ impl XrayUpdater {
             )));
         }
 
-        let total_size = response.content_length().unwrap_or(0);
+        let _total_size = response.content_length().unwrap_or(0);
         let temp_path = std::env::temp_dir().join(format!("xray-{}.zip", version));
 
-        let mut file = fs::File::create(&temp_path)
-            .await
-            .map_err(|e| XrayError::Io(e))?;
-
-        let mut downloaded: u64 = 0;
+        let mut file = fs::File::create(&temp_path).await.map_err(XrayError::Io)?;
         let bytes = response
             .bytes()
             .await
             .map_err(|e| XrayError::Process(format!("Download error: {}", e)))?;
 
-        file.write_all(&bytes).await.map_err(|e| XrayError::Io(e))?;
+        file.write_all(&bytes).await.map_err(XrayError::Io)?;
 
-        downloaded = bytes.len() as u64;
+        let downloaded = bytes.len() as u64;
 
         let mut p = self.progress.write().await;
         *p = 1.0;
 
-        file.flush().await.map_err(|e| XrayError::Io(e))?;
+        file.flush().await.map_err(XrayError::Io)?;
 
         tracing::info!("Downloaded {} bytes to {:?}", downloaded, temp_path);
         Ok(temp_path)
@@ -251,7 +247,7 @@ impl XrayUpdater {
             let backup_path = binary_path.with_extension("bak");
             fs::copy(&binary_path, &backup_path)
                 .await
-                .map_err(|e| XrayError::Io(e))?;
+                .map_err(XrayError::Io)?;
             tracing::info!("Backed up current binary to {:?}", backup_path);
         }
 
@@ -305,7 +301,7 @@ impl XrayUpdater {
 
         fs::copy(&backup_path, &binary_path)
             .await
-            .map_err(|e| XrayError::Io(e))?;
+            .map_err(XrayError::Io)?;
 
         tracing::info!("Rolled back to backup version");
         Ok(())
