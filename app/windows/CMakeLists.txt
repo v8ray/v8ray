@@ -108,19 +108,30 @@ install(FILES "${AOT_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_DATA_DIR}"
   COMPONENT Runtime)
 
 # Install Rust library (v8ray_core.dll)
+# Note: Windows uses multi-config generator, so we need to handle both Debug and Release
+# We use install(CODE) to check file existence at install time, not configure time
 set(RUST_LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../core/target")
-if(CMAKE_BUILD_TYPE MATCHES "Release" OR CMAKE_BUILD_TYPE MATCHES "Profile")
-  set(RUST_BUILD_TYPE "release")
-else()
-  set(RUST_BUILD_TYPE "debug")
-endif()
 
-set(RUST_LIBRARY "${RUST_LIB_DIR}/${RUST_BUILD_TYPE}/v8ray_core.dll")
-if(EXISTS "${RUST_LIBRARY}")
-  install(FILES "${RUST_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
-    COMPONENT Runtime)
-  message(STATUS "Will install Rust library: ${RUST_LIBRARY}")
-else()
-  message(WARNING "Rust library not found: ${RUST_LIBRARY}")
-  message(WARNING "Please build Rust library first: cd core && cargo build --lib")
-endif()
+# For Release and Profile builds, install release DLL
+install(CODE "
+  set(RUST_LIBRARY \"${RUST_LIB_DIR}/release/v8ray_core.dll\")
+  if(EXISTS \"\${RUST_LIBRARY}\")
+    message(STATUS \"Installing Rust library: \${RUST_LIBRARY}\")
+    file(INSTALL \"\${RUST_LIBRARY}\" DESTINATION \"${INSTALL_BUNDLE_LIB_DIR}\")
+  else()
+    message(WARNING \"Rust library not found: \${RUST_LIBRARY}\")
+    message(WARNING \"Please build Rust library first: cd core && cargo build --release --lib\")
+  endif()
+" CONFIGURATIONS Release;Profile COMPONENT Runtime)
+
+# For Debug builds, install debug DLL
+install(CODE "
+  set(RUST_LIBRARY \"${RUST_LIB_DIR}/debug/v8ray_core.dll\")
+  if(EXISTS \"\${RUST_LIBRARY}\")
+    message(STATUS \"Installing Rust library: \${RUST_LIBRARY}\")
+    file(INSTALL \"\${RUST_LIBRARY}\" DESTINATION \"${INSTALL_BUNDLE_LIB_DIR}\")
+  else()
+    message(WARNING \"Rust library not found: \${RUST_LIBRARY}\")
+    message(WARNING \"Please build Rust library first: cd core && cargo build --lib\")
+  endif()
+" CONFIGURATIONS Debug COMPONENT Runtime)

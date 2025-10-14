@@ -128,6 +128,7 @@ if(NOT CMAKE_BUILD_TYPE MATCHES "Debug")
 endif()
 
 # Install Rust library
+# Use install(CODE) to check file existence at install time, not configure time
 set(RUST_LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../core/target")
 if(CMAKE_BUILD_TYPE MATCHES "Release")
   set(RUST_BUILD_TYPE "release")
@@ -135,14 +136,16 @@ else()
   set(RUST_BUILD_TYPE "debug")
 endif()
 
-set(RUST_LIBRARY "${RUST_LIB_DIR}/${RUST_BUILD_TYPE}/libv8ray_core.so")
-if(EXISTS "${RUST_LIBRARY}")
-  install(FILES "${RUST_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
-    COMPONENT Runtime)
-  message(STATUS "Will install Rust library: ${RUST_LIBRARY}")
-else()
-  message(WARNING "Rust library not found: ${RUST_LIBRARY}")
-endif()
+install(CODE "
+  set(RUST_LIBRARY \"${RUST_LIB_DIR}/${RUST_BUILD_TYPE}/libv8ray_core.so\")
+  if(EXISTS \"\${RUST_LIBRARY}\")
+    message(STATUS \"Installing Rust library: \${RUST_LIBRARY}\")
+    file(INSTALL \"\${RUST_LIBRARY}\" DESTINATION \"${INSTALL_BUNDLE_LIB_DIR}\")
+  else()
+    message(WARNING \"Rust library not found: \${RUST_LIBRARY}\")
+    message(WARNING \"Please build Rust library first: cd core && cargo build --lib\")
+  endif()
+" COMPONENT Runtime)
 
 # Download Xray Core after installation
 set(PROJECT_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../..")
