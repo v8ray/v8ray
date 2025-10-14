@@ -211,8 +211,10 @@ mod tests {
 
     #[test]
     fn test_should_reconnect_unlimited() {
-        let mut config = ReconnectConfig::default();
-        config.max_attempts = 0; // Unlimited
+        let config = ReconnectConfig {
+            max_attempts: 0, // Unlimited
+            ..Default::default()
+        };
         assert!(config.should_reconnect(0));
         assert!(config.should_reconnect(100));
         assert!(config.should_reconnect(1000));
