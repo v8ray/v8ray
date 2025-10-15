@@ -210,7 +210,7 @@ impl PlatformOps for WindowsPlatform {
         }
     }
 
-    fn set_system_proxy(&self, http_port: u16, socks_port: u16) -> crate::V8RayResult<()> {
+    fn set_system_proxy(&self, _http_port: u16, socks_port: u16) -> crate::V8RayResult<()> {
         tracing::info!("Setting Windows system proxy using WinInet API: SOCKS={}", socks_port);
 
         // 使用 WinInet API 设置系统代理（参考 v2rayN 的实现）
