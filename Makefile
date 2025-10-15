@@ -3,6 +3,22 @@
 
 .PHONY: help setup bridge clean test fmt lint run-core run-app build build-debug build-release download-xray
 
+# 检测操作系统
+ifeq ($(OS),Windows_NT)
+    DETECTED_OS := windows
+    FLUTTER_PLATFORM := windows
+else
+    UNAME_S := $(shell uname -s)
+    ifeq ($(UNAME_S),Linux)
+        DETECTED_OS := linux
+        FLUTTER_PLATFORM := linux
+    endif
+    ifeq ($(UNAME_S),Darwin)
+        DETECTED_OS := macos
+        FLUTTER_PLATFORM := macos
+    endif
+endif
+
 # 默认目标
 help:
 	@echo "V8Ray Development Commands:"
@@ -79,31 +95,27 @@ bridge:
 build: build-debug
 
 build-debug:
-	@echo "=== Building V8Ray (Debug) ==="
+	@echo "=== Building V8Ray (Debug) for $(DETECTED_OS) ==="
 	@bash scripts/pre_build.sh debug
 	@echo ""
 	@echo "Step 2: Building Flutter application..."
-	@cd app && flutter build linux --debug
+	@cd app && flutter build $(FLUTTER_PLATFORM) --debug
 	@echo ""
 	@bash scripts/post_build.sh debug
 	@echo ""
 	@echo "✓ Build complete!"
-	@echo "Executable: app/build/linux/x64/debug/bundle/v8ray"
-	@echo "Xray Core: app/build/linux/x64/debug/bundle/bin/xray"
 
 # 构建应用 (release 模式)
 build-release:
-	@echo "=== Building V8Ray (Release) ==="
+	@echo "=== Building V8Ray (Release) for $(DETECTED_OS) ==="
 	@bash scripts/pre_build.sh release
 	@echo ""
 	@echo "Step 2: Building Flutter application..."
-	@cd app && flutter build linux --release
+	@cd app && flutter build $(FLUTTER_PLATFORM) --release
 	@echo ""
 	@bash scripts/post_build.sh release
 	@echo ""
 	@echo "✓ Build complete!"
-	@echo "Executable: app/build/linux/x64/release/bundle/v8ray"
-	@echo "Xray Core: app/build/linux/x64/release/bundle/bin/xray"
 
 # 清理构建产物
 clean:

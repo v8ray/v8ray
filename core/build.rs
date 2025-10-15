@@ -5,7 +5,7 @@
 /// 2. Xray Core binary download and integration
 use std::env;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 fn main() {
     // 只在需要时重新运行

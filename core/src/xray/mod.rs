@@ -497,7 +497,6 @@ impl XrayCore {
                 #[cfg(windows)]
                 {
                     // Windows: Use taskkill command
-                    use std::os::windows::process::CommandExt;
                     use std::process::Command;
 
                     // CREATE_NO_WINDOW flag to prevent console window from appearing
