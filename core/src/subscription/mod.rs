@@ -72,9 +72,9 @@ pub struct Server {
 /// Subscription manager
 pub struct SubscriptionManager {
     /// List of subscriptions
-    subscriptions: Vec<Subscription>,
+    pub(crate) subscriptions: Vec<Subscription>,
     /// List of servers from all subscriptions
-    servers: Vec<Server>,
+    pub(crate) servers: Vec<Server>,
     /// HTTP client for fetching subscriptions
     http_client: SubscriptionHttpClient,
 }

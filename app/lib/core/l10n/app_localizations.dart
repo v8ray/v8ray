@@ -950,6 +950,12 @@ abstract class AppLocalizations {
   /// **'Automatically set system proxy when connected'**
   String get autoSetSystemProxyDescription;
 
+  /// Message shown when trying to change proxy mode while connected
+  ///
+  /// In en, this message translates to:
+  /// **'Please disconnect first to change proxy mode'**
+  String get disconnectToChangeProxyMode;
+
   /// Xray Core version label
   ///
   /// In en, this message translates to:

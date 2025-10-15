@@ -215,7 +215,7 @@ impl SubscriptionStorage {
         let stream_settings_json = server
             .stream_settings
             .as_ref()
-            .map(|s| serde_json::to_string(s))
+            .map(serde_json::to_string)
             .transpose()
             .map_err(|e| StorageError::Serialization(e.to_string()))?;
 

@@ -472,6 +472,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Automatically set system proxy when connected';
 
   @override
+  String get disconnectToChangeProxyMode =>
+      'Please disconnect first to change proxy mode';
+
+  @override
   String get xrayCoreVersion => 'Xray Core Version';
 
   @override

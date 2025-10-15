@@ -85,6 +85,25 @@ Future<void> main() async {
 
     await api.initSubscriptionManager(dbPath: dbPath);
     appLogger.info('Subscription manager initialized successfully');
+
+    // 如果数据库文件存在，加载保存的订阅和服务器配置
+    final dbFile = File(dbPath);
+    if (dbFile.existsSync()) {
+      appLogger.info('Database file exists, loading saved configurations...');
+      try {
+        await api.loadSubscriptionsFromStorage();
+        appLogger.info('Loaded subscriptions and servers from database');
+      } catch (e, stackTrace) {
+        appLogger.warning(
+          'Failed to load configurations from database',
+          e,
+          stackTrace,
+        );
+        // 不退出应用，继续运行
+      }
+    } else {
+      appLogger.info('Database file does not exist, starting with empty state');
+    }
   } catch (e, stackTrace) {
     appLogger.error('Failed to initialize subscription manager', e, stackTrace);
     _showErrorAndExit(

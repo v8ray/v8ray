@@ -441,6 +441,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get autoSetSystemProxyDescription => '连接时自动设置系统代理';
 
   @override
+  String get disconnectToChangeProxyMode => '请先断开连接才能修改代理模式';
+
+  @override
   String get xrayCoreVersion => 'Xray Core 版本';
 
   @override

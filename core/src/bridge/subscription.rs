@@ -274,13 +274,23 @@ pub async fn load_subscriptions_from_storage() -> Result<()> {
     let subscriptions = storage.load_subscriptions().await?;
     let servers = storage.load_servers().await?;
 
+    // Release storage guard before acquiring manager lock
+    drop(storage_guard);
+
     // Load subscriptions and servers into manager
-    // Note: This is a simplified implementation
-    // In a real implementation, you would need to properly restore the manager state
+    let mut manager_guard = SUBSCRIPTION_MANAGER.write().await;
+    let manager = manager_guard
+        .as_mut()
+        .ok_or_else(|| anyhow::anyhow!("Subscription manager not initialized"))?;
+
+    // Directly access manager's internal fields to restore state
+    // This is a workaround since we don't have a public API to add existing subscriptions
+    manager.subscriptions = subscriptions;
+    manager.servers = servers.clone();
 
     tracing::info!(
         "Loaded {} subscriptions and {} servers from storage",
-        subscriptions.len(),
+        manager.subscriptions.len(),
         servers.len()
     );
 

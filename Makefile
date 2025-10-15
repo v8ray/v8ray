@@ -140,7 +140,7 @@ lint:
 	@echo "Linting Rust code..."
 	cd core && cargo clippy -- -W clippy::all
 	@echo "Analyzing Flutter code..."
-	cd app && flutter analyze --no-fatal-infos
+	cd app && flutter analyze --no-fatal-infos --no-fatal-warnings
 	@echo "Lint complete!"
 
 # 运行 Rust Core

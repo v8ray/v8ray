@@ -17,7 +17,7 @@ async fn test_complete_initialization() {
     // Verify version information
     let version = version();
     assert!(!version.is_empty());
-    assert!(version.starts_with("0.1.0"));
+    assert!(version.starts_with("0.2.1"));
 }
 
 /// Test configuration management integration

@@ -146,6 +146,7 @@
   "systemProxyError": "系统代理设置失败",
   "autoSetSystemProxy": "自动设置系统代理",
   "autoSetSystemProxyDescription": "连接时自动设置系统代理",
+  "disconnectToChangeProxyMode": "请先断开连接才能修改代理模式",
   "xrayCoreVersion": "Xray Core 版本",
   "xrayCoreCurrentVersion": "当前 Xray Core",
   "xrayCoreLatestVersion": "最新 Xray Core",

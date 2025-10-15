@@ -168,51 +168,9 @@ class ConnectionStatusCard extends ConsumerWidget {
           ),
         ),
 
-        // 提示文本
-        if (canInteract) ...[
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-            decoration: BoxDecoration(
-              color:
-                  isDisconnected
-                      ? statusColor.withOpacity(0.15)
-                      : Colors.transparent,
-              borderRadius: BorderRadius.circular(16),
-              border:
-                  isDisconnected
-                      ? Border.all(color: statusColor.withOpacity(0.3))
-                      : null,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  state.status == ConnectionStatus.connected
-                      ? Icons.power_off
-                      : Icons.power_settings_new,
-                  size: 16,
-                  color: statusColor,
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  state.status == ConnectionStatus.connected
-                      ? l10n.disconnect
-                      : l10n.connect,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: statusColor,
-                    fontWeight:
-                        isDisconnected ? FontWeight.bold : FontWeight.normal,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-
-        // 连接时长
+        // 连接时长（仅在已连接状态显示）
         if (state.connectedDuration != null) ...[
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
           Text(
             Formatters.formatDuration(state.connectedDuration!),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(

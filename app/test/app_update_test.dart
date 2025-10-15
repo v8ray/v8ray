@@ -10,7 +10,7 @@ void main() {
     test('Initial state should be idle', () {
       final notifier = AppUpdateNotifier();
       expect(notifier.state.status, UpdateStatus.idle);
-      expect(notifier.state.currentVersion, '0.1.0');
+      expect(notifier.state.currentVersion, '0.2.1');
     });
 
     test('Version comparison should work correctly', () {
@@ -73,7 +73,7 @@ void main() {
 
   group('UpdateStatus Tests', () {
     test('All update statuses should be defined', () {
-      expect(UpdateStatus.values.length, 8);
+      expect(UpdateStatus.values.length, 10);
       expect(UpdateStatus.values.contains(UpdateStatus.idle), true);
       expect(UpdateStatus.values.contains(UpdateStatus.checking), true);
       expect(UpdateStatus.values.contains(UpdateStatus.available), true);

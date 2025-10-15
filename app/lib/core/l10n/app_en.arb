@@ -731,6 +731,11 @@
     "description": "Auto set system proxy description"
   },
 
+  "disconnectToChangeProxyMode": "Please disconnect first to change proxy mode",
+  "@disconnectToChangeProxyMode": {
+    "description": "Message shown when trying to change proxy mode while connected"
+  },
+
   "xrayCoreVersion": "Xray Core Version",
   "@xrayCoreVersion": {
     "description": "Xray Core version label"

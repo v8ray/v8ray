@@ -215,8 +215,7 @@ impl PlatformOps for WindowsPlatform {
         use winreg::RegKey;
 
         tracing::info!(
-            "Setting Windows system proxy: HTTP={}, SOCKS={}",
-            http_port,
+            "Setting Windows system proxy: SOCKS={}",
             socks_port
         );
 
@@ -243,8 +242,8 @@ impl PlatformOps for WindowsPlatform {
                 ))
             })?;
 
-        // Set proxy server
-        let proxy_server = format!("http=127.0.0.1:{};https=127.0.0.1:{}", http_port, http_port);
+        // Set SOCKS proxy server
+        let proxy_server = format!("socks=127.0.0.1:{}", socks_port);
         internet_settings
             .set_value("ProxyServer", &proxy_server)
             .map_err(|e| {
@@ -268,7 +267,7 @@ impl PlatformOps for WindowsPlatform {
         // Notify system of proxy change
         Self::notify_proxy_change()?;
 
-        tracing::info!("Windows system proxy set successfully");
+        tracing::info!("Windows system proxy (SOCKS) set successfully");
         Ok(())
     }
 
@@ -423,8 +422,7 @@ impl PlatformOps for MacOSPlatform {
         use std::process::Command;
 
         tracing::info!(
-            "Setting macOS system proxy: HTTP={}, SOCKS={}",
-            http_port,
+            "Setting macOS system proxy: SOCKS={}",
             socks_port
         );
 
@@ -432,57 +430,7 @@ impl PlatformOps for MacOSPlatform {
         let services = Self::get_network_services()?;
 
         for service in services {
-            tracing::info!("Setting proxy for network service: {}", service);
-
-            // Set HTTP proxy
-            let output = Command::new("networksetup")
-                .args([
-                    "-setwebproxy",
-                    &service,
-                    "127.0.0.1",
-                    &http_port.to_string(),
-                ])
-                .output()
-                .map_err(|e| {
-                    crate::error::PlatformError::SystemProxy(format!(
-                        "Failed to set HTTP proxy: {}",
-                        e
-                    ))
-                })?;
-
-            if !output.status.success() {
-                tracing::warn!(
-                    "Failed to set HTTP proxy for {}: {}",
-                    service,
-                    String::from_utf8_lossy(&output.stderr)
-                );
-                continue;
-            }
-
-            // Set HTTPS proxy
-            let output = Command::new("networksetup")
-                .args([
-                    "-setsecurewebproxy",
-                    &service,
-                    "127.0.0.1",
-                    &http_port.to_string(),
-                ])
-                .output()
-                .map_err(|e| {
-                    crate::error::PlatformError::SystemProxy(format!(
-                        "Failed to set HTTPS proxy: {}",
-                        e
-                    ))
-                })?;
-
-            if !output.status.success() {
-                tracing::warn!(
-                    "Failed to set HTTPS proxy for {}: {}",
-                    service,
-                    String::from_utf8_lossy(&output.stderr)
-                );
-                continue;
-            }
+            tracing::info!("Setting SOCKS proxy for network service: {}", service);
 
             // Set SOCKS proxy
             let output = Command::new("networksetup")
@@ -509,7 +457,7 @@ impl PlatformOps for MacOSPlatform {
             }
         }
 
-        tracing::info!("macOS system proxy set successfully");
+        tracing::info!("macOS system proxy (SOCKS) set successfully");
         Ok(())
     }
 
@@ -522,19 +470,7 @@ impl PlatformOps for MacOSPlatform {
         let services = Self::get_network_services()?;
 
         for service in services {
-            tracing::info!("Clearing proxy for network service: {}", service);
-
-            // Clear HTTP proxy
-            Command::new("networksetup")
-                .args(["-setwebproxystate", &service, "off"])
-                .output()
-                .ok();
-
-            // Clear HTTPS proxy
-            Command::new("networksetup")
-                .args(["-setsecurewebproxystate", &service, "off"])
-                .output()
-                .ok();
+            tracing::info!("Clearing SOCKS proxy for network service: {}", service);
 
             // Clear SOCKS proxy
             Command::new("networksetup")
@@ -543,7 +479,7 @@ impl PlatformOps for MacOSPlatform {
                 .ok();
         }
 
-        tracing::info!("macOS system proxy cleared successfully");
+        tracing::info!("macOS system proxy (SOCKS) cleared successfully");
         Ok(())
     }
 
@@ -652,18 +588,16 @@ impl PlatformOps for LinuxPlatform {
         }
     }
 
-    fn set_system_proxy(&self, http_port: u16, socks_port: u16) -> crate::V8RayResult<()> {
+    fn set_system_proxy(&self, _http_port: u16, socks_port: u16) -> crate::V8RayResult<()> {
         tracing::info!(
-            "Setting Linux system proxy: HTTP={}, SOCKS={}",
-            http_port,
+            "Setting Linux system proxy: SOCKS={}",
             socks_port
         );
 
-        let http_proxy = format!("http://127.0.0.1:{}", http_port);
         let socks_proxy = format!("socks5://127.0.0.1:{}", socks_port);
 
         // Try to set proxy using gsettings (GNOME/Ubuntu)
-        let gsettings_result = Self::set_gsettings_proxy(&http_proxy, &socks_proxy);
+        let gsettings_result = Self::set_gsettings_socks_proxy(&socks_proxy);
 
         if gsettings_result.is_ok() {
             tracing::info!("Successfully set system proxy using gsettings");
@@ -672,10 +606,6 @@ impl PlatformOps for LinuxPlatform {
 
         // Fallback: Set environment variables
         tracing::warn!("gsettings not available, using environment variables");
-        std::env::set_var("http_proxy", &http_proxy);
-        std::env::set_var("https_proxy", &http_proxy);
-        std::env::set_var("HTTP_PROXY", &http_proxy);
-        std::env::set_var("HTTPS_PROXY", &http_proxy);
         std::env::set_var("all_proxy", &socks_proxy);
         std::env::set_var("ALL_PROXY", &socks_proxy);
 
@@ -695,10 +625,6 @@ impl PlatformOps for LinuxPlatform {
 
         // Fallback: Clear environment variables
         tracing::warn!("gsettings not available, clearing environment variables");
-        std::env::remove_var("http_proxy");
-        std::env::remove_var("https_proxy");
-        std::env::remove_var("HTTP_PROXY");
-        std::env::remove_var("HTTPS_PROXY");
         std::env::remove_var("all_proxy");
         std::env::remove_var("ALL_PROXY");
 
@@ -744,7 +670,7 @@ impl PlatformOps for LinuxPlatform {
 
 #[cfg(target_os = "linux")]
 impl LinuxPlatform {
-    fn set_gsettings_proxy(http_proxy: &str, socks_proxy: &str) -> crate::V8RayResult<()> {
+    fn set_gsettings_socks_proxy(socks_proxy: &str) -> crate::V8RayResult<()> {
         use std::process::Command;
 
         // 获取实际用户（如果是通过 sudo 运行的）
@@ -781,26 +707,6 @@ impl LinuxPlatform {
         run_gsettings(&["set", "org.gnome.system.proxy", "mode", "manual"])?;
         tracing::info!("Successfully set proxy mode to manual");
 
-        // Extract host and port from http_proxy
-        let http_url = http_proxy.trim_start_matches("http://");
-        let parts: Vec<&str> = http_url.split(':').collect();
-        if parts.len() != 2 {
-            return Err(crate::error::PlatformError::SystemProxy(
-                "Invalid proxy URL format".to_string(),
-            )
-            .into());
-        }
-        let host = parts[0];
-        let port = parts[1];
-
-        // Set HTTP proxy
-        run_gsettings(&["set", "org.gnome.system.proxy.http", "host", host])?;
-        run_gsettings(&["set", "org.gnome.system.proxy.http", "port", port])?;
-
-        // Set HTTPS proxy
-        run_gsettings(&["set", "org.gnome.system.proxy.https", "host", host])?;
-        run_gsettings(&["set", "org.gnome.system.proxy.https", "port", port])?;
-
         // Extract host and port from socks_proxy
         let socks_url = socks_proxy
             .trim_start_matches("socks5://")
@@ -819,7 +725,7 @@ impl LinuxPlatform {
         run_gsettings(&["set", "org.gnome.system.proxy.socks", "host", socks_host])?;
         run_gsettings(&["set", "org.gnome.system.proxy.socks", "port", socks_port])?;
 
-        tracing::info!("Successfully set all proxy settings");
+        tracing::info!("Successfully set SOCKS proxy settings");
         Ok(())
     }
 

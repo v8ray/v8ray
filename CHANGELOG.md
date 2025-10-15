@@ -5,6 +5,63 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2025-10-15
+
+### ✨ 改进
+
+#### 系统代理优化
+- **使用 SOCKS5 代理**: 系统代理从 HTTP/HTTPS 改为 SOCKS5 协议
+  - 支持更多类型的应用程序和协议
+  - 更好的兼容性和性能
+  - 适用于所有平台（Windows、macOS、Linux）
+
+#### 用户体验改进
+- **代理模式锁定**: 连接时锁定代理模式选择器
+  - 防止在连接状态下误修改代理模式
+  - 显示锁定图标和提示信息
+  - 提示用户需先断开连接才能修改
+
+#### 数据库加载
+- **自动加载配置**: 应用启动时自动加载数据库中保存的订阅和服务器配置
+  - 无需重新添加订阅
+  - 保持上次使用的配置
+
+### 🐛 修复
+
+- 修复无法连接 Shadowsocks 和 Trojan 协议服务器的问题
+- 修复 UI 界面冗余元素（移除未连接状态下的"连接"按钮和已连接状态下的"断开"按钮）
+
+### 📝 文档
+
+- 添加 SOCKS 代理和代理模式锁定功能文档
+- 添加 UI 改进和数据库加载文档
+- 更新版本管理文档
+
+## [0.2.0] - 2025-10-15
+
+### ✨ 新增功能
+
+#### 自动更新
+- **应用自动更新**: 支持检查和安装应用更新
+  - 自动检测新版本
+  - 下载更新包
+  - 自动安装（Windows、Linux、macOS）
+- **Xray Core 更新**: 支持检查和更新 Xray Core
+  - 独立于应用版本
+  - 自动下载和替换
+
+#### 版本管理
+- **统一版本管理**: 集中管理版本信息
+  - Rust 端：`core/src/version.rs`
+  - Flutter 端：`app/lib/core/constants/app_constants.dart`
+  - HTTP User-Agent 使用统一版本号
+
+### 📝 文档
+
+- 添加版本管理文档
+- 添加发布流程文档
+- 更新 README
+
 ## [0.1.0] - 2025-10-14
 
 ### 🎉 首个 MVP 版本发布
