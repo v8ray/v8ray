@@ -124,6 +124,77 @@ class AppLocalizationsZh extends AppLocalizations {
   String get checkUpdate => '检查更新';
 
   @override
+  String get currentVersion => '当前版本';
+
+  @override
+  String get latestVersion => '最新版本';
+
+  @override
+  String get checkingUpdate => '正在检查更新...';
+
+  @override
+  String get updateAvailable => '发现新版本';
+
+  @override
+  String get noUpdateAvailable => '已是最新版本';
+
+  @override
+  String get downloadUpdate => '下载更新';
+
+  @override
+  String get downloading => '下载中...';
+
+  @override
+  String get downloadProgress => '下载进度';
+
+  @override
+  String get updateDownloaded => '更新已下载';
+
+  @override
+  String get installUpdate => '安装更新';
+
+  @override
+  String get restartToUpdate => '重启以更新';
+
+  @override
+  String get updateInstalled => '更新已安装';
+
+  @override
+  String get restartToApplyUpdate => '更新已成功安装，请重启应用以应用更新。';
+
+  @override
+  String get restartNow => '立即重启';
+
+  @override
+  String get updateInstallFailed => '安装更新失败';
+
+  @override
+  String get unknownError => '发生未知错误';
+
+  @override
+  String get close => '关闭';
+
+  @override
+  String get updateCheckFailed => '检查更新失败';
+
+  @override
+  String get updateDownloadFailed => '下载更新失败';
+
+  @override
+  String newVersionAvailable(String version) {
+    return '发现新版本 $version';
+  }
+
+  @override
+  String get updateNow => '立即更新';
+
+  @override
+  String get later => '稍后';
+
+  @override
+  String get releaseNotes => '更新说明';
+
+  @override
   String get switchToSimpleMode => '切换到简单模式';
 
   @override
@@ -164,9 +235,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get clear => '清空';
-
-  @override
-  String get close => '关闭';
 
   @override
   String get moreInfo => '更多信息';
@@ -240,9 +308,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get change => '更改';
-
-  @override
-  String get unknownError => '发生未知错误';
 
   @override
   String get networkError => '网络错误';
@@ -374,4 +439,57 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get autoSetSystemProxyDescription => '连接时自动设置系统代理';
+
+  @override
+  String get xrayCoreVersion => 'Xray Core 版本';
+
+  @override
+  String get xrayCoreCurrentVersion => '当前 Xray Core';
+
+  @override
+  String get xrayCoreLatestVersion => '最新 Xray Core';
+
+  @override
+  String get checkingXrayCoreUpdate => '正在检查 Xray Core 更新...';
+
+  @override
+  String get xrayCoreUpdateAvailable => 'Xray Core 有新版本';
+
+  @override
+  String get noXrayCoreUpdateAvailable => 'Xray Core 已是最新版本';
+
+  @override
+  String get downloadXrayCoreUpdate => '下载 Xray Core 更新';
+
+  @override
+  String get downloadingXrayCore => '正在下载 Xray Core...';
+
+  @override
+  String get xrayCoreUpdateDownloaded => 'Xray Core 更新已下载';
+
+  @override
+  String get installXrayCoreUpdate => '安装 Xray Core 更新';
+
+  @override
+  String get xrayCoreUpdateCheckFailed => '检查 Xray Core 更新失败';
+
+  @override
+  String get xrayCoreUpdateDownloadFailed => '下载 Xray Core 更新失败';
+
+  @override
+  String newXrayCoreVersionAvailable(String version) {
+    return '发现新的 Xray Core 版本 $version';
+  }
+
+  @override
+  String get xrayCoreNotInstalled => 'Xray Core 未安装';
+
+  @override
+  String get checkXrayCoreUpdate => '检查 Xray Core 更新';
+
+  @override
+  String get xrayCoreUpdateInstalled => 'Xray Core 更新成功';
+
+  @override
+  String get xrayCoreUpdateInstallFailed => '安装 Xray Core 更新失败';
 }

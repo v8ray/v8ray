@@ -15,8 +15,8 @@ class AppColors {
   /// 连接中 - 橙色
   static const Color connecting = Color(0xFFFF9800);
 
-  /// 未连接 - 灰色
-  static const Color disconnected = Color(0xFF9E9E9E);
+  /// 未连接 - 红色
+  static const Color disconnected = Color(0xFFF44336);
 
   /// 错误 - 红色
   static const Color error = Color(0xFFF44336);

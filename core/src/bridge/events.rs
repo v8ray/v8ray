@@ -80,7 +80,7 @@ pub(crate) fn send_event(event: V8RayEvent) -> Result<()> {
 
 #[cfg(test)]
 mod tests {
-    use super::super::api::{ConnectionStatus, TrafficStats};
+    use super::super::api::ConnectionStatus;
     use super::*;
     use futures::StreamExt;
     use serial_test::serial;
@@ -122,16 +122,6 @@ mod tests {
         })
         .unwrap();
 
-        send_event(V8RayEvent::TrafficStatsUpdated {
-            stats: TrafficStats {
-                upload_speed: 1000,
-                download_speed: 2000,
-                total_upload: 10000,
-                total_download: 20000,
-            },
-        })
-        .unwrap();
-
         send_event(V8RayEvent::Log {
             level: "info".to_string(),
             message: "Test log".to_string(),
@@ -142,12 +132,12 @@ mod tests {
         let mut count = 0;
         while let Some(_event) = stream.next().await {
             count += 1;
-            if count >= 3 {
+            if count >= 2 {
                 break;
             }
         }
 
-        assert_eq!(count, 3);
+        assert_eq!(count, 2);
     }
 
     #[test]

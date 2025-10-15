@@ -151,22 +151,6 @@ Future<ConnectionInfo> getConnectionInfo() =>
 Future<int> testLatency({required String configId}) =>
     V8RayBridge.instance.api.crateBridgeApiTestLatency(configId: configId);
 
-/// 获取流量统计
-///
-/// # 返回
-/// - `Ok(stats)`: 流量统计
-/// - `Err(e)`: 获取失败
-Future<TrafficStats> getTrafficStats() =>
-    V8RayBridge.instance.api.crateBridgeApiGetTrafficStats();
-
-/// 重置流量统计
-///
-/// # 返回
-/// - `Ok(())`: 重置成功
-/// - `Err(e)`: 重置失败
-Future<void> resetTrafficStats() =>
-    V8RayBridge.instance.api.crateBridgeApiResetTrafficStats();
-
 /// 初始化订阅管理器
 ///
 /// # 参数
@@ -305,6 +289,32 @@ void clearSystemProxy() =>
 /// - `Err(e)`: 检查失败
 bool isSystemProxySet() =>
     V8RayBridge.instance.api.crateBridgeApiIsSystemProxySet();
+
+/// 检查 Xray Core 更新
+///
+/// # 返回
+/// - `Ok(info)`: 更新信息
+/// - `Err(e)`: 检查失败
+Future<XrayCoreUpdateInfo> checkXrayCoreUpdate() =>
+    V8RayBridge.instance.api.crateBridgeApiCheckXrayCoreUpdate();
+
+/// 下载并安装 Xray Core 更新
+///
+/// # 参数
+/// - `version`: 要更新的版本号
+///
+/// # 返回
+/// - `Ok(())`: 更新成功
+/// - `Err(e)`: 更新失败
+Future<void> updateXrayCore({required String version}) =>
+    V8RayBridge.instance.api.crateBridgeApiUpdateXrayCore(version: version);
+
+/// 获取 Xray Core 下载进度
+///
+/// # 返回
+/// - 下载进度 (0.0 到 1.0)
+Future<double> getXrayCoreUpdateProgress() =>
+    V8RayBridge.instance.api.crateBridgeApiGetXrayCoreUpdateProgress();
 
 /// 获取平台信息
 ///
@@ -464,6 +474,7 @@ class ProxyServerConfig {
     required this.protocol,
     required this.settings,
     required this.tags,
+    this.streamSettings,
   });
 
   /// 服务器 ID
@@ -484,6 +495,9 @@ class ProxyServerConfig {
   /// 协议特定设置
   final Map<String, Value> settings;
 
+  /// 流设置 (传输层配置)
+  final Value? streamSettings;
+
   /// 标签
   final List<String> tags;
 
@@ -495,6 +509,7 @@ class ProxyServerConfig {
       port.hashCode ^
       protocol.hashCode ^
       settings.hashCode ^
+      streamSettings.hashCode ^
       tags.hashCode;
 
   @override
@@ -508,6 +523,7 @@ class ProxyServerConfig {
           port == other.port &&
           protocol == other.protocol &&
           settings == other.settings &&
+          streamSettings == other.streamSettings &&
           tags == other.tags;
 }
 
@@ -613,41 +629,47 @@ class SubscriptionInfo {
           status == other.status;
 }
 
-/// 流量统计
-class TrafficStats {
-  const TrafficStats({
-    required this.uploadSpeed,
-    required this.downloadSpeed,
-    required this.totalUpload,
-    required this.totalDownload,
+/// Xray Core 更新信息
+class XrayCoreUpdateInfo {
+  const XrayCoreUpdateInfo({
+    required this.hasUpdate,
+    required this.currentVersion,
+    required this.latestVersion,
+    required this.downloadUrl,
+    required this.fileSize,
   });
 
-  /// 上传速度（字节/秒）
-  final BigInt uploadSpeed;
+  /// 是否有更新
+  final bool hasUpdate;
 
-  /// 下载速度（字节/秒）
-  final BigInt downloadSpeed;
+  /// 当前版本
+  final String currentVersion;
 
-  /// 总上传流量（字节）
-  final BigInt totalUpload;
+  /// 最新版本
+  final String latestVersion;
 
-  /// 总下载流量（字节）
-  final BigInt totalDownload;
+  /// 下载 URL
+  final String downloadUrl;
+
+  /// 文件大小（字节）
+  final BigInt fileSize;
 
   @override
   int get hashCode =>
-      uploadSpeed.hashCode ^
-      downloadSpeed.hashCode ^
-      totalUpload.hashCode ^
-      totalDownload.hashCode;
+      hasUpdate.hashCode ^
+      currentVersion.hashCode ^
+      latestVersion.hashCode ^
+      downloadUrl.hashCode ^
+      fileSize.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TrafficStats &&
+      other is XrayCoreUpdateInfo &&
           runtimeType == other.runtimeType &&
-          uploadSpeed == other.uploadSpeed &&
-          downloadSpeed == other.downloadSpeed &&
-          totalUpload == other.totalUpload &&
-          totalDownload == other.totalDownload;
+          hasUpdate == other.hasUpdate &&
+          currentVersion == other.currentVersion &&
+          latestVersion == other.latestVersion &&
+          downloadUrl == other.downloadUrl &&
+          fileSize == other.fileSize;
 }

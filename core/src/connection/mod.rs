@@ -112,6 +112,8 @@ impl Default for ConnectionManager {
 impl ConnectionManager {
     /// Create a new connection manager
     pub fn new() -> Self {
+        let stats_collector = Arc::new(TrafficStatsCollector::default());
+
         Self {
             current_connection: Arc::new(RwLock::new(None)),
             history: Arc::new(RwLock::new(Vec::new())),
@@ -119,12 +121,14 @@ impl ConnectionManager {
             current_config: Arc::new(RwLock::new(None)),
             reconnect_config: Arc::new(RwLock::new(ReconnectConfig::default())),
             reconnect_cancel_tx: Arc::new(RwLock::new(None)),
-            stats_collector: Arc::new(TrafficStatsCollector::default()),
+            stats_collector,
         }
     }
 
     /// Create a new connection manager with existing Xray instance
     pub fn with_xray(xray: Arc<XrayCore>) -> Self {
+        let stats_collector = Arc::new(TrafficStatsCollector::default());
+
         Self {
             current_connection: Arc::new(RwLock::new(None)),
             history: Arc::new(RwLock::new(Vec::new())),
@@ -132,12 +136,14 @@ impl ConnectionManager {
             current_config: Arc::new(RwLock::new(None)),
             reconnect_config: Arc::new(RwLock::new(ReconnectConfig::default())),
             reconnect_cancel_tx: Arc::new(RwLock::new(None)),
-            stats_collector: Arc::new(TrafficStatsCollector::default()),
+            stats_collector,
         }
     }
 
     /// Create a new connection manager with custom reconnect config
     pub fn with_reconnect_config(reconnect_config: ReconnectConfig) -> Self {
+        let stats_collector = Arc::new(TrafficStatsCollector::default());
+
         Self {
             current_connection: Arc::new(RwLock::new(None)),
             history: Arc::new(RwLock::new(Vec::new())),
@@ -145,7 +151,7 @@ impl ConnectionManager {
             current_config: Arc::new(RwLock::new(None)),
             reconnect_config: Arc::new(RwLock::new(reconnect_config)),
             reconnect_cancel_tx: Arc::new(RwLock::new(None)),
-            stats_collector: Arc::new(TrafficStatsCollector::default()),
+            stats_collector,
         }
     }
 
@@ -219,6 +225,10 @@ impl ConnectionManager {
                 if let Some(ref mut conn) = *current {
                     conn.state = ConnectionState::Connected;
                 }
+
+                // 启动流量统计收集 (每秒收集一次)
+                self.start_stats_collection(Duration::from_secs(1)).await;
+
                 Ok(())
             }
             Err(e) => {

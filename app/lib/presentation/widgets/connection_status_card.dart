@@ -36,10 +36,6 @@ class ConnectionStatusCard extends ConsumerWidget {
             if (connectionState.isConnected ||
                 connectionState.isConnecting) ...[
               _buildNodeInfo(context, l10n, connectionState),
-              const SizedBox(height: 16),
-
-              // 速度信息
-              _buildSpeedInfo(context, l10n, connectionState),
             ] else ...[
               Text(
                 l10n.disconnected,
@@ -349,83 +345,6 @@ class ConnectionStatusCard extends ConsumerWidget {
               ),
             ),
           ],
-        ],
-      ),
-    );
-  }
-
-  /// 构建速度信息
-  Widget _buildSpeedInfo(
-    BuildContext context,
-    AppLocalizations l10n,
-    ProxyConnectionState state,
-  ) {
-    return Row(
-      children: [
-        // 上传速度
-        Expanded(
-          child: _buildSpeedItem(
-            context,
-            l10n.uploadSpeed,
-            Icons.arrow_upward,
-            Formatters.formatSpeed(state.uploadSpeed),
-            Theme.of(context).colorScheme.tertiary,
-          ),
-        ),
-        const SizedBox(width: 12),
-
-        // 下载速度
-        Expanded(
-          child: _buildSpeedItem(
-            context,
-            l10n.downloadSpeed,
-            Icons.arrow_downward,
-            Formatters.formatSpeed(state.downloadSpeed),
-            Theme.of(context).colorScheme.primary,
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// 构建速度项
-  Widget _buildSpeedItem(
-    BuildContext context,
-    String label,
-    IconData icon,
-    String value,
-    Color color,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.3), width: 1),
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 16, color: color),
-              const SizedBox(width: 4),
-              Text(
-                label,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodySmall?.copyWith(color: color),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: color,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
         ],
       ),
     );

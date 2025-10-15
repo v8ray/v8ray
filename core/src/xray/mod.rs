@@ -149,6 +149,7 @@ pub struct OutboundConfig {
     /// Settings
     pub settings: Option<serde_json::Value>,
     /// Stream settings
+    #[serde(rename = "streamSettings")]
     pub stream_settings: Option<serde_json::Value>,
 }
 
@@ -156,6 +157,7 @@ pub struct OutboundConfig {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RoutingConfig {
     /// Domain strategy
+    #[serde(rename = "domainStrategy")]
     pub domain_strategy: Option<String>,
     /// Rules
     pub rules: Vec<serde_json::Value>,
@@ -240,6 +242,11 @@ impl XrayCore {
     /// Get current status
     pub async fn get_status(&self) -> XrayStatus {
         self.status.read().await.clone()
+    }
+
+    /// Get updater reference
+    pub fn get_updater(&self) -> &XrayUpdater {
+        &self.updater
     }
 
     /// Set Xray binary path manually

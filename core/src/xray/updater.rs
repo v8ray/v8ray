@@ -43,7 +43,7 @@ impl XrayUpdater {
         Self {
             bin_dir,
             client: reqwest::Client::builder()
-                .user_agent("V8Ray/1.0")
+                .user_agent(crate::version::user_agent())
                 .timeout(std::time::Duration::from_secs(300))
                 .build()
                 .unwrap(),

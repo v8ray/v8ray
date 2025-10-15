@@ -190,6 +190,126 @@
   "@checkUpdate": {
     "description": "Check update button"
   },
+
+  "currentVersion": "Current Version",
+  "@currentVersion": {
+    "description": "Current version label"
+  },
+
+  "latestVersion": "Latest Version",
+  "@latestVersion": {
+    "description": "Latest version label"
+  },
+
+  "checkingUpdate": "Checking for updates...",
+  "@checkingUpdate": {
+    "description": "Checking update status"
+  },
+
+  "updateAvailable": "Update Available",
+  "@updateAvailable": {
+    "description": "Update available title"
+  },
+
+  "noUpdateAvailable": "You're up to date",
+  "@noUpdateAvailable": {
+    "description": "No update available message"
+  },
+
+  "downloadUpdate": "Download Update",
+  "@downloadUpdate": {
+    "description": "Download update button"
+  },
+
+  "downloading": "Downloading...",
+  "@downloading": {
+    "description": "Downloading status"
+  },
+
+  "downloadProgress": "Download Progress",
+  "@downloadProgress": {
+    "description": "Download progress label"
+  },
+
+  "updateDownloaded": "Update Downloaded",
+  "@updateDownloaded": {
+    "description": "Update downloaded message"
+  },
+
+  "installUpdate": "Install Update",
+  "@installUpdate": {
+    "description": "Install update button"
+  },
+
+  "restartToUpdate": "Restart to Update",
+  "@restartToUpdate": {
+    "description": "Restart to update message"
+  },
+
+  "updateInstalled": "Update Installed",
+  "@updateInstalled": {
+    "description": "Update installed message"
+  },
+
+  "restartToApplyUpdate": "The update has been successfully installed. Please restart the application to apply the update.",
+  "@restartToApplyUpdate": {
+    "description": "Restart to apply update message"
+  },
+
+  "restartNow": "Restart Now",
+  "@restartNow": {
+    "description": "Restart now button"
+  },
+
+  "updateInstallFailed": "Failed to Install Update",
+  "@updateInstallFailed": {
+    "description": "Update install failed message"
+  },
+
+  "unknownError": "Unknown Error",
+  "@unknownError": {
+    "description": "Unknown error message"
+  },
+
+  "close": "Close",
+  "@close": {
+    "description": "Close button"
+  },
+
+  "updateCheckFailed": "Failed to check for updates",
+  "@updateCheckFailed": {
+    "description": "Update check failed message"
+  },
+
+  "updateDownloadFailed": "Failed to download update",
+  "@updateDownloadFailed": {
+    "description": "Update download failed message"
+  },
+
+  "newVersionAvailable": "New version {version} is available",
+  "@newVersionAvailable": {
+    "description": "New version available message",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+
+  "updateNow": "Update Now",
+  "@updateNow": {
+    "description": "Update now button"
+  },
+
+  "later": "Later",
+  "@later": {
+    "description": "Later button"
+  },
+
+  "releaseNotes": "Release Notes",
+  "@releaseNotes": {
+    "description": "Release notes label"
+  },
   
   "switchToSimpleMode": "Switch to Simple Mode",
   "@switchToSimpleMode": {
@@ -609,6 +729,96 @@
   "autoSetSystemProxyDescription": "Automatically set system proxy when connected",
   "@autoSetSystemProxyDescription": {
     "description": "Auto set system proxy description"
+  },
+
+  "xrayCoreVersion": "Xray Core Version",
+  "@xrayCoreVersion": {
+    "description": "Xray Core version label"
+  },
+
+  "xrayCoreCurrentVersion": "Current Xray Core",
+  "@xrayCoreCurrentVersion": {
+    "description": "Current Xray Core version label"
+  },
+
+  "xrayCoreLatestVersion": "Latest Xray Core",
+  "@xrayCoreLatestVersion": {
+    "description": "Latest Xray Core version label"
+  },
+
+  "checkingXrayCoreUpdate": "Checking Xray Core update...",
+  "@checkingXrayCoreUpdate": {
+    "description": "Checking Xray Core update message"
+  },
+
+  "xrayCoreUpdateAvailable": "Xray Core Update Available",
+  "@xrayCoreUpdateAvailable": {
+    "description": "Xray Core update available message"
+  },
+
+  "noXrayCoreUpdateAvailable": "Xray Core is up to date",
+  "@noXrayCoreUpdateAvailable": {
+    "description": "No Xray Core update available message"
+  },
+
+  "downloadXrayCoreUpdate": "Download Xray Core Update",
+  "@downloadXrayCoreUpdate": {
+    "description": "Download Xray Core update button"
+  },
+
+  "downloadingXrayCore": "Downloading Xray Core...",
+  "@downloadingXrayCore": {
+    "description": "Downloading Xray Core message"
+  },
+
+  "xrayCoreUpdateDownloaded": "Xray Core Update Downloaded",
+  "@xrayCoreUpdateDownloaded": {
+    "description": "Xray Core update downloaded message"
+  },
+
+  "installXrayCoreUpdate": "Install Xray Core Update",
+  "@installXrayCoreUpdate": {
+    "description": "Install Xray Core update button"
+  },
+
+  "xrayCoreUpdateCheckFailed": "Failed to check Xray Core update",
+  "@xrayCoreUpdateCheckFailed": {
+    "description": "Xray Core update check failed message"
+  },
+
+  "xrayCoreUpdateDownloadFailed": "Failed to download Xray Core update",
+  "@xrayCoreUpdateDownloadFailed": {
+    "description": "Xray Core update download failed message"
+  },
+
+  "newXrayCoreVersionAvailable": "New Xray Core version {version} is available",
+  "@newXrayCoreVersionAvailable": {
+    "description": "New Xray Core version available message",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+
+  "xrayCoreNotInstalled": "Xray Core not installed",
+  "@xrayCoreNotInstalled": {
+    "description": "Xray Core not installed message"
+  },
+
+  "checkXrayCoreUpdate": "Check Xray Core Update",
+  "@checkXrayCoreUpdate": {
+    "description": "Check Xray Core update menu item"
+  },
+
+  "xrayCoreUpdateInstalled": "Xray Core updated successfully",
+  "@xrayCoreUpdateInstalled": {
+    "description": "Xray Core update installed message"
+  },
+
+  "xrayCoreUpdateInstallFailed": "Failed to install Xray Core update",
+  "@xrayCoreUpdateInstallFailed": {
+    "description": "Xray Core update install failed message"
   }
 }
 

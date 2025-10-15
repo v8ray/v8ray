@@ -20,8 +20,6 @@ pub mod events;
 pub mod platform;
 /// 订阅管理模块
 pub mod subscription;
-/// 流量统计模块
-pub mod traffic;
 
 // 全局状态
 lazy_static::lazy_static! {

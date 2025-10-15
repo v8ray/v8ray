@@ -13,6 +13,7 @@ pub mod error;
 pub mod platform;
 pub mod subscription;
 pub mod utils;
+pub mod version;
 pub mod xray;
 
 // Flutter Rust Bridge 生成的代码
@@ -68,7 +69,7 @@ pub fn init_simple() -> V8RayResult<()> {
 
 /// Get the version of the V8Ray core library
 pub fn version() -> &'static str {
-    env!("CARGO_PKG_VERSION")
+    version::VERSION
 }
 
 #[cfg(test)]

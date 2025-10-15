@@ -125,6 +125,78 @@ class AppLocalizationsEn extends AppLocalizations {
   String get checkUpdate => 'Check for Updates';
 
   @override
+  String get currentVersion => 'Current Version';
+
+  @override
+  String get latestVersion => 'Latest Version';
+
+  @override
+  String get checkingUpdate => 'Checking for updates...';
+
+  @override
+  String get updateAvailable => 'Update Available';
+
+  @override
+  String get noUpdateAvailable => 'You\'re up to date';
+
+  @override
+  String get downloadUpdate => 'Download Update';
+
+  @override
+  String get downloading => 'Downloading...';
+
+  @override
+  String get downloadProgress => 'Download Progress';
+
+  @override
+  String get updateDownloaded => 'Update Downloaded';
+
+  @override
+  String get installUpdate => 'Install Update';
+
+  @override
+  String get restartToUpdate => 'Restart to Update';
+
+  @override
+  String get updateInstalled => 'Update Installed';
+
+  @override
+  String get restartToApplyUpdate =>
+      'The update has been successfully installed. Please restart the application to apply the update.';
+
+  @override
+  String get restartNow => 'Restart Now';
+
+  @override
+  String get updateInstallFailed => 'Failed to Install Update';
+
+  @override
+  String get unknownError => 'An unknown error occurred';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get updateCheckFailed => 'Failed to check for updates';
+
+  @override
+  String get updateDownloadFailed => 'Failed to download update';
+
+  @override
+  String newVersionAvailable(String version) {
+    return 'New version $version is available';
+  }
+
+  @override
+  String get updateNow => 'Update Now';
+
+  @override
+  String get later => 'Later';
+
+  @override
+  String get releaseNotes => 'Release Notes';
+
+  @override
   String get switchToSimpleMode => 'Switch to Simple Mode';
 
   @override
@@ -165,9 +237,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clear => 'Clear';
-
-  @override
-  String get close => 'Close';
 
   @override
   String get moreInfo => 'More Info';
@@ -247,9 +316,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get change => 'Change';
-
-  @override
-  String get unknownError => 'An unknown error occurred';
 
   @override
   String get networkError => 'Network Error';
@@ -404,4 +470,59 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get autoSetSystemProxyDescription =>
       'Automatically set system proxy when connected';
+
+  @override
+  String get xrayCoreVersion => 'Xray Core Version';
+
+  @override
+  String get xrayCoreCurrentVersion => 'Current Xray Core';
+
+  @override
+  String get xrayCoreLatestVersion => 'Latest Xray Core';
+
+  @override
+  String get checkingXrayCoreUpdate => 'Checking Xray Core update...';
+
+  @override
+  String get xrayCoreUpdateAvailable => 'Xray Core Update Available';
+
+  @override
+  String get noXrayCoreUpdateAvailable => 'Xray Core is up to date';
+
+  @override
+  String get downloadXrayCoreUpdate => 'Download Xray Core Update';
+
+  @override
+  String get downloadingXrayCore => 'Downloading Xray Core...';
+
+  @override
+  String get xrayCoreUpdateDownloaded => 'Xray Core Update Downloaded';
+
+  @override
+  String get installXrayCoreUpdate => 'Install Xray Core Update';
+
+  @override
+  String get xrayCoreUpdateCheckFailed => 'Failed to check Xray Core update';
+
+  @override
+  String get xrayCoreUpdateDownloadFailed =>
+      'Failed to download Xray Core update';
+
+  @override
+  String newXrayCoreVersionAvailable(String version) {
+    return 'New Xray Core version $version is available';
+  }
+
+  @override
+  String get xrayCoreNotInstalled => 'Xray Core not installed';
+
+  @override
+  String get checkXrayCoreUpdate => 'Check Xray Core Update';
+
+  @override
+  String get xrayCoreUpdateInstalled => 'Xray Core updated successfully';
+
+  @override
+  String get xrayCoreUpdateInstallFailed =>
+      'Failed to install Xray Core update';
 }

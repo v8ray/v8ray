@@ -14,9 +14,6 @@ const DEFAULT_TIMEOUT: Duration = Duration::from_secs(30);
 /// Default maximum number of retries
 const DEFAULT_MAX_RETRIES: u32 = 3;
 
-/// Default user agent
-const DEFAULT_USER_AGENT: &str = "V8Ray/1.0";
-
 /// HTTP client configuration
 #[derive(Debug, Clone)]
 pub struct HttpClientConfig {
@@ -35,7 +32,7 @@ impl Default for HttpClientConfig {
         Self {
             timeout: DEFAULT_TIMEOUT,
             max_retries: DEFAULT_MAX_RETRIES,
-            user_agent: DEFAULT_USER_AGENT.to_string(),
+            user_agent: crate::version::user_agent(),
             follow_redirects: true,
         }
     }
@@ -164,7 +161,7 @@ mod tests {
         let config = HttpClientConfig::default();
         assert_eq!(config.timeout, DEFAULT_TIMEOUT);
         assert_eq!(config.max_retries, DEFAULT_MAX_RETRIES);
-        assert_eq!(config.user_agent, DEFAULT_USER_AGENT);
+        assert_eq!(config.user_agent, crate::version::user_agent());
         assert!(config.follow_redirects);
     }
 

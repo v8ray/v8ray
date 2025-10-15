@@ -8,7 +8,7 @@ use base64::{engine::general_purpose::STANDARD as BASE64, Engine};
 use chrono::Utc;
 use serde_json::Value;
 use std::collections::HashMap;
-use tracing::{debug, warn};
+use tracing::debug;
 use url::Url;
 use uuid::Uuid;
 
@@ -247,7 +247,9 @@ impl ConfigParser {
         let url = Url::parse(url)
             .map_err(|e| ConfigError::InvalidUrl(format!("URL parse failed: {}", e)))?;
 
-        let password = url.username().to_string();
+        let password = urlencoding::decode(url.username())
+            .unwrap_or_else(|_| url.username().into())
+            .to_string();
         if password.is_empty() {
             return Err(ConfigError::MissingField("password".to_string()));
         }
@@ -277,6 +279,70 @@ impl ConfigParser {
         let mut settings = HashMap::new();
         settings.insert("password".to_string(), serde_json::json!(password));
 
+        // Parse stream settings from query parameters
+        // Trojan 默认使用 TLS,即使没有明确指定
+        let network = query_pairs.get("type").map(|s| s.as_str()).unwrap_or("tcp");
+
+        let security = query_pairs
+            .get("security")
+            .map(|s| s.as_str())
+            .unwrap_or("tls"); // Trojan 默认使用 TLS
+
+        let mut stream = StreamSettings {
+            network: network.to_string(),
+            security: security.to_string(),
+            tls_settings: None,
+            tcp_settings: None,
+            ws_settings: None,
+            http_settings: None,
+            quic_settings: None,
+            grpc_settings: None,
+        };
+
+        // Parse TLS settings (Trojan 总是需要 TLS)
+        if security == "tls" || security == "reality" {
+            // 如果没有指定 SNI,使用服务器地址作为 SNI
+            let sni = query_pairs
+                .get("sni")
+                .cloned()
+                .or_else(|| Some(server.clone()));
+
+            // ALPN 设置 - Trojan 默认使用 http/1.1
+            let alpn = query_pairs
+                .get("alpn")
+                .map(|s| s.split(',').map(|s| s.to_string()).collect())
+                .unwrap_or_else(|| vec!["http/1.1".to_string()]);
+
+            stream.tls_settings = Some(TlsSettings {
+                server_name: sni,
+                allow_insecure: query_pairs.get("allowInsecure") == Some(&"1".to_string())
+                    || query_pairs.get("allowinsecure") == Some(&"1".to_string())
+                    || query_pairs.get("skip-cert-verify") == Some(&"true".to_string()),
+                alpn,
+                fingerprint: query_pairs.get("fp").cloned(),
+            });
+        }
+
+        // Parse WebSocket settings
+        if network == "ws" {
+            stream.ws_settings = Some(WsSettings {
+                path: query_pairs
+                    .get("path")
+                    .cloned()
+                    .unwrap_or_else(|| "/".to_string()),
+                headers: query_pairs
+                    .get("host")
+                    .map(|h| {
+                        let mut headers = HashMap::new();
+                        headers.insert("Host".to_string(), h.clone());
+                        headers
+                    })
+                    .unwrap_or_default(),
+            });
+        }
+
+        let stream_settings = Some(stream);
+
         Ok(ProxyServerConfig {
             id: Uuid::new_v4().to_string(),
             name,
@@ -284,7 +350,7 @@ impl ConfigParser {
             port,
             protocol: ProxyProtocol::Trojan,
             settings,
-            stream_settings: None,
+            stream_settings,
             tags: vec![],
             created_at: Utc::now(),
             updated_at: Utc::now(),
@@ -293,36 +359,118 @@ impl ConfigParser {
 
     /// Parse Shadowsocks URL
     fn parse_shadowsocks_url(url: &str) -> ConfigResult<ProxyServerConfig> {
-        warn!("Shadowsocks URL parsing is simplified");
+        debug!("Parsing Shadowsocks URL");
 
+        // Shadowsocks URL 格式:
         // ss://base64(method:password)@server:port#name
-        let url = Url::parse(url)
-            .map_err(|e| ConfigError::InvalidUrl(format!("URL parse failed: {}", e)))?;
+        // 或 ss://base64(method:password@server:port)#name
 
-        let server = url
-            .host_str()
-            .ok_or_else(|| ConfigError::MissingField("host".to_string()))?
-            .to_string();
+        let url_str = url
+            .strip_prefix("ss://")
+            .ok_or_else(|| ConfigError::InvalidUrl("Invalid Shadowsocks URL format".to_string()))?;
 
-        let port = url
-            .port()
-            .ok_or_else(|| ConfigError::MissingField("port".to_string()))?;
+        // 尝试分割 # 获取名称
+        let (url_part, name) = if let Some(pos) = url_str.find('#') {
+            let (url_p, name_p) = url_str.split_at(pos);
+            let name_decoded = urlencoding::decode(&name_p[1..])
+                .unwrap_or_else(|_| name_p[1..].into())
+                .to_string();
+            (url_p, name_decoded)
+        } else {
+            (url_str, "Shadowsocks Server".to_string())
+        };
 
-        // Shadowsocks URL 的名称在 fragment (#后面)
-        let name = url
-            .fragment()
-            .map(|s| {
-                urlencoding::decode(s)
-                    .unwrap_or_else(|_| s.into())
-                    .to_string()
-            })
-            .unwrap_or_else(|| "Shadowsocks Server".to_string());
+        // 尝试解析两种格式
+        let (method, password, server, port) = if url_part.contains('@') {
+            // 格式1: base64(method:password)@server:port
+            let parts: Vec<&str> = url_part.split('@').collect();
+            if parts.len() != 2 {
+                return Err(ConfigError::InvalidUrl(
+                    "Invalid Shadowsocks URL format".to_string(),
+                ));
+            }
 
-        // For now, return a basic config
-        // Full implementation would decode the method:password from username
+            // 解码 base64 部分
+            let decoded = BASE64
+                .decode(parts[0])
+                .map_err(|e| ConfigError::InvalidUrl(format!("Base64 decode failed: {}", e)))?;
+            let decoded_str = String::from_utf8(decoded)
+                .map_err(|e| ConfigError::InvalidUrl(format!("UTF-8 decode failed: {}", e)))?;
+
+            // 解析 method:password
+            let method_password: Vec<&str> = decoded_str.splitn(2, ':').collect();
+            if method_password.len() != 2 {
+                return Err(ConfigError::InvalidUrl(
+                    "Invalid method:password format".to_string(),
+                ));
+            }
+
+            let method = method_password[0].to_string();
+            let password = method_password[1].to_string();
+
+            // 解析 server:port
+            let server_port: Vec<&str> = parts[1].split(':').collect();
+            if server_port.len() != 2 {
+                return Err(ConfigError::InvalidUrl(
+                    "Invalid server:port format".to_string(),
+                ));
+            }
+
+            let server = server_port[0].to_string();
+            let port = server_port[1]
+                .parse::<u16>()
+                .map_err(|e| ConfigError::InvalidUrl(format!("Invalid port: {}", e)))?;
+
+            (method, password, server, port)
+        } else {
+            // 格式2: base64(method:password@server:port)
+            let decoded = BASE64
+                .decode(url_part)
+                .map_err(|e| ConfigError::InvalidUrl(format!("Base64 decode failed: {}", e)))?;
+            let decoded_str = String::from_utf8(decoded)
+                .map_err(|e| ConfigError::InvalidUrl(format!("UTF-8 decode failed: {}", e)))?;
+
+            // 解析 method:password@server:port
+            let parts: Vec<&str> = decoded_str.split('@').collect();
+            if parts.len() != 2 {
+                return Err(ConfigError::InvalidUrl(
+                    "Invalid Shadowsocks URL format".to_string(),
+                ));
+            }
+
+            let method_password: Vec<&str> = parts[0].splitn(2, ':').collect();
+            if method_password.len() != 2 {
+                return Err(ConfigError::InvalidUrl(
+                    "Invalid method:password format".to_string(),
+                ));
+            }
+
+            let method = method_password[0].to_string();
+            let password = method_password[1].to_string();
+
+            let server_port: Vec<&str> = parts[1].split(':').collect();
+            if server_port.len() != 2 {
+                return Err(ConfigError::InvalidUrl(
+                    "Invalid server:port format".to_string(),
+                ));
+            }
+
+            let server = server_port[0].to_string();
+            let port = server_port[1]
+                .parse::<u16>()
+                .map_err(|e| ConfigError::InvalidUrl(format!("Invalid port: {}", e)))?;
+
+            (method, password, server, port)
+        };
+
         let mut settings = HashMap::new();
-        settings.insert("method".to_string(), serde_json::json!("aes-256-gcm"));
-        settings.insert("password".to_string(), serde_json::json!("password"));
+        settings.insert("method".to_string(), serde_json::json!(method));
+        settings.insert("password".to_string(), serde_json::json!(password));
+
+        debug!(
+            "Parsed Shadowsocks: method={}, server={}:{}",
+            method, server, port
+        );
 
         Ok(ProxyServerConfig {
             id: Uuid::new_v4().to_string(),

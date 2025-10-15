@@ -79,21 +79,11 @@ pub struct ProxyServerConfig {
     pub protocol: String,
     /// 协议特定设置
     pub settings: HashMap<String, serde_json::Value>,
+    /// 流设置 (传输层配置)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stream_settings: Option<serde_json::Value>,
     /// 标签
     pub tags: Vec<String>,
-}
-
-/// 流量统计
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TrafficStats {
-    /// 上传速度（字节/秒）
-    pub upload_speed: u64,
-    /// 下载速度（字节/秒）
-    pub download_speed: u64,
-    /// 总上传流量（字节）
-    pub total_upload: u64,
-    /// 总下载流量（字节）
-    pub total_download: u64,
 }
 
 /// 订阅信息
@@ -130,6 +120,21 @@ pub struct ServerInfo {
     pub protocol: String,
 }
 
+/// Xray Core 更新信息
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct XrayCoreUpdateInfo {
+    /// 是否有更新
+    pub has_update: bool,
+    /// 当前版本
+    pub current_version: String,
+    /// 最新版本
+    pub latest_version: String,
+    /// 下载 URL
+    pub download_url: String,
+    /// 文件大小（字节）
+    pub file_size: u64,
+}
+
 /// 事件类型
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum V8RayEvent {
@@ -137,11 +142,6 @@ pub enum V8RayEvent {
     ConnectionStatusChanged {
         /// 新状态
         status: ConnectionStatus,
-    },
-    /// 流量统计更新
-    TrafficStatsUpdated {
-        /// 流量统计
-        stats: TrafficStats,
     },
     /// 错误事件
     Error {
@@ -320,24 +320,6 @@ pub fn test_latency(config_id: String) -> Result<u32> {
 // 流量统计 API
 // ============================================================================
 
-/// 获取流量统计
-///
-/// # 返回
-/// - `Ok(stats)`: 流量统计
-/// - `Err(e)`: 获取失败
-pub fn get_traffic_stats() -> Result<TrafficStats> {
-    crate::bridge::traffic::get_traffic_stats()
-}
-
-/// 重置流量统计
-///
-/// # 返回
-/// - `Ok(())`: 重置成功
-/// - `Err(e)`: 重置失败
-pub fn reset_traffic_stats() -> Result<()> {
-    crate::bridge::traffic::reset_traffic_stats()
-}
-
 // ============================================================================
 // 事件流 API
 // ============================================================================
@@ -513,6 +495,75 @@ pub fn clear_system_proxy() -> Result<(), String> {
 #[flutter_rust_bridge::frb(sync)]
 pub fn is_system_proxy_set() -> Result<bool, String> {
     crate::bridge::platform::is_system_proxy_set()
+}
+
+/// 检查 Xray Core 更新
+///
+/// # 返回
+/// - `Ok(info)`: 更新信息
+/// - `Err(e)`: 检查失败
+pub async fn check_xray_core_update() -> Result<XrayCoreUpdateInfo> {
+    // 获取 ConnectionManager 实例
+    let connection_manager = crate::bridge::connection::get_core_connection_manager()?;
+
+    // 获取 XrayCore 实例
+    let xray_core = connection_manager.get_xray();
+
+    // 获取 updater
+    let updater = xray_core.get_updater();
+    let update_info = updater
+        .check_update()
+        .await
+        .map_err(|e| anyhow::anyhow!("Failed to check update: {}", e))?;
+
+    Ok(XrayCoreUpdateInfo {
+        has_update: update_info.has_update,
+        current_version: update_info.current_version,
+        latest_version: update_info.latest_version,
+        download_url: update_info.download_url,
+        file_size: update_info.file_size,
+    })
+}
+
+/// 下载并安装 Xray Core 更新
+///
+/// # 参数
+/// - `version`: 要更新的版本号
+///
+/// # 返回
+/// - `Ok(())`: 更新成功
+/// - `Err(e)`: 更新失败
+pub async fn update_xray_core(version: String) -> Result<()> {
+    // 获取 ConnectionManager 实例
+    let connection_manager = crate::bridge::connection::get_core_connection_manager()?;
+
+    // 获取 XrayCore 实例
+    let xray_core = connection_manager.get_xray();
+
+    // 获取 updater
+    let updater = xray_core.get_updater();
+    updater
+        .update(&version)
+        .await
+        .map_err(|e| anyhow::anyhow!("Failed to update Xray Core: {}", e))?;
+
+    Ok(())
+}
+
+/// 获取 Xray Core 下载进度
+///
+/// # 返回
+/// - 下载进度 (0.0 到 1.0)
+pub async fn get_xray_core_update_progress() -> Result<f64> {
+    // 获取 ConnectionManager 实例
+    let connection_manager = crate::bridge::connection::get_core_connection_manager()?;
+
+    // 获取 XrayCore 实例
+    let xray_core = connection_manager.get_xray();
+
+    // 获取 updater
+    let updater = xray_core.get_updater();
+    Ok(updater.get_progress().await)
 }
 
 /// 获取平台信息

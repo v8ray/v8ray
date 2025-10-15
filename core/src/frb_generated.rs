@@ -38,7 +38,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1507415328;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 170120342;
 
 // Section: executor
 
@@ -116,6 +116,41 @@ fn wire__crate__bridge__api__cache_proxy_config_impl(
                             crate::bridge::api::cache_proxy_config(api_config_id, api_config)?;
                         Ok(output_ok)
                     })(),
+                )
+            }
+        },
+    )
+}
+fn wire__crate__bridge__api__check_xray_core_update_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "check_xray_core_update",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok = crate::bridge::api::check_xray_core_update().await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
                 )
             }
         },
@@ -462,15 +497,15 @@ fn wire__crate__bridge__api__get_subscriptions_impl(
         },
     )
 }
-fn wire__crate__bridge__api__get_traffic_stats_impl(
+fn wire__crate__bridge__api__get_xray_core_update_progress_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
 ) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "get_traffic_stats",
+            debug_name: "get_xray_core_update_progress",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -485,12 +520,13 @@ fn wire__crate__bridge__api__get_traffic_stats_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             deserializer.end();
-            move |context| {
+            move |context| async move {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
-                    (move || {
-                        let output_ok = crate::bridge::api::get_traffic_stats()?;
+                    (move || async move {
+                        let output_ok = crate::bridge::api::get_xray_core_update_progress().await?;
                         Ok(output_ok)
-                    })(),
+                    })()
+                    .await,
                 )
             }
         },
@@ -766,40 +802,6 @@ fn wire__crate__bridge__api__remove_subscription_impl(
         },
     )
 }
-fn wire__crate__bridge__api__reset_traffic_stats_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "reset_traffic_stats",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            deserializer.end();
-            move |context| {
-                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
-                    (move || {
-                        let output_ok = crate::bridge::api::reset_traffic_stats()?;
-                        Ok(output_ok)
-                    })(),
-                )
-            }
-        },
-    )
-}
 fn wire__crate__bridge__api__save_config_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1042,6 +1044,42 @@ fn wire__crate__bridge__api__update_subscription_impl(
         },
     )
 }
+fn wire__crate__bridge__api__update_xray_core_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "update_xray_core",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_version = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok = crate::bridge::api::update_xray_core(api_version).await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__bridge__api__validate_config_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1194,6 +1232,13 @@ impl SseDecode for crate::bridge::api::ConnectionStatus {
     }
 }
 
+impl SseDecode for f64 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_f64::<NativeEndian>().unwrap()
+    }
+}
+
 impl SseDecode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1293,6 +1338,17 @@ impl SseDecode for Option<String> {
     }
 }
 
+impl SseDecode for Option<Value> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<Value>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for Option<i64> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1357,6 +1413,7 @@ impl SseDecode for crate::bridge::api::ProxyServerConfig {
         let mut var_port = <u16>::sse_decode(deserializer);
         let mut var_protocol = <String>::sse_decode(deserializer);
         let mut var_settings = <std::collections::HashMap<String, Value>>::sse_decode(deserializer);
+        let mut var_streamSettings = <Option<Value>>::sse_decode(deserializer);
         let mut var_tags = <Vec<String>>::sse_decode(deserializer);
         return crate::bridge::api::ProxyServerConfig {
             id: var_id,
@@ -1365,6 +1422,7 @@ impl SseDecode for crate::bridge::api::ProxyServerConfig {
             port: var_port,
             protocol: var_protocol,
             settings: var_settings,
+            stream_settings: var_streamSettings,
             tags: var_tags,
         };
     }
@@ -1419,22 +1477,6 @@ impl SseDecode for crate::bridge::api::SubscriptionInfo {
     }
 }
 
-impl SseDecode for crate::bridge::api::TrafficStats {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_uploadSpeed = <u64>::sse_decode(deserializer);
-        let mut var_downloadSpeed = <u64>::sse_decode(deserializer);
-        let mut var_totalUpload = <u64>::sse_decode(deserializer);
-        let mut var_totalDownload = <u64>::sse_decode(deserializer);
-        return crate::bridge::api::TrafficStats {
-            upload_speed: var_uploadSpeed,
-            download_speed: var_downloadSpeed,
-            total_upload: var_totalUpload,
-            total_download: var_totalDownload,
-        };
-    }
-}
-
 impl SseDecode for u16 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1475,6 +1517,24 @@ impl SseDecode for usize {
     }
 }
 
+impl SseDecode for crate::bridge::api::XrayCoreUpdateInfo {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_hasUpdate = <bool>::sse_decode(deserializer);
+        let mut var_currentVersion = <String>::sse_decode(deserializer);
+        let mut var_latestVersion = <String>::sse_decode(deserializer);
+        let mut var_downloadUrl = <String>::sse_decode(deserializer);
+        let mut var_fileSize = <u64>::sse_decode(deserializer);
+        return crate::bridge::api::XrayCoreUpdateInfo {
+            has_update: var_hasUpdate,
+            current_version: var_currentVersion,
+            latest_version: var_latestVersion,
+            download_url: var_downloadUrl,
+            file_size: var_fileSize,
+        };
+    }
+}
+
 fn pde_ffi_dispatcher_primary_impl(
     func_id: i32,
     port: flutter_rust_bridge::for_generated::MessagePort,
@@ -1486,37 +1546,44 @@ fn pde_ffi_dispatcher_primary_impl(
     match func_id {
         1 => wire__crate__bridge__api__add_subscription_impl(port, ptr, rust_vec_len, data_len),
         2 => wire__crate__bridge__api__cache_proxy_config_impl(port, ptr, rust_vec_len, data_len),
-        4 => wire__crate__bridge__api__connect_impl(port, ptr, rust_vec_len, data_len),
-        5 => wire__crate__bridge__api__delete_config_impl(port, ptr, rust_vec_len, data_len),
-        6 => wire__crate__bridge__api__disconnect_impl(port, ptr, rust_vec_len, data_len),
-        7 => wire__crate__bridge__api__get_connection_info_impl(port, ptr, rust_vec_len, data_len),
-        9 => wire__crate__bridge__api__get_server_config_impl(port, ptr, rust_vec_len, data_len),
-        10 => wire__crate__bridge__api__get_servers_impl(port, ptr, rust_vec_len, data_len),
-        11 => wire__crate__bridge__api__get_servers_for_subscription_impl(
+        3 => {
+            wire__crate__bridge__api__check_xray_core_update_impl(port, ptr, rust_vec_len, data_len)
+        }
+        5 => wire__crate__bridge__api__connect_impl(port, ptr, rust_vec_len, data_len),
+        6 => wire__crate__bridge__api__delete_config_impl(port, ptr, rust_vec_len, data_len),
+        7 => wire__crate__bridge__api__disconnect_impl(port, ptr, rust_vec_len, data_len),
+        8 => wire__crate__bridge__api__get_connection_info_impl(port, ptr, rust_vec_len, data_len),
+        10 => wire__crate__bridge__api__get_server_config_impl(port, ptr, rust_vec_len, data_len),
+        11 => wire__crate__bridge__api__get_servers_impl(port, ptr, rust_vec_len, data_len),
+        12 => wire__crate__bridge__api__get_servers_for_subscription_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        12 => wire__crate__bridge__api__get_subscriptions_impl(port, ptr, rust_vec_len, data_len),
-        13 => wire__crate__bridge__api__get_traffic_stats_impl(port, ptr, rust_vec_len, data_len),
-        15 => wire__crate__bridge__api__init_subscription_manager_impl(
+        13 => wire__crate__bridge__api__get_subscriptions_impl(port, ptr, rust_vec_len, data_len),
+        14 => wire__crate__bridge__api__get_xray_core_update_progress_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        16 => wire__crate__bridge__api__init_v8ray_impl(port, ptr, rust_vec_len, data_len),
-        18 => wire__crate__bridge__api__list_configs_impl(port, ptr, rust_vec_len, data_len),
-        19 => wire__crate__bridge__api__load_config_impl(port, ptr, rust_vec_len, data_len),
-        20 => wire__crate__bridge__api__load_subscriptions_from_storage_impl(
+        16 => wire__crate__bridge__api__init_subscription_manager_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        21 => wire__crate__bridge__api__remove_subscription_impl(port, ptr, rust_vec_len, data_len),
-        22 => wire__crate__bridge__api__reset_traffic_stats_impl(port, ptr, rust_vec_len, data_len),
+        17 => wire__crate__bridge__api__init_v8ray_impl(port, ptr, rust_vec_len, data_len),
+        19 => wire__crate__bridge__api__list_configs_impl(port, ptr, rust_vec_len, data_len),
+        20 => wire__crate__bridge__api__load_config_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire__crate__bridge__api__load_subscriptions_from_storage_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        22 => wire__crate__bridge__api__remove_subscription_impl(port, ptr, rust_vec_len, data_len),
         23 => wire__crate__bridge__api__save_config_impl(port, ptr, rust_vec_len, data_len),
         24 => wire__crate__bridge__api__set_proxy_mode_impl(port, ptr, rust_vec_len, data_len),
         26 => wire__crate__bridge__api__shutdown_v8ray_impl(port, ptr, rust_vec_len, data_len),
@@ -1528,7 +1595,8 @@ fn pde_ffi_dispatcher_primary_impl(
             data_len,
         ),
         29 => wire__crate__bridge__api__update_subscription_impl(port, ptr, rust_vec_len, data_len),
-        30 => wire__crate__bridge__api__validate_config_impl(port, ptr, rust_vec_len, data_len),
+        30 => wire__crate__bridge__api__update_xray_core_impl(port, ptr, rust_vec_len, data_len),
+        31 => wire__crate__bridge__api__validate_config_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1541,10 +1609,10 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        3 => wire__crate__bridge__api__clear_system_proxy_impl(ptr, rust_vec_len, data_len),
-        8 => wire__crate__bridge__api__get_platform_info_impl(ptr, rust_vec_len, data_len),
-        14 => wire__crate__bridge__api__has_admin_privileges_impl(ptr, rust_vec_len, data_len),
-        17 => wire__crate__bridge__api__is_system_proxy_set_impl(ptr, rust_vec_len, data_len),
+        4 => wire__crate__bridge__api__clear_system_proxy_impl(ptr, rust_vec_len, data_len),
+        9 => wire__crate__bridge__api__get_platform_info_impl(ptr, rust_vec_len, data_len),
+        15 => wire__crate__bridge__api__has_admin_privileges_impl(ptr, rust_vec_len, data_len),
+        18 => wire__crate__bridge__api__is_system_proxy_set_impl(ptr, rust_vec_len, data_len),
         25 => wire__crate__bridge__api__set_system_proxy_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
@@ -1696,6 +1764,7 @@ impl flutter_rust_bridge::IntoDart for crate::bridge::api::ProxyServerConfig {
             self.port.into_into_dart().into_dart(),
             self.protocol.into_into_dart().into_dart(),
             self.settings.into_into_dart().into_dart(),
+            self.stream_settings.into_into_dart().into_dart(),
             self.tags.into_into_dart().into_dart(),
         ]
         .into_dart()
@@ -1763,25 +1832,26 @@ impl flutter_rust_bridge::IntoIntoDart<crate::bridge::api::SubscriptionInfo>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::bridge::api::TrafficStats {
+impl flutter_rust_bridge::IntoDart for crate::bridge::api::XrayCoreUpdateInfo {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
-            self.upload_speed.into_into_dart().into_dart(),
-            self.download_speed.into_into_dart().into_dart(),
-            self.total_upload.into_into_dart().into_dart(),
-            self.total_download.into_into_dart().into_dart(),
+            self.has_update.into_into_dart().into_dart(),
+            self.current_version.into_into_dart().into_dart(),
+            self.latest_version.into_into_dart().into_dart(),
+            self.download_url.into_into_dart().into_dart(),
+            self.file_size.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::bridge::api::TrafficStats
+    for crate::bridge::api::XrayCoreUpdateInfo
 {
 }
-impl flutter_rust_bridge::IntoIntoDart<crate::bridge::api::TrafficStats>
-    for crate::bridge::api::TrafficStats
+impl flutter_rust_bridge::IntoIntoDart<crate::bridge::api::XrayCoreUpdateInfo>
+    for crate::bridge::api::XrayCoreUpdateInfo
 {
-    fn into_into_dart(self) -> crate::bridge::api::TrafficStats {
+    fn into_into_dart(self) -> crate::bridge::api::XrayCoreUpdateInfo {
         self
     }
 }
@@ -1878,6 +1948,13 @@ impl SseEncode for crate::bridge::api::ConnectionStatus {
     }
 }
 
+impl SseEncode for f64 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_f64::<NativeEndian>(self).unwrap();
+    }
+}
+
 impl SseEncode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1962,6 +2039,16 @@ impl SseEncode for Option<String> {
     }
 }
 
+impl SseEncode for Option<Value> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <Value>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for Option<i64> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2011,6 +2098,7 @@ impl SseEncode for crate::bridge::api::ProxyServerConfig {
         <u16>::sse_encode(self.port, serializer);
         <String>::sse_encode(self.protocol, serializer);
         <std::collections::HashMap<String, Value>>::sse_encode(self.settings, serializer);
+        <Option<Value>>::sse_encode(self.stream_settings, serializer);
         <Vec<String>>::sse_encode(self.tags, serializer);
     }
 }
@@ -2044,16 +2132,6 @@ impl SseEncode for crate::bridge::api::SubscriptionInfo {
         <Option<i64>>::sse_encode(self.last_update, serializer);
         <i32>::sse_encode(self.server_count, serializer);
         <String>::sse_encode(self.status, serializer);
-    }
-}
-
-impl SseEncode for crate::bridge::api::TrafficStats {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <u64>::sse_encode(self.upload_speed, serializer);
-        <u64>::sse_encode(self.download_speed, serializer);
-        <u64>::sse_encode(self.total_upload, serializer);
-        <u64>::sse_encode(self.total_download, serializer);
     }
 }
 
@@ -2097,6 +2175,17 @@ impl SseEncode for usize {
             .cursor
             .write_u64::<NativeEndian>(self as _)
             .unwrap();
+    }
+}
+
+impl SseEncode for crate::bridge::api::XrayCoreUpdateInfo {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.has_update, serializer);
+        <String>::sse_encode(self.current_version, serializer);
+        <String>::sse_encode(self.latest_version, serializer);
+        <String>::sse_encode(self.download_url, serializer);
+        <u64>::sse_encode(self.file_size, serializer);
     }
 }
 

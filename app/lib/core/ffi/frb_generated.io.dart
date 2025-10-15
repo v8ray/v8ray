@@ -53,6 +53,12 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
   bool dco_decode_bool(raw);
 
   @protected
+  Value
+  dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    raw,
+  );
+
+  @protected
   ConfigInfo dco_decode_box_autoadd_config_info(raw);
 
   @protected
@@ -72,6 +78,9 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
 
   @protected
   ConnectionStatus dco_decode_connection_status(raw);
+
+  @protected
+  double dco_decode_f_64(raw);
 
   @protected
   int dco_decode_i_32(raw);
@@ -104,6 +113,12 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
   String? dco_decode_opt_String(raw);
 
   @protected
+  Value?
+  dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    raw,
+  );
+
+  @protected
   PlatformInt64? dco_decode_opt_box_autoadd_i_64(raw);
 
   @protected
@@ -131,9 +146,6 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
   SubscriptionInfo dco_decode_subscription_info(raw);
 
   @protected
-  TrafficStats dco_decode_traffic_stats(raw);
-
-  @protected
   int dco_decode_u_16(raw);
 
   @protected
@@ -150,6 +162,9 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
 
   @protected
   BigInt dco_decode_usize(raw);
+
+  @protected
+  XrayCoreUpdateInfo dco_decode_xray_core_update_info(raw);
 
   @protected
   AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
@@ -179,6 +194,12 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
+  Value
+  sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   ConfigInfo sse_decode_box_autoadd_config_info(SseDeserializer deserializer);
 
   @protected
@@ -200,6 +221,9 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
 
   @protected
   ConnectionStatus sse_decode_connection_status(SseDeserializer deserializer);
+
+  @protected
+  double sse_decode_f_64(SseDeserializer deserializer);
 
   @protected
   int sse_decode_i_32(SseDeserializer deserializer);
@@ -234,6 +258,12 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
   String? sse_decode_opt_String(SseDeserializer deserializer);
 
   @protected
+  Value?
+  sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   PlatformInt64? sse_decode_opt_box_autoadd_i_64(SseDeserializer deserializer);
 
   @protected
@@ -265,9 +295,6 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
   SubscriptionInfo sse_decode_subscription_info(SseDeserializer deserializer);
 
   @protected
-  TrafficStats sse_decode_traffic_stats(SseDeserializer deserializer);
-
-  @protected
   int sse_decode_u_16(SseDeserializer deserializer);
 
   @protected
@@ -284,6 +311,11 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
 
   @protected
   BigInt sse_decode_usize(SseDeserializer deserializer);
+
+  @protected
+  XrayCoreUpdateInfo sse_decode_xray_core_update_info(
+    SseDeserializer deserializer,
+  );
 
   @protected
   void sse_encode_AnyhowException(
@@ -317,6 +349,13 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
 
   @protected
   void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
+  void
+  sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    Value self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_config_info(
@@ -353,6 +392,9 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
     ConnectionStatus self,
     SseSerializer serializer,
   );
+
+  @protected
+  void sse_encode_f_64(double self, SseSerializer serializer);
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
@@ -398,6 +440,13 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
   void sse_encode_opt_String(String? self, SseSerializer serializer);
 
   @protected
+  void
+  sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    Value? self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_opt_box_autoadd_i_64(
     PlatformInt64? self,
     SseSerializer serializer,
@@ -438,9 +487,6 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
   );
 
   @protected
-  void sse_encode_traffic_stats(TrafficStats self, SseSerializer serializer);
-
-  @protected
   void sse_encode_u_16(int self, SseSerializer serializer);
 
   @protected
@@ -457,6 +503,12 @@ abstract class V8RayBridgeApiImplPlatform extends BaseApiImpl<V8RayBridgeWire> {
 
   @protected
   void sse_encode_usize(BigInt self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_xray_core_update_info(
+    XrayCoreUpdateInfo self,
+    SseSerializer serializer,
+  );
 }
 
 // Section: wire_class

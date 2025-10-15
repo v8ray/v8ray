@@ -60,8 +60,11 @@ pub struct Server {
     pub port: u16,
     /// Protocol type
     pub protocol: String,
-    /// Server configuration
+    /// Server configuration (protocol-specific settings)
     pub config: HashMap<String, serde_json::Value>,
+    /// Stream settings (transport layer configuration)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stream_settings: Option<crate::config::StreamSettings>,
     /// Subscription ID this server belongs to
     pub subscription_id: Uuid,
 }
@@ -178,6 +181,7 @@ impl SubscriptionManager {
                 port: config.port,
                 protocol: format!("{:?}", config.protocol).to_lowercase(),
                 config: config.settings,
+                stream_settings: config.stream_settings,
                 subscription_id: id,
             })
             .collect();
@@ -303,6 +307,7 @@ mod tests {
             port: 443,
             protocol: "vmess".to_string(),
             config: HashMap::new(),
+            stream_settings: None,
             subscription_id: id,
         });
 

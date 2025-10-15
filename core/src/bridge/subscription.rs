@@ -217,6 +217,10 @@ pub async fn get_server_config(server_id: String) -> Result<ProxyServerConfig> {
         port: server.port,
         protocol: server.protocol.clone(),
         settings: server.config.clone(),
+        stream_settings: server
+            .stream_settings
+            .as_ref()
+            .and_then(|s| serde_json::to_value(s).ok()),
         tags: vec![],
     })
 }

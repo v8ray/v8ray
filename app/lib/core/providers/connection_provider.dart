@@ -23,18 +23,6 @@ class ProxyConnectionState {
   /// 延迟（毫秒）
   final int? latency;
 
-  /// 上传速度（字节/秒）
-  final int uploadSpeed;
-
-  /// 下载速度（字节/秒）
-  final int downloadSpeed;
-
-  /// 已上传字节数
-  final int uploadedBytes;
-
-  /// 已下载字节数
-  final int downloadedBytes;
-
   /// 连接时长
   final Duration? connectedDuration;
 
@@ -45,10 +33,6 @@ class ProxyConnectionState {
     this.status = ConnectionStatus.disconnected,
     this.nodeName,
     this.latency,
-    this.uploadSpeed = 0,
-    this.downloadSpeed = 0,
-    this.uploadedBytes = 0,
-    this.downloadedBytes = 0,
     this.connectedDuration,
     this.errorMessage,
   });
@@ -58,10 +42,6 @@ class ProxyConnectionState {
     ConnectionStatus? status,
     String? nodeName,
     int? latency,
-    int? uploadSpeed,
-    int? downloadSpeed,
-    int? uploadedBytes,
-    int? downloadedBytes,
     Duration? connectedDuration,
     String? errorMessage,
   }) {
@@ -69,10 +49,6 @@ class ProxyConnectionState {
       status: status ?? this.status,
       nodeName: nodeName ?? this.nodeName,
       latency: latency ?? this.latency,
-      uploadSpeed: uploadSpeed ?? this.uploadSpeed,
-      downloadSpeed: downloadSpeed ?? this.downloadSpeed,
-      uploadedBytes: uploadedBytes ?? this.uploadedBytes,
-      downloadedBytes: downloadedBytes ?? this.downloadedBytes,
       connectedDuration: connectedDuration ?? this.connectedDuration,
       errorMessage: errorMessage ?? this.errorMessage,
     );
@@ -218,13 +194,8 @@ class ConnectionNotifier extends StateNotifier<ProxyConnectionState> {
     _statsTimer = Timer.periodic(const Duration(seconds: 1), (_) async {
       try {
         final info = await api.getConnectionInfo();
-        final stats = await api.getTrafficStats();
 
         state = state.copyWith(
-          uploadSpeed: stats.uploadSpeed.toInt(),
-          downloadSpeed: stats.downloadSpeed.toInt(),
-          uploadedBytes: stats.totalUpload.toInt(),
-          downloadedBytes: stats.totalDownload.toInt(),
           connectedDuration: Duration(seconds: info.duration.toInt()),
         );
       } catch (e) {
@@ -243,23 +214,6 @@ class ConnectionNotifier extends StateNotifier<ProxyConnectionState> {
   void dispose() {
     _stopStatsTimer();
     super.dispose();
-  }
-
-  /// 更新统计数据
-  void updateStats({
-    int? uploadSpeed,
-    int? downloadSpeed,
-    int? uploadedBytes,
-    int? downloadedBytes,
-    Duration? connectedDuration,
-  }) {
-    state = state.copyWith(
-      uploadSpeed: uploadSpeed,
-      downloadSpeed: downloadSpeed,
-      uploadedBytes: uploadedBytes,
-      downloadedBytes: downloadedBytes,
-      connectedDuration: connectedDuration,
-    );
   }
 
   /// 更新延迟

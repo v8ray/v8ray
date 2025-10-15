@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/l10n/app_localizations.dart';
 import '../../core/router/app_router.dart';
+import '../widgets/app_update_checker.dart';
 import '../widgets/language_selector.dart';
 
 class AdvancedModePage extends ConsumerWidget {
@@ -20,6 +21,9 @@ class AdvancedModePage extends ConsumerWidget {
       appBar: AppBar(
         title: Text(l10n.advancedMode),
         actions: [
+          // 应用更新检查
+          const AppUpdateChecker(),
+
           // 语言选择器
           const LanguageSelector(),
 

@@ -326,6 +326,144 @@ abstract class AppLocalizations {
   /// **'Check for Updates'**
   String get checkUpdate;
 
+  /// Current version label
+  ///
+  /// In en, this message translates to:
+  /// **'Current Version'**
+  String get currentVersion;
+
+  /// Latest version label
+  ///
+  /// In en, this message translates to:
+  /// **'Latest Version'**
+  String get latestVersion;
+
+  /// Checking update status
+  ///
+  /// In en, this message translates to:
+  /// **'Checking for updates...'**
+  String get checkingUpdate;
+
+  /// Update available title
+  ///
+  /// In en, this message translates to:
+  /// **'Update Available'**
+  String get updateAvailable;
+
+  /// No update available message
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re up to date'**
+  String get noUpdateAvailable;
+
+  /// Download update button
+  ///
+  /// In en, this message translates to:
+  /// **'Download Update'**
+  String get downloadUpdate;
+
+  /// Downloading status
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading...'**
+  String get downloading;
+
+  /// Download progress label
+  ///
+  /// In en, this message translates to:
+  /// **'Download Progress'**
+  String get downloadProgress;
+
+  /// Update downloaded message
+  ///
+  /// In en, this message translates to:
+  /// **'Update Downloaded'**
+  String get updateDownloaded;
+
+  /// Install update button
+  ///
+  /// In en, this message translates to:
+  /// **'Install Update'**
+  String get installUpdate;
+
+  /// Restart to update message
+  ///
+  /// In en, this message translates to:
+  /// **'Restart to Update'**
+  String get restartToUpdate;
+
+  /// Update installed message
+  ///
+  /// In en, this message translates to:
+  /// **'Update Installed'**
+  String get updateInstalled;
+
+  /// Restart to apply update message
+  ///
+  /// In en, this message translates to:
+  /// **'The update has been successfully installed. Please restart the application to apply the update.'**
+  String get restartToApplyUpdate;
+
+  /// Restart now button
+  ///
+  /// In en, this message translates to:
+  /// **'Restart Now'**
+  String get restartNow;
+
+  /// Update install failed message
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to Install Update'**
+  String get updateInstallFailed;
+
+  /// Unknown error message
+  ///
+  /// In en, this message translates to:
+  /// **'An unknown error occurred'**
+  String get unknownError;
+
+  /// Close button
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// Update check failed message
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to check for updates'**
+  String get updateCheckFailed;
+
+  /// Update download failed message
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to download update'**
+  String get updateDownloadFailed;
+
+  /// New version available message
+  ///
+  /// In en, this message translates to:
+  /// **'New version {version} is available'**
+  String newVersionAvailable(String version);
+
+  /// Update now button
+  ///
+  /// In en, this message translates to:
+  /// **'Update Now'**
+  String get updateNow;
+
+  /// Later button
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get later;
+
+  /// Release notes label
+  ///
+  /// In en, this message translates to:
+  /// **'Release Notes'**
+  String get releaseNotes;
+
   /// Switch to simple mode button
   ///
   /// In en, this message translates to:
@@ -409,12 +547,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear'**
   String get clear;
-
-  /// Close button
-  ///
-  /// In en, this message translates to:
-  /// **'Close'**
-  String get close;
 
   /// More information button
   ///
@@ -559,12 +691,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Change'**
   String get change;
-
-  /// Unknown error message
-  ///
-  /// In en, this message translates to:
-  /// **'An unknown error occurred'**
-  String get unknownError;
 
   /// Network error title
   ///
@@ -823,6 +949,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Automatically set system proxy when connected'**
   String get autoSetSystemProxyDescription;
+
+  /// Xray Core version label
+  ///
+  /// In en, this message translates to:
+  /// **'Xray Core Version'**
+  String get xrayCoreVersion;
+
+  /// Current Xray Core version label
+  ///
+  /// In en, this message translates to:
+  /// **'Current Xray Core'**
+  String get xrayCoreCurrentVersion;
+
+  /// Latest Xray Core version label
+  ///
+  /// In en, this message translates to:
+  /// **'Latest Xray Core'**
+  String get xrayCoreLatestVersion;
+
+  /// Checking Xray Core update message
+  ///
+  /// In en, this message translates to:
+  /// **'Checking Xray Core update...'**
+  String get checkingXrayCoreUpdate;
+
+  /// Xray Core update available message
+  ///
+  /// In en, this message translates to:
+  /// **'Xray Core Update Available'**
+  String get xrayCoreUpdateAvailable;
+
+  /// No Xray Core update available message
+  ///
+  /// In en, this message translates to:
+  /// **'Xray Core is up to date'**
+  String get noXrayCoreUpdateAvailable;
+
+  /// Download Xray Core update button
+  ///
+  /// In en, this message translates to:
+  /// **'Download Xray Core Update'**
+  String get downloadXrayCoreUpdate;
+
+  /// Downloading Xray Core message
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading Xray Core...'**
+  String get downloadingXrayCore;
+
+  /// Xray Core update downloaded message
+  ///
+  /// In en, this message translates to:
+  /// **'Xray Core Update Downloaded'**
+  String get xrayCoreUpdateDownloaded;
+
+  /// Install Xray Core update button
+  ///
+  /// In en, this message translates to:
+  /// **'Install Xray Core Update'**
+  String get installXrayCoreUpdate;
+
+  /// Xray Core update check failed message
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to check Xray Core update'**
+  String get xrayCoreUpdateCheckFailed;
+
+  /// Xray Core update download failed message
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to download Xray Core update'**
+  String get xrayCoreUpdateDownloadFailed;
+
+  /// New Xray Core version available message
+  ///
+  /// In en, this message translates to:
+  /// **'New Xray Core version {version} is available'**
+  String newXrayCoreVersionAvailable(String version);
+
+  /// Xray Core not installed message
+  ///
+  /// In en, this message translates to:
+  /// **'Xray Core not installed'**
+  String get xrayCoreNotInstalled;
+
+  /// Check Xray Core update menu item
+  ///
+  /// In en, this message translates to:
+  /// **'Check Xray Core Update'**
+  String get checkXrayCoreUpdate;
+
+  /// Xray Core update installed message
+  ///
+  /// In en, this message translates to:
+  /// **'Xray Core updated successfully'**
+  String get xrayCoreUpdateInstalled;
+
+  /// Xray Core update install failed message
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to install Xray Core update'**
+  String get xrayCoreUpdateInstallFailed;
 }
 
 class _AppLocalizationsDelegate

@@ -82,6 +82,7 @@ impl SubscriptionStorage {
                 port INTEGER NOT NULL,
                 protocol TEXT NOT NULL,
                 config TEXT NOT NULL,
+                stream_settings TEXT,
                 created_at TEXT NOT NULL,
                 FOREIGN KEY (subscription_id) REFERENCES subscriptions(id) ON DELETE CASCADE
             )
@@ -89,6 +90,15 @@ impl SubscriptionStorage {
         )
         .execute(&self.pool)
         .await?;
+
+        // Add stream_settings column if it doesn't exist (migration for existing databases)
+        let _ = sqlx::query(
+            r#"
+            ALTER TABLE servers ADD COLUMN stream_settings TEXT
+            "#,
+        )
+        .execute(&self.pool)
+        .await; // Ignore error if column already exists
 
         // Create index on subscription_id for faster queries
         sqlx::query(
@@ -202,11 +212,18 @@ impl SubscriptionStorage {
         let config_json = serde_json::to_string(&server.config)
             .map_err(|e| StorageError::Serialization(e.to_string()))?;
 
+        let stream_settings_json = server
+            .stream_settings
+            .as_ref()
+            .map(|s| serde_json::to_string(s))
+            .transpose()
+            .map_err(|e| StorageError::Serialization(e.to_string()))?;
+
         sqlx::query(
             r#"
-            INSERT OR REPLACE INTO servers 
-            (id, subscription_id, name, address, port, protocol, config, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))
+            INSERT OR REPLACE INTO servers
+            (id, subscription_id, name, address, port, protocol, config, stream_settings, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
             "#,
         )
         .bind(server.id.to_string())
@@ -216,6 +233,7 @@ impl SubscriptionStorage {
         .bind(server.port as i64)
         .bind(&server.protocol)
         .bind(config_json)
+        .bind(stream_settings_json)
         .execute(&self.pool)
         .await?;
 
@@ -240,6 +258,10 @@ impl SubscriptionStorage {
             let config = serde_json::from_str(&config_json)
                 .map_err(|e| StorageError::Parse(format!("Invalid config JSON: {}", e)))?;
 
+            let stream_settings_json: Option<String> = row.try_get("stream_settings").ok();
+            let stream_settings =
+                stream_settings_json.and_then(|json| serde_json::from_str(&json).ok());
+
             servers.push(Server {
                 id: Uuid::parse_str(&id)
                     .map_err(|e| StorageError::Parse(format!("Invalid UUID: {}", e)))?,
@@ -250,6 +272,7 @@ impl SubscriptionStorage {
                 port: row.get::<i64, _>("port") as u16,
                 protocol: row.get("protocol"),
                 config,
+                stream_settings,
             });
         }
 
@@ -278,6 +301,10 @@ impl SubscriptionStorage {
             let config = serde_json::from_str(&config_json)
                 .map_err(|e| StorageError::Parse(format!("Invalid config JSON: {}", e)))?;
 
+            let stream_settings_json: Option<String> = row.try_get("stream_settings").ok();
+            let stream_settings =
+                stream_settings_json.and_then(|json| serde_json::from_str(&json).ok());
+
             servers.push(Server {
                 id: Uuid::parse_str(&id)
                     .map_err(|e| StorageError::Parse(format!("Invalid UUID: {}", e)))?,
@@ -287,6 +314,7 @@ impl SubscriptionStorage {
                 port: row.get::<i64, _>("port") as u16,
                 protocol: row.get("protocol"),
                 config,
+                stream_settings,
             });
         }
 
@@ -390,6 +418,7 @@ mod tests {
             port: 443,
             protocol: "vmess".to_string(),
             config: HashMap::new(),
+            stream_settings: None,
         };
 
         // Save server
@@ -442,6 +471,7 @@ mod tests {
                 port: 443,
                 protocol: "vmess".to_string(),
                 config: HashMap::new(),
+                stream_settings: None,
             };
             storage.save_server(&server).await.unwrap();
         }
@@ -456,6 +486,7 @@ mod tests {
                 port: 443,
                 protocol: "vless".to_string(),
                 config: HashMap::new(),
+                stream_settings: None,
             };
             storage.save_server(&server).await.unwrap();
         }
@@ -502,6 +533,7 @@ mod tests {
                 port: 443,
                 protocol: "vmess".to_string(),
                 config: HashMap::new(),
+                stream_settings: None,
             };
             storage.save_server(&server).await.unwrap();
         }

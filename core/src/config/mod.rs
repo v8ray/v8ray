@@ -204,7 +204,7 @@ impl Default for Config {
             },
             subscription: SubscriptionConfig {
                 auto_update_interval: 24,
-                user_agent: "V8Ray/1.0".to_string(),
+                user_agent: crate::version::user_agent(),
                 timeout: 30,
             },
         }

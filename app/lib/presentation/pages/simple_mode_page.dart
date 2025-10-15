@@ -10,6 +10,7 @@ import '../../core/l10n/app_localizations.dart';
 import '../../core/router/app_router.dart';
 import '../../core/utils/responsive.dart';
 import '../widgets/animated_list_item.dart';
+import '../widgets/app_update_checker.dart';
 import '../widgets/connection_status_card.dart';
 import '../widgets/language_selector.dart';
 import '../widgets/node_selector.dart';
@@ -28,6 +29,9 @@ class SimpleModePage extends ConsumerWidget {
       appBar: AppBar(
         title: Text(l10n.appName),
         actions: [
+          // 应用更新检查
+          const AppUpdateChecker(),
+
           // 语言选择器
           const LanguageSelector(),
 

@@ -299,18 +299,142 @@ impl SubscriptionParser {
             }
         };
 
+        // 提取协议特定的配置参数
+        let mut settings = HashMap::new();
+
+        match proxy_type {
+            "vmess" => {
+                // VMess 配置
+                if let Some(uuid) = yaml["uuid"].as_str() {
+                    settings.insert("id".to_string(), serde_json::json!(uuid));
+                }
+                if let Some(alter_id) = yaml["alterId"].as_u64() {
+                    settings.insert("alterId".to_string(), serde_json::json!(alter_id));
+                }
+                if let Some(cipher) = yaml["cipher"].as_str() {
+                    settings.insert("security".to_string(), serde_json::json!(cipher));
+                }
+            }
+            "vless" => {
+                // VLESS 配置
+                if let Some(uuid) = yaml["uuid"].as_str() {
+                    settings.insert("id".to_string(), serde_json::json!(uuid));
+                }
+                if let Some(flow) = yaml["flow"].as_str() {
+                    settings.insert("flow".to_string(), serde_json::json!(flow));
+                }
+                settings.insert("encryption".to_string(), serde_json::json!("none"));
+            }
+            "trojan" => {
+                // Trojan 配置
+                if let Some(password) = yaml["password"].as_str() {
+                    settings.insert("password".to_string(), serde_json::json!(password));
+                }
+            }
+            "ss" | "shadowsocks" => {
+                // Shadowsocks 配置
+                if let Some(cipher) = yaml["cipher"].as_str() {
+                    settings.insert("method".to_string(), serde_json::json!(cipher));
+                }
+                if let Some(password) = yaml["password"].as_str() {
+                    settings.insert("password".to_string(), serde_json::json!(password));
+                }
+            }
+            _ => {}
+        }
+
+        // 提取传输层配置
+        let stream_settings = Self::parse_clash_stream_settings(yaml)?;
+
         Ok(ProxyServerConfig {
             id: Uuid::new_v4().to_string(),
             name,
             server,
             port,
             protocol,
-            settings: HashMap::new(),
-            stream_settings: None,
+            settings,
+            stream_settings,
             tags: vec![],
             created_at: chrono::Utc::now(),
             updated_at: chrono::Utc::now(),
         })
+    }
+
+    /// Parse stream settings from Clash YAML
+    fn parse_clash_stream_settings(
+        yaml: &serde_yaml::Value,
+    ) -> SubscriptionResult<Option<crate::config::StreamSettings>> {
+        use crate::config::{StreamSettings, TlsSettings, WsSettings};
+
+        let network = yaml["network"].as_str().unwrap_or("tcp").to_string();
+
+        // Trojan 协议默认使用 TLS
+        let proxy_type = yaml["type"].as_str().unwrap_or("");
+        let tls = yaml["tls"].as_bool().unwrap_or(proxy_type == "trojan");
+        let security = if tls { "tls" } else { "none" };
+
+        let mut stream = StreamSettings {
+            network: network.clone(),
+            security: security.to_string(),
+            tls_settings: None,
+            tcp_settings: None,
+            ws_settings: None,
+            http_settings: None,
+            quic_settings: None,
+            grpc_settings: None,
+        };
+
+        // Parse TLS settings
+        if tls {
+            // 如果没有指定 SNI,使用服务器地址作为 SNI
+            let sni = yaml["sni"]
+                .as_str()
+                .or_else(|| yaml["server"].as_str())
+                .map(|s| s.to_string());
+
+            let skip_cert_verify = yaml["skip-cert-verify"].as_bool().unwrap_or(false);
+
+            stream.tls_settings = Some(TlsSettings {
+                server_name: sni,
+                allow_insecure: skip_cert_verify,
+                alpn: vec![],
+                fingerprint: yaml["fingerprint"].as_str().map(|s| s.to_string()),
+            });
+        }
+
+        // Parse WebSocket settings
+        if network == "ws" {
+            let path = yaml["ws-opts"]["path"]
+                .as_str()
+                .or_else(|| yaml["ws-path"].as_str())
+                .map(|s| s.to_string())
+                .unwrap_or_else(|| "/".to_string());
+
+            let mut headers = HashMap::new();
+            if let Some(host) = yaml["ws-opts"]["headers"]["Host"]
+                .as_str()
+                .or_else(|| yaml["ws-headers"]["Host"].as_str())
+            {
+                headers.insert("Host".to_string(), host.to_string());
+            }
+
+            stream.ws_settings = Some(WsSettings { path, headers });
+        }
+
+        // Parse gRPC settings
+        if network == "grpc" {
+            if let Some(service_name) = yaml["grpc-opts"]["grpc-service-name"]
+                .as_str()
+                .or_else(|| yaml["grpc-service-name"].as_str())
+            {
+                stream.grpc_settings = Some(crate::config::GrpcSettings {
+                    service_name: service_name.to_string(),
+                    multi_mode: false,
+                });
+            }
+        }
+
+        Ok(Some(stream))
     }
 }
 

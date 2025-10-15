@@ -15,12 +15,27 @@ lazy_static::lazy_static! {
     static ref CONNECTION_MANAGER: Arc<RwLock<BridgeConnectionManager>> =
         Arc::new(RwLock::new(BridgeConnectionManager::new()));
 
-    static ref TOKIO_RUNTIME: tokio::runtime::Runtime = {
+    pub(crate) static ref TOKIO_RUNTIME: tokio::runtime::Runtime = {
         tokio::runtime::Builder::new_multi_thread()
             .enable_all()
             .build()
             .expect("Failed to create Tokio runtime")
     };
+}
+
+/// 获取核心连接管理器实例 (内部使用)
+pub(crate) fn get_core_connection_manager() -> Result<Arc<CoreConnectionManager>> {
+    // 尝试使用当前的 runtime,如果不存在则使用全局的 TOKIO_RUNTIME
+    let manager = if tokio::runtime::Handle::try_current().is_ok() {
+        // 在 Tokio runtime 上下文中,使用 block_in_place
+        tokio::task::block_in_place(|| {
+            tokio::runtime::Handle::current().block_on(async { CONNECTION_MANAGER.read().await })
+        })
+    } else {
+        // 不在 Tokio runtime 上下文中,使用全局 runtime
+        TOKIO_RUNTIME.block_on(async { CONNECTION_MANAGER.read().await })
+    };
+    Ok(Arc::clone(&manager.core_manager))
 }
 
 /// 将简化配置转换为核心配置
@@ -35,6 +50,12 @@ fn convert_to_core_config(config: &ProxyServerConfig) -> CoreProxyServerConfig {
         _ => ProxyProtocol::Vless, // 默认值
     };
 
+    // 从 JSON Value 转换 stream_settings
+    let stream_settings = config
+        .stream_settings
+        .as_ref()
+        .and_then(|v| serde_json::from_value(v.clone()).ok());
+
     CoreProxyServerConfig {
         id: config.id.clone(),
         name: config.name.clone(),
@@ -42,7 +63,7 @@ fn convert_to_core_config(config: &ProxyServerConfig) -> CoreProxyServerConfig {
         port: config.port,
         protocol,
         settings: config.settings.clone(),
-        stream_settings: None, // 简化版本不包含流设置
+        stream_settings,
         tags: config.tags.clone(),
         created_at: Utc::now(),
         updated_at: Utc::now(),
@@ -221,6 +242,7 @@ mod tests {
             port: 443,
             protocol: "vmess".to_string(),
             settings: HashMap::new(),
+            stream_settings: None,
             tags: vec![],
         }
     }

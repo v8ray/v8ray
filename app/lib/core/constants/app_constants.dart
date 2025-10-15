@@ -11,10 +11,10 @@ class AppInfo {
   static const String appName = 'V8Ray';
 
   /// 应用版本
-  static const String version = '0.1.0';
+  static const String version = '0.2.0';
 
   /// 构建号
-  static const int buildNumber = 1;
+  static const int buildNumber = 2;
 
   /// 应用描述
   static const String description =
@@ -24,11 +24,21 @@ class AppInfo {
   static const String developer = 'V8Ray Team';
 
   /// 项目主页
-  static const String homepage = 'https://github.com/yourusername/v8ray';
+  static const String homepage = 'https://github.com/v8ray/v8ray';
 
   /// 问题反馈
-  static const String issuesUrl =
-      'https://github.com/yourusername/v8ray/issues';
+  static const String issuesUrl = 'https://github.com/v8ray/v8ray/issues';
+
+  /// GitHub仓库API地址
+  static const String githubApiUrl =
+      'https://api.github.com/repos/v8ray/v8ray/releases/latest';
+
+  /// GitHub仓库发布页面
+  static const String githubReleasesUrl =
+      'https://github.com/v8ray/v8ray/releases';
+
+  /// User-Agent 字符串（用于 HTTP 请求）
+  static String get userAgent => '$appName/$version';
 }
 
 /// 存储键名
