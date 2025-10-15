@@ -211,104 +211,24 @@ impl PlatformOps for WindowsPlatform {
     }
 
     fn set_system_proxy(&self, http_port: u16, socks_port: u16) -> crate::V8RayResult<()> {
-        use winreg::enums::*;
-        use winreg::RegKey;
+        tracing::info!("Setting Windows system proxy using WinInet API: SOCKS={}", socks_port);
 
-        tracing::info!("Setting Windows system proxy: SOCKS={}", socks_port);
+        // 使用 WinInet API 设置系统代理（参考 v2rayN 的实现）
+        // 代理格式：127.0.0.1:端口（不带任何协议前缀）
+        let proxy_server = format!("127.0.0.1:{}", socks_port);
+        let proxy_bypass = "localhost;127.*;10.*;172.16.*;192.168.*;*.local;<local>";
 
-        let hkcu = RegKey::predef(HKEY_CURRENT_USER);
-        let internet_settings = hkcu
-            .open_subkey_with_flags(
-                "Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings",
-                KEY_WRITE,
-            )
-            .map_err(|e| {
-                crate::error::PlatformError::SystemProxy(format!(
-                    "Failed to open registry key: {}",
-                    e
-                ))
-            })?;
+        Self::set_internet_proxy(&proxy_server, &proxy_bypass)?;
 
-        // Enable proxy
-        internet_settings
-            .set_value("ProxyEnable", &1u32)
-            .map_err(|e| {
-                crate::error::PlatformError::SystemProxy(format!(
-                    "Failed to set ProxyEnable: {}",
-                    e
-                ))
-            })?;
-
-        // Set SOCKS proxy server
-        let proxy_server = format!("socks=127.0.0.1:{}", socks_port);
-        internet_settings
-            .set_value("ProxyServer", &proxy_server)
-            .map_err(|e| {
-                crate::error::PlatformError::SystemProxy(format!(
-                    "Failed to set ProxyServer: {}",
-                    e
-                ))
-            })?;
-
-        // Set proxy override (localhost and local addresses)
-        let proxy_override = "localhost;127.*;10.*;172.16.*;192.168.*;*.local";
-        internet_settings
-            .set_value("ProxyOverride", &proxy_override)
-            .map_err(|e| {
-                crate::error::PlatformError::SystemProxy(format!(
-                    "Failed to set ProxyOverride: {}",
-                    e
-                ))
-            })?;
-
-        // Notify system of proxy change
-        Self::notify_proxy_change()?;
-
-        tracing::info!("Windows system proxy (SOCKS) set successfully");
+        tracing::info!("Windows system proxy set successfully: {}", proxy_server);
         Ok(())
     }
 
     fn clear_system_proxy(&self) -> crate::V8RayResult<()> {
-        use winreg::enums::*;
-        use winreg::RegKey;
+        tracing::info!("Clearing Windows system proxy using WinInet API");
 
-        tracing::info!("Clearing Windows system proxy");
-
-        let hkcu = RegKey::predef(HKEY_CURRENT_USER);
-        let internet_settings = hkcu
-            .open_subkey_with_flags(
-                "Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings",
-                KEY_WRITE,
-            )
-            .map_err(|e| {
-                crate::error::PlatformError::SystemProxy(format!(
-                    "Failed to open registry key: {}",
-                    e
-                ))
-            })?;
-
-        // Disable proxy
-        internet_settings
-            .set_value("ProxyEnable", &0u32)
-            .map_err(|e| {
-                crate::error::PlatformError::SystemProxy(format!(
-                    "Failed to set ProxyEnable: {}",
-                    e
-                ))
-            })?;
-
-        // Clear proxy server
-        internet_settings
-            .set_value("ProxyServer", &"")
-            .map_err(|e| {
-                crate::error::PlatformError::SystemProxy(format!(
-                    "Failed to clear ProxyServer: {}",
-                    e
-                ))
-            })?;
-
-        // Notify system of proxy change
-        Self::notify_proxy_change()?;
+        // 使用 WinInet API 清除系统代理
+        Self::unset_internet_proxy()?;
 
         tracing::info!("Windows system proxy cleared successfully");
         Ok(())
@@ -356,26 +276,231 @@ impl PlatformOps for WindowsPlatform {
 
 #[cfg(target_os = "windows")]
 impl WindowsPlatform {
-    fn notify_proxy_change() -> crate::V8RayResult<()> {
+    /// 使用 WinInet API 设置系统代理
+    /// 参考 v2rayN 的实现：ProxySettingWindows.cs
+    fn set_internet_proxy(proxy_server: &str, proxy_bypass: &str) -> crate::V8RayResult<()> {
+        use std::ffi::OsStr;
+        use std::iter::once;
+        use std::mem;
+        use std::os::windows::ffi::OsStrExt;
         use std::ptr;
-        use winapi::um::winuser::{
-            SendMessageTimeoutW, HWND_BROADCAST, SMTO_ABORTIFHUNG, WM_SETTINGCHANGE,
-        };
+
+        // WinInet API 常量
+        const INTERNET_OPTION_PER_CONNECTION_OPTION: u32 = 75;
+        const INTERNET_OPTION_SETTINGS_CHANGED: u32 = 39;
+        const INTERNET_OPTION_REFRESH: u32 = 37;
+
+        const INTERNET_PER_CONN_FLAGS: u32 = 1;
+        const INTERNET_PER_CONN_PROXY_SERVER: u32 = 2;
+        const INTERNET_PER_CONN_PROXY_BYPASS: u32 = 3;
+
+        const PROXY_TYPE_DIRECT: u32 = 0x00000001;
+        const PROXY_TYPE_PROXY: u32 = 0x00000002;
+
+        // WinInet API 结构体定义
+        #[repr(C)]
+        union InternetPerConnOptionValue {
+            dw_value: u32,
+            psz_value: *mut u16,
+            ft_value: winapi::shared::minwindef::FILETIME,
+        }
+
+        #[repr(C)]
+        struct InternetPerConnOptionW {
+            dw_option: u32,
+            value: InternetPerConnOptionValue,
+        }
+
+        #[repr(C)]
+        struct InternetPerConnOptionListW {
+            dw_size: u32,
+            psz_connection: *mut u16,
+            dw_option_count: u32,
+            dw_option_error: u32,
+            p_options: *mut InternetPerConnOptionW,
+        }
+
+        // 外部函数声明
+        extern "system" {
+            fn InternetSetOptionW(
+                h_internet: *mut winapi::ctypes::c_void,
+                dw_option: u32,
+                lp_buffer: *mut winapi::ctypes::c_void,
+                dw_buffer_length: u32,
+            ) -> i32;
+        }
 
         unsafe {
-            let result = SendMessageTimeoutW(
-                HWND_BROADCAST,
-                WM_SETTINGCHANGE,
-                0,
-                "Internet Settings\0".as_ptr() as isize,
-                SMTO_ABORTIFHUNG,
-                5000,
+            // 准备代理服务器字符串（宽字符）
+            let proxy_server_wide: Vec<u16> = OsStr::new(proxy_server)
+                .encode_wide()
+                .chain(once(0))
+                .collect();
+            let proxy_bypass_wide: Vec<u16> = OsStr::new(proxy_bypass)
+                .encode_wide()
+                .chain(once(0))
+                .collect();
+
+            // 创建选项数组
+            let mut options: [InternetPerConnOptionW; 3] = mem::zeroed();
+
+            // 选项 1: 设置代理标志（启用直连和代理）
+            options[0].dw_option = INTERNET_PER_CONN_FLAGS;
+            options[0].value.dw_value = PROXY_TYPE_DIRECT | PROXY_TYPE_PROXY;
+
+            // 选项 2: 设置代理服务器地址
+            options[1].dw_option = INTERNET_PER_CONN_PROXY_SERVER;
+            options[1].value.psz_value = proxy_server_wide.as_ptr() as *mut _;
+
+            // 选项 3: 设置代理绕过列表
+            options[2].dw_option = INTERNET_PER_CONN_PROXY_BYPASS;
+            options[2].value.psz_value = proxy_bypass_wide.as_ptr() as *mut _;
+
+            // 创建选项列表
+            let mut option_list = InternetPerConnOptionListW {
+                dw_size: mem::size_of::<InternetPerConnOptionListW>() as u32,
+                psz_connection: ptr::null_mut(), // NULL = LAN connection
+                dw_option_count: 3,
+                dw_option_error: 0,
+                p_options: options.as_mut_ptr(),
+            };
+
+            // 调用 InternetSetOptionW 设置代理
+            let result = InternetSetOptionW(
                 ptr::null_mut(),
+                INTERNET_OPTION_PER_CONNECTION_OPTION,
+                &mut option_list as *mut _ as *mut _,
+                option_list.dw_size,
             );
 
             if result == 0 {
-                tracing::warn!("Failed to notify system of proxy change");
+                let error = winapi::um::errhandlingapi::GetLastError();
+                return Err(crate::error::PlatformError::SystemProxy(format!(
+                    "InternetSetOptionW failed with error code: {}",
+                    error
+                ))
+                .into());
             }
+
+            // 通知系统代理设置已更改
+            InternetSetOptionW(
+                ptr::null_mut(),
+                INTERNET_OPTION_SETTINGS_CHANGED,
+                ptr::null_mut(),
+                0,
+            );
+
+            // 刷新代理设置
+            InternetSetOptionW(
+                ptr::null_mut(),
+                INTERNET_OPTION_REFRESH,
+                ptr::null_mut(),
+                0,
+            );
+
+            tracing::info!("WinInet API: Proxy set successfully");
+        }
+
+        Ok(())
+    }
+
+    /// 使用 WinInet API 清除系统代理
+    fn unset_internet_proxy() -> crate::V8RayResult<()> {
+        use std::mem;
+        use std::ptr;
+
+        // WinInet API 常量
+        const INTERNET_OPTION_PER_CONNECTION_OPTION: u32 = 75;
+        const INTERNET_OPTION_SETTINGS_CHANGED: u32 = 39;
+        const INTERNET_OPTION_REFRESH: u32 = 37;
+
+        const INTERNET_PER_CONN_FLAGS: u32 = 1;
+        const PROXY_TYPE_DIRECT: u32 = 0x00000001;
+
+        // WinInet API 结构体定义
+        #[repr(C)]
+        union InternetPerConnOptionValue {
+            dw_value: u32,
+            psz_value: *mut u16,
+            ft_value: winapi::shared::minwindef::FILETIME,
+        }
+
+        #[repr(C)]
+        struct InternetPerConnOptionW {
+            dw_option: u32,
+            value: InternetPerConnOptionValue,
+        }
+
+        #[repr(C)]
+        struct InternetPerConnOptionListW {
+            dw_size: u32,
+            psz_connection: *mut u16,
+            dw_option_count: u32,
+            dw_option_error: u32,
+            p_options: *mut InternetPerConnOptionW,
+        }
+
+        // 外部函数声明
+        extern "system" {
+            fn InternetSetOptionW(
+                h_internet: *mut winapi::ctypes::c_void,
+                dw_option: u32,
+                lp_buffer: *mut winapi::ctypes::c_void,
+                dw_buffer_length: u32,
+            ) -> i32;
+        }
+
+        unsafe {
+            // 创建选项数组（只设置直连标志）
+            let mut options: [InternetPerConnOptionW; 1] = mem::zeroed();
+
+            // 选项 1: 设置为直连（禁用代理）
+            options[0].dw_option = INTERNET_PER_CONN_FLAGS;
+            options[0].value.dw_value = PROXY_TYPE_DIRECT;
+
+            // 创建选项列表
+            let mut option_list = InternetPerConnOptionListW {
+                dw_size: mem::size_of::<InternetPerConnOptionListW>() as u32,
+                psz_connection: ptr::null_mut(), // NULL = LAN connection
+                dw_option_count: 1,
+                dw_option_error: 0,
+                p_options: options.as_mut_ptr(),
+            };
+
+            // 调用 InternetSetOptionW 清除代理
+            let result = InternetSetOptionW(
+                ptr::null_mut(),
+                INTERNET_OPTION_PER_CONNECTION_OPTION,
+                &mut option_list as *mut _ as *mut _,
+                option_list.dw_size,
+            );
+
+            if result == 0 {
+                let error = winapi::um::errhandlingapi::GetLastError();
+                return Err(crate::error::PlatformError::SystemProxy(format!(
+                    "InternetSetOptionW (unset) failed with error code: {}",
+                    error
+                ))
+                .into());
+            }
+
+            // 通知系统代理设置已更改
+            InternetSetOptionW(
+                ptr::null_mut(),
+                INTERNET_OPTION_SETTINGS_CHANGED,
+                ptr::null_mut(),
+                0,
+            );
+
+            // 刷新代理设置
+            InternetSetOptionW(
+                ptr::null_mut(),
+                INTERNET_OPTION_REFRESH,
+                ptr::null_mut(),
+                0,
+            );
+
+            tracing::info!("WinInet API: Proxy cleared successfully");
         }
 
         Ok(())

@@ -473,14 +473,24 @@ impl XrayCore {
                 #[cfg(unix)]
                 {
                     // Unix/Linux/macOS: Use libc::kill
-                    unsafe {
-                        libc::kill(pid as i32, libc::SIGTERM);
+                    tracing::info!("Sending SIGTERM to Xray process (PID: {})", pid);
+                    let result = unsafe { libc::kill(pid as i32, libc::SIGTERM) };
+                    if result == 0 {
+                        tracing::info!("SIGTERM sent successfully");
+                    } else {
+                        tracing::warn!("Failed to send SIGTERM (result: {})", result);
                     }
+
                     // Wait a bit for graceful shutdown
                     tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;
+
                     // Force kill if still running
-                    unsafe {
-                        libc::kill(pid as i32, libc::SIGKILL);
+                    tracing::info!("Sending SIGKILL to Xray process (PID: {})", pid);
+                    let result = unsafe { libc::kill(pid as i32, libc::SIGKILL) };
+                    if result == 0 {
+                        tracing::info!("SIGKILL sent successfully, process terminated");
+                    } else {
+                        tracing::warn!("Failed to send SIGKILL (result: {}), process may have already exited", result);
                     }
                 }
 
@@ -494,19 +504,51 @@ impl XrayCore {
                     const CREATE_NO_WINDOW: u32 = 0x08000000;
 
                     // Try graceful termination first
-                    let _ = Command::new("taskkill")
+                    tracing::info!("Attempting graceful termination of Xray process (PID: {})", pid);
+                    match Command::new("taskkill")
                         .args(&["/PID", &pid.to_string(), "/T"])
                         .creation_flags(CREATE_NO_WINDOW)
-                        .output();
+                        .output()
+                    {
+                        Ok(output) => {
+                            if output.status.success() {
+                                tracing::info!("Graceful termination command sent successfully");
+                            } else {
+                                tracing::warn!(
+                                    "Graceful termination failed: {}",
+                                    String::from_utf8_lossy(&output.stderr)
+                                );
+                            }
+                        }
+                        Err(e) => {
+                            tracing::error!("Failed to execute taskkill: {}", e);
+                        }
+                    }
 
                     // Wait a bit for graceful shutdown
                     tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;
 
                     // Force kill if still running
-                    let _ = Command::new("taskkill")
+                    tracing::info!("Force killing Xray process (PID: {})", pid);
+                    match Command::new("taskkill")
                         .args(&["/PID", &pid.to_string(), "/T", "/F"])
                         .creation_flags(CREATE_NO_WINDOW)
-                        .output();
+                        .output()
+                    {
+                        Ok(output) => {
+                            if output.status.success() {
+                                tracing::info!("Xray process force killed successfully");
+                            } else {
+                                tracing::warn!(
+                                    "Force kill failed (process may have already exited): {}",
+                                    String::from_utf8_lossy(&output.stderr)
+                                );
+                            }
+                        }
+                        Err(e) => {
+                            tracing::error!("Failed to execute taskkill /F: {}", e);
+                        }
+                    }
                 }
             }
         }

@@ -26,10 +26,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 无需重新添加订阅
   - 保持上次使用的配置
 
+#### Windows 自动更新优化
+- **静默更新**: Windows 平台自动更新过程完全静默，不显示命令行窗口
+  - 使用 VBScript 启动器隐藏更新窗口
+  - 改进用户体验
+- **修复更新安装**: 修复 Windows 平台自动更新后没有正确安装新版本的问题
+  - 修复批处理脚本变量解析问题
+  - 确保文件正确覆盖到应用目录
+
 ### 🐛 修复
 
 - 修复无法连接 Shadowsocks 和 Trojan 协议服务器的问题
 - 修复 UI 界面冗余元素（移除未连接状态下的"连接"按钮和已连接状态下的"断开"按钮）
+- **修复断开连接后 Xray 进程未关闭的问题**
+  - 改进进程终止逻辑和错误处理
+  - 添加详细的日志记录
+  - 确保进程被正确终止（Windows 使用 taskkill，Unix 使用 SIGTERM/SIGKILL）
 
 ### 📝 文档
 

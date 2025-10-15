@@ -70,7 +70,7 @@ flutter_rust_bridge = "=2.11.1"
 
 # Platform specific
 [target.'cfg(windows)'.dependencies]
-winapi = { version = "0.3", features = ["winuser", "winreg", "processthreadsapi", "securitybaseapi", "winnt", "handleapi"] }
+winapi = { version = "0.3", features = ["winuser", "winreg", "processthreadsapi", "securitybaseapi", "winnt", "handleapi", "wininet", "winerror"] }
 winreg = "0.52"
 
 [target.'cfg(unix)'.dependencies]
