@@ -214,10 +214,7 @@ impl PlatformOps for WindowsPlatform {
         use winreg::enums::*;
         use winreg::RegKey;
 
-        tracing::info!(
-            "Setting Windows system proxy: SOCKS={}",
-            socks_port
-        );
+        tracing::info!("Setting Windows system proxy: SOCKS={}", socks_port);
 
         let hkcu = RegKey::predef(HKEY_CURRENT_USER);
         let internet_settings = hkcu
@@ -421,10 +418,7 @@ impl PlatformOps for MacOSPlatform {
     fn set_system_proxy(&self, http_port: u16, socks_port: u16) -> crate::V8RayResult<()> {
         use std::process::Command;
 
-        tracing::info!(
-            "Setting macOS system proxy: SOCKS={}",
-            socks_port
-        );
+        tracing::info!("Setting macOS system proxy: SOCKS={}", socks_port);
 
         // Get active network services
         let services = Self::get_network_services()?;
@@ -589,10 +583,7 @@ impl PlatformOps for LinuxPlatform {
     }
 
     fn set_system_proxy(&self, _http_port: u16, socks_port: u16) -> crate::V8RayResult<()> {
-        tracing::info!(
-            "Setting Linux system proxy: SOCKS={}",
-            socks_port
-        );
+        tracing::info!("Setting Linux system proxy: SOCKS={}", socks_port);
 
         let socks_proxy = format!("socks5://127.0.0.1:{}", socks_port);
 

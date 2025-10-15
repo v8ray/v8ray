@@ -2,6 +2,7 @@
 ///
 /// 管理应用的版本检查和更新功能
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -298,6 +299,7 @@ class AppUpdateNotifier extends StateNotifier<UpdateInfo> {
 
       appLogger.info('Extracting update to: $appDir');
       appLogger.info('Archive file: ${file.path}');
+      appLogger.info('Executable path: $executablePath');
 
       // 使用 PowerShell 解压 zip 文件到应用目录
       // 注意：需要先解压到临时目录，然后复制，避免覆盖正在运行的文件
@@ -323,38 +325,93 @@ class AppUpdateNotifier extends StateNotifier<UpdateInfo> {
       appLogger.info('Update extracted to temp directory successfully');
       appLogger.info('stdout: ${extractResult.stdout}');
 
+      // 检查解压后的目录结构
+      final extractedContents = await tempDir.list().toList();
+      appLogger.info(
+        'Extracted contents: ${extractedContents.map((e) => e.path).join(", ")}',
+      );
+
+      // 查找实际的更新文件目录
+      // 如果解压后只有一个子目录，使用该子目录作为源
+      String sourceDir = tempExtractDir;
+      if (extractedContents.length == 1 && extractedContents[0] is Directory) {
+        sourceDir = extractedContents[0].path;
+        appLogger.info(
+          'Found single subdirectory, using as source: $sourceDir',
+        );
+      }
+
       // 创建批处理脚本来完成更新
       // 这个脚本会在应用退出后执行，复制文件并重启应用
+      // 注意：批处理脚本中的变量需要使用实际路径，不能使用 Dart 变量
+      // 使用 \${} 来避免 Dart 字符串插值，让批处理脚本使用环境变量
       final batchScript = '''
 @echo off
-echo Waiting for V8Ray to close...
-timeout /t 2 /nobreak > nul
+chcp 65001 > nul
+echo ========================================
+echo V8Ray 自动更新脚本
+echo ========================================
+echo.
 
-echo Updating V8Ray...
-xcopy /E /I /Y "$tempExtractDir\\*" "$appDir"
+echo [1/4] 等待 V8Ray 关闭...
+timeout /t 3 /nobreak > nul
 
-echo Cleaning up...
+echo [2/4] 更新 V8Ray 文件...
+echo 源目录: $sourceDir
+echo 目标目录: $appDir
+xcopy /E /I /Y /Q "$sourceDir" "$appDir"
+if errorlevel 1 (
+    echo 错误：文件复制失败！
+    echo 错误代码: %errorlevel%
+    pause
+    exit /b 1
+)
+
+echo [3/4] 清理临时文件...
 rmdir /S /Q "$tempExtractDir"
 
-echo Starting V8Ray...
+echo [4/4] 启动 V8Ray...
 start "" "$executablePath"
 
-echo Update complete!
+echo.
+echo ========================================
+echo 更新完成！
+echo ========================================
+timeout /t 1 /nobreak > nul
+
+REM 删除 VBScript 启动器和批处理脚本自身
+set SCRIPT_DIR=%~dp0
+del /F /Q "%SCRIPT_DIR%v8ray_update_launcher.vbs" 2>nul
 del "%~f0"
 ''';
 
       final batchFile = File('${file.parent.path}\\v8ray_update.bat');
-      await batchFile.writeAsString(batchScript);
+      await batchFile.writeAsString(batchScript, encoding: utf8);
 
       appLogger.info('Created update script: ${batchFile.path}');
+      appLogger.info('Batch script content:\n$batchScript');
 
-      // 启动批处理脚本并退出应用
-      await Process.start('cmd', [
-        '/c',
-        batchFile.path,
+      // 创建 VBScript 来静默启动批处理脚本（不显示窗口）
+      // 参数说明：Run(command, windowStyle, waitOnReturn)
+      // windowStyle: 0 = 隐藏窗口, 1 = 正常窗口
+      // waitOnReturn: False = 不等待脚本完成
+      final vbsScript = '''
+Set WshShell = CreateObject("WScript.Shell")
+WshShell.Run """${batchFile.path}""", 0, False
+Set WshShell = Nothing
+''';
+
+      final vbsFile = File('${file.parent.path}\\v8ray_update_launcher.vbs');
+      await vbsFile.writeAsString(vbsScript, encoding: utf8);
+
+      appLogger.info('Created VBS launcher: ${vbsFile.path}');
+
+      // 使用 wscript 启动 VBScript（静默执行批处理）
+      await Process.start('wscript', [
+        vbsFile.path,
       ], mode: ProcessStartMode.detached);
 
-      appLogger.info('Update script started, exiting application');
+      appLogger.info('Update script started silently, exiting application');
 
       // 更新状态为已安装（实际上是准备重启）
       state = state.copyWith(
@@ -363,7 +420,7 @@ del "%~f0"
       );
 
       // 延迟退出，让UI有时间显示消息
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(const Duration(seconds: 1));
       exit(0);
     } catch (e, stackTrace) {
       appLogger.error('Failed to install update on Windows', e, stackTrace);

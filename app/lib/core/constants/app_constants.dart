@@ -14,7 +14,7 @@ class AppInfo {
   static const String version = '0.2.1';
 
   /// 构建号
-  static const int buildNumber = 2;
+  static const int buildNumber = 3;
 
   /// 应用描述
   static const String description =

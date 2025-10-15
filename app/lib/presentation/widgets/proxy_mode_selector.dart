@@ -39,7 +39,9 @@ class ProxyModeSelector extends ConsumerWidget {
                   Icon(
                     Icons.lock,
                     size: 16,
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.6),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withOpacity(0.6),
                   ),
                 ],
               ],
@@ -61,22 +63,23 @@ class ProxyModeSelector extends ConsumerWidget {
                 ),
               ],
               selected: {proxyMode},
-              onSelectionChanged: isConnected
-                  ? (Set<ProxyMode> newSelection) {
-                      // 显示提示信息
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(l10n.disconnectToChangeProxyMode),
-                          duration: const Duration(seconds: 2),
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      );
-                    }
-                  : (Set<ProxyMode> newSelection) {
-                      ref
-                          .read(proxyModeProvider.notifier)
-                          .setProxyMode(newSelection.first);
-                    },
+              onSelectionChanged:
+                  isConnected
+                      ? (Set<ProxyMode> newSelection) {
+                        // 显示提示信息
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(l10n.disconnectToChangeProxyMode),
+                            duration: const Duration(seconds: 2),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                      }
+                      : (Set<ProxyMode> newSelection) {
+                        ref
+                            .read(proxyModeProvider.notifier)
+                            .setProxyMode(newSelection.first);
+                      },
               showSelectedIcon: false,
             ),
 
@@ -163,8 +166,8 @@ class ProxyModeSelector extends ConsumerWidget {
                   child: Text(
                     l10n.disconnectToChangeProxyMode,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ),
               ],
