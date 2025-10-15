@@ -311,13 +311,18 @@ make clean-all
 
 如果不使用 Makefile，可以手动执行以下步骤：
 
-1. **构建 Rust 库**
+1. **生成 Flutter Rust Bridge 代码**（首次构建或更新代码后）
+```bash
+flutter_rust_bridge_codegen generate
+```
+
+2. **构建 Rust 库**
 ```bash
 cd core
 cargo build --release --lib
 ```
 
-2. **构建 Flutter 应用**
+3. **构建 Flutter 应用**
 ```bash
 cd app
 flutter build linux --release  # Linux
@@ -325,7 +330,7 @@ flutter build windows --release  # Windows
 flutter build macos --release  # macOS
 ```
 
-3. **下载 Xray Core**
+4. **下载 Xray Core**
 ```bash
 # Linux/macOS
 bash scripts/post_build.sh release
