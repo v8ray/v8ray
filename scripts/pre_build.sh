@@ -43,6 +43,4 @@ echo ""
 echo "✓ Pre-build completed successfully"
 echo ""
 echo "Note: Xray Core will be downloaded after Flutter build to the bundle directory"
-echo ""
-echo "If you encounter 'frb_get_rust_content_hash' error, run: make bridge"
 
