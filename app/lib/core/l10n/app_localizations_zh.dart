@@ -88,6 +88,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get latency => '延迟';
 
   @override
+  String get testLatency => '测试延迟';
+
+  @override
   String get speed => '速度';
 
   @override
@@ -495,4 +498,211 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get xrayCoreUpdateInstallFailed => '安装 Xray Core 更新失败';
+
+  @override
+  String get dashboard => '仪表板';
+
+  @override
+  String get nodes => '节点';
+
+  @override
+  String get subscriptions => '订阅';
+
+  @override
+  String get logs => '日志';
+
+  @override
+  String get connectionInfo => '连接信息';
+
+  @override
+  String get currentNodeInfo => '当前节点';
+
+  @override
+  String get proxyModeInfo => '代理模式';
+
+  @override
+  String get systemStatus => '系统状态';
+
+  @override
+  String get trafficStatistics => '流量统计';
+
+  @override
+  String get quickActions => '快速操作';
+
+  @override
+  String get switchNode => '切换节点';
+
+  @override
+  String get nodeManagement => '节点管理';
+
+  @override
+  String get subscriptionManagement => '订阅管理';
+
+  @override
+  String get search => '搜索';
+
+  @override
+  String get addNode => '添加节点';
+
+  @override
+  String get sortBy => '排序方式';
+
+  @override
+  String get filterBy => '筛选条件';
+
+  @override
+  String get groupBy => '分组方式';
+
+  @override
+  String get all => '全部';
+
+  @override
+  String get available => '可用';
+
+  @override
+  String get unavailable => '不可用';
+
+  @override
+  String get edit => '编辑';
+
+  @override
+  String get delete => '删除';
+
+  @override
+  String get test => '测试';
+
+  @override
+  String get subscriptionList => '订阅列表';
+
+  @override
+  String get subscriptionSettings => '订阅设置';
+
+  @override
+  String get autoUpdateInterval => '自动更新间隔';
+
+  @override
+  String get retryOnFailure => '失败重试';
+
+  @override
+  String get nodeFilterRules => '节点过滤规则';
+
+  @override
+  String get lastUpdate => '最后更新';
+
+  @override
+  String get nodeCount => '节点数量';
+
+  @override
+  String get autoUpdate => '自动更新';
+
+  @override
+  String get enabled => '已启用';
+
+  @override
+  String get disabled => '已禁用';
+
+  @override
+  String get logLevel => '日志级别';
+
+  @override
+  String get clearLogs => '清空日志';
+
+  @override
+  String get exportLogs => '导出日志';
+
+  @override
+  String get basicSettings => '基础设置';
+
+  @override
+  String get routingRules => '路由规则';
+
+  @override
+  String get dnsSettings => 'DNS设置';
+
+  @override
+  String get advancedSettings => '高级设置';
+
+  @override
+  String get startOnBoot => '开机启动';
+
+  @override
+  String get minimizeToTray => '最小化到托盘';
+
+  @override
+  String get autoConnect => '自动连接';
+
+  @override
+  String get checkForUpdates => '检查更新';
+
+  @override
+  String get notificationSettings => '通知设置';
+
+  @override
+  String get connectionStatusChange => '连接状态变化';
+
+  @override
+  String get subscriptionUpdate => '订阅更新';
+
+  @override
+  String get errorNotification => '错误通知';
+
+  @override
+  String get localPort => '本地端口';
+
+  @override
+  String get allowLan => '允许局域网';
+
+  @override
+  String get httpProxy => 'HTTP代理';
+
+  @override
+  String get httpsProxy => 'HTTPS代理';
+
+  @override
+  String get pacMode => 'PAC模式';
+
+  @override
+  String get tunMode => 'TUN模式';
+
+  @override
+  String get tunDevice => 'TUN设备';
+
+  @override
+  String get tunNetwork => 'TUN网段';
+
+  @override
+  String get running => '运行中';
+
+  @override
+  String get stopped => '已停止';
+
+  @override
+  String get normal => '正常';
+
+  @override
+  String get totalUpload => '总上传';
+
+  @override
+  String get totalDownload => '总下载';
+
+  @override
+  String get connectionDuration => '连接时长';
+
+  @override
+  String get hours => '小时';
+
+  @override
+  String get minutes => '分钟';
+
+  @override
+  String get seconds => '秒';
+
+  @override
+  String get never => '从未';
+
+  @override
+  String get pleaseAddSubscription => '请先添加订阅';
+
+  @override
+  String get noSubscriptions => '暂无订阅';
 }

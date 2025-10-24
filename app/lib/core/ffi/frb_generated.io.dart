@@ -534,13 +534,13 @@ class V8RayBridgeWire implements BaseWire {
       );
 
   late final ffi.Pointer<
-    ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>
+    ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void> p1)>
   >
   _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValuePtr =
       _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
         'frbgen_v8ray_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue',
       );
-  late final void Function(ffi.Pointer<ffi.Void>)
+  late final void Function(ffi.Pointer<ffi.Void> p1)
   _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue =
       _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValuePtr
           .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
@@ -554,13 +554,13 @@ class V8RayBridgeWire implements BaseWire {
       );
 
   late final ffi.Pointer<
-    ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>
+    ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void> p1)>
   >
   _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValuePtr =
       _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
         'frbgen_v8ray_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue',
       );
-  late final void Function(ffi.Pointer<ffi.Void>)
+  late final void Function(ffi.Pointer<ffi.Void> p1)
   _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue =
       _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValuePtr
           .asFunction<void Function(ffi.Pointer<ffi.Void>)>();

@@ -1189,7 +1189,7 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform
   @protected
   ConfigInfo dco_decode_config_info(raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    final List<dynamic> arr = raw as List<dynamic>;
+    final List arr = raw as List<dynamic>;
     if (arr.length != 8)
       throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
     return ConfigInfo(
@@ -1207,7 +1207,7 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform
   @protected
   ConnectionInfo dco_decode_connection_info(raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    final List<dynamic> arr = raw as List<dynamic>;
+    final List arr = raw as List<dynamic>;
     if (arr.length != 6)
       throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
     return ConnectionInfo(
@@ -1321,7 +1321,7 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform
   @protected
   PlatformCapabilities dco_decode_platform_capabilities(raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    final List<dynamic> arr = raw as List<dynamic>;
+    final List arr = raw as List<dynamic>;
     if (arr.length != 4)
       throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
     return PlatformCapabilities(
@@ -1335,7 +1335,7 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform
   @protected
   PlatformInfo dco_decode_platform_info(raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    final List<dynamic> arr = raw as List<dynamic>;
+    final List arr = raw as List<dynamic>;
     if (arr.length != 4)
       throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
     return PlatformInfo(
@@ -1349,7 +1349,7 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform
   @protected
   ProxyServerConfig dco_decode_proxy_server_config(raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    final List<dynamic> arr = raw as List<dynamic>;
+    final List arr = raw as List<dynamic>;
     if (arr.length != 8)
       throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
     return ProxyServerConfig(
@@ -1376,7 +1376,7 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform
     raw,
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    final List<dynamic> arr = raw as List<dynamic>;
+    final List arr = raw as List<dynamic>;
     if (arr.length != 2) {
       throw Exception('Expected 2 elements, got ${arr.length}');
     }
@@ -1391,7 +1391,7 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform
   @protected
   ServerInfo dco_decode_server_info(raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    final List<dynamic> arr = raw as List<dynamic>;
+    final List arr = raw as List<dynamic>;
     if (arr.length != 6)
       throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
     return ServerInfo(
@@ -1407,7 +1407,7 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform
   @protected
   SubscriptionInfo dco_decode_subscription_info(raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    final List<dynamic> arr = raw as List<dynamic>;
+    final List arr = raw as List<dynamic>;
     if (arr.length != 6)
       throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
     return SubscriptionInfo(
@@ -1459,7 +1459,7 @@ class V8RayBridgeApiImpl extends V8RayBridgeApiImplPlatform
   @protected
   XrayCoreUpdateInfo dco_decode_xray_core_update_info(raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    final List<dynamic> arr = raw as List<dynamic>;
+    final List arr = raw as List<dynamic>;
     if (arr.length != 5)
       throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
     return XrayCoreUpdateInfo(
@@ -2354,7 +2354,7 @@ class ValueImpl extends RustOpaque implements Value {
   ValueImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
     : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
 
-  static final RustArcStaticData<dynamic> _kStaticData = RustArcStaticData(
+  static final RustArcStaticData _kStaticData = RustArcStaticData(
     rustArcIncrementStrongCount:
         V8RayBridge.instance.api.rust_arc_increment_strong_count_Value,
     rustArcDecrementStrongCount:

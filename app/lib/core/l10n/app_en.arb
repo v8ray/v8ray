@@ -130,6 +130,11 @@
   "@latency": {
     "description": "Latency label"
   },
+
+  "testLatency": "Test Latency",
+  "@testLatency": {
+    "description": "Test latency button label"
+  },
   
   "speed": "Speed",
   "@speed": {
@@ -824,6 +829,361 @@
   "xrayCoreUpdateInstallFailed": "Failed to install Xray Core update",
   "@xrayCoreUpdateInstallFailed": {
     "description": "Xray Core update install failed message"
+  },
+
+  "dashboard": "Dashboard",
+  "@dashboard": {
+    "description": "Dashboard tab"
+  },
+
+  "nodes": "Nodes",
+  "@nodes": {
+    "description": "Nodes tab"
+  },
+
+  "subscriptions": "Subscriptions",
+  "@subscriptions": {
+    "description": "Subscriptions tab"
+  },
+
+  "logs": "Logs",
+  "@logs": {
+    "description": "Logs tab"
+  },
+
+  "connectionInfo": "Connection Info",
+  "@connectionInfo": {
+    "description": "Connection info card title"
+  },
+
+  "currentNodeInfo": "Current Node",
+  "@currentNodeInfo": {
+    "description": "Current node card title"
+  },
+
+  "proxyModeInfo": "Proxy Mode",
+  "@proxyModeInfo": {
+    "description": "Proxy mode card title"
+  },
+
+  "systemStatus": "System Status",
+  "@systemStatus": {
+    "description": "System status card title"
+  },
+
+  "trafficStatistics": "Traffic Statistics",
+  "@trafficStatistics": {
+    "description": "Traffic statistics card title"
+  },
+
+  "quickActions": "Quick Actions",
+  "@quickActions": {
+    "description": "Quick actions card title"
+  },
+
+  "switchNode": "Switch Node",
+  "@switchNode": {
+    "description": "Switch node button"
+  },
+
+  "nodeManagement": "Node Management",
+  "@nodeManagement": {
+    "description": "Node management page title"
+  },
+
+  "subscriptionManagement": "Subscription Management",
+  "@subscriptionManagement": {
+    "description": "Subscription management page title"
+  },
+
+  "search": "Search",
+  "@search": {
+    "description": "Search input hint"
+  },
+
+  "addNode": "Add Node",
+  "@addNode": {
+    "description": "Add node button"
+  },
+
+  "sortBy": "Sort by",
+  "@sortBy": {
+    "description": "Sort by label"
+  },
+
+  "filterBy": "Filter by",
+  "@filterBy": {
+    "description": "Filter by label"
+  },
+
+  "groupBy": "Group by",
+  "@groupBy": {
+    "description": "Group by label"
+  },
+
+  "all": "All",
+  "@all": {
+    "description": "All filter option"
+  },
+
+  "available": "Available",
+  "@available": {
+    "description": "Available filter option"
+  },
+
+  "unavailable": "Unavailable",
+  "@unavailable": {
+    "description": "Unavailable filter option"
+  },
+
+  "edit": "Edit",
+  "@edit": {
+    "description": "Edit button"
+  },
+
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button"
+  },
+
+  "test": "Test",
+  "@test": {
+    "description": "Test button"
+  },
+
+  "subscriptionList": "Subscription List",
+  "@subscriptionList": {
+    "description": "Subscription list section title"
+  },
+
+  "subscriptionSettings": "Subscription Settings",
+  "@subscriptionSettings": {
+    "description": "Subscription settings section title"
+  },
+
+  "autoUpdateInterval": "Auto Update Interval",
+  "@autoUpdateInterval": {
+    "description": "Auto update interval setting"
+  },
+
+  "retryOnFailure": "Retry on Failure",
+  "@retryOnFailure": {
+    "description": "Retry on failure setting"
+  },
+
+  "nodeFilterRules": "Node Filter Rules",
+  "@nodeFilterRules": {
+    "description": "Node filter rules setting"
+  },
+
+  "lastUpdate": "Last Update",
+  "@lastUpdate": {
+    "description": "Last update label"
+  },
+
+  "nodeCount": "Node Count",
+  "@nodeCount": {
+    "description": "Node count label"
+  },
+
+  "autoUpdate": "Auto Update",
+  "@autoUpdate": {
+    "description": "Auto update label"
+  },
+
+  "enabled": "Enabled",
+  "@enabled": {
+    "description": "Enabled status"
+  },
+
+  "disabled": "Disabled",
+  "@disabled": {
+    "description": "Disabled status"
+  },
+
+  "logLevel": "Log Level",
+  "@logLevel": {
+    "description": "Log level label"
+  },
+
+  "clearLogs": "Clear Logs",
+  "@clearLogs": {
+    "description": "Clear logs button"
+  },
+
+  "exportLogs": "Export Logs",
+  "@exportLogs": {
+    "description": "Export logs button"
+  },
+
+  "basicSettings": "Basic Settings",
+  "@basicSettings": {
+    "description": "Basic settings section"
+  },
+
+  "proxySettings": "Proxy Settings",
+  "@proxySettings": {
+    "description": "Proxy settings section"
+  },
+
+  "routingRules": "Routing Rules",
+  "@routingRules": {
+    "description": "Routing rules section"
+  },
+
+  "dnsSettings": "DNS Settings",
+  "@dnsSettings": {
+    "description": "DNS settings section"
+  },
+
+  "advancedSettings": "Advanced Settings",
+  "@advancedSettings": {
+    "description": "Advanced settings section"
+  },
+
+  "startOnBoot": "Start on Boot",
+  "@startOnBoot": {
+    "description": "Start on boot setting"
+  },
+
+  "minimizeToTray": "Minimize to Tray",
+  "@minimizeToTray": {
+    "description": "Minimize to tray setting"
+  },
+
+  "autoConnect": "Auto Connect",
+  "@autoConnect": {
+    "description": "Auto connect setting"
+  },
+
+  "checkForUpdates": "Check for Updates",
+  "@checkForUpdates": {
+    "description": "Check for updates setting"
+  },
+
+  "notificationSettings": "Notification Settings",
+  "@notificationSettings": {
+    "description": "Notification settings section"
+  },
+
+  "connectionStatusChange": "Connection Status Change",
+  "@connectionStatusChange": {
+    "description": "Connection status change notification"
+  },
+
+  "subscriptionUpdate": "Subscription Update",
+  "@subscriptionUpdate": {
+    "description": "Subscription update notification"
+  },
+
+  "errorNotification": "Error Notification",
+  "@errorNotification": {
+    "description": "Error notification setting"
+  },
+
+  "localPort": "Local Port",
+  "@localPort": {
+    "description": "Local port setting"
+  },
+
+  "allowLan": "Allow LAN",
+  "@allowLan": {
+    "description": "Allow LAN setting"
+  },
+
+  "systemProxy": "System Proxy",
+  "@systemProxy": {
+    "description": "System proxy setting"
+  },
+
+  "httpProxy": "HTTP Proxy",
+  "@httpProxy": {
+    "description": "HTTP proxy setting"
+  },
+
+  "httpsProxy": "HTTPS Proxy",
+  "@httpsProxy": {
+    "description": "HTTPS proxy setting"
+  },
+
+  "pacMode": "PAC Mode",
+  "@pacMode": {
+    "description": "PAC mode setting"
+  },
+
+  "tunMode": "TUN Mode",
+  "@tunMode": {
+    "description": "TUN mode setting"
+  },
+
+  "tunDevice": "TUN Device",
+  "@tunDevice": {
+    "description": "TUN device setting"
+  },
+
+  "tunNetwork": "TUN Network",
+  "@tunNetwork": {
+    "description": "TUN network setting"
+  },
+
+  "running": "Running",
+  "@running": {
+    "description": "Running status"
+  },
+
+  "stopped": "Stopped",
+  "@stopped": {
+    "description": "Stopped status"
+  },
+
+  "normal": "Normal",
+  "@normal": {
+    "description": "Normal status"
+  },
+
+  "totalUpload": "Total Upload",
+  "@totalUpload": {
+    "description": "Total upload label"
+  },
+
+  "totalDownload": "Total Download",
+  "@totalDownload": {
+    "description": "Total download label"
+  },
+
+  "connectionDuration": "Connection Duration",
+  "@connectionDuration": {
+    "description": "Connection duration label"
+  },
+
+  "hours": "hours",
+  "@hours": {
+    "description": "Hours unit"
+  },
+
+  "minutes": "minutes",
+  "@minutes": {
+    "description": "Minutes unit"
+  },
+
+  "seconds": "seconds",
+  "@seconds": {
+    "description": "Seconds unit"
+  },
+
+  "never": "Never",
+  "@never": {
+    "description": "Never label"
+  },
+
+  "pleaseAddSubscription": "Please add a subscription first",
+  "@pleaseAddSubscription": {
+    "description": "Please add subscription hint"
+  },
+
+  "noSubscriptions": "No subscriptions",
+  "@noSubscriptions": {
+    "description": "No subscriptions message"
   }
 }
 

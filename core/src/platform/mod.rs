@@ -211,7 +211,10 @@ impl PlatformOps for WindowsPlatform {
     }
 
     fn set_system_proxy(&self, _http_port: u16, socks_port: u16) -> crate::V8RayResult<()> {
-        tracing::info!("Setting Windows system proxy using WinInet API: SOCKS={}", socks_port);
+        tracing::info!(
+            "Setting Windows system proxy using WinInet API: SOCKS={}",
+            socks_port
+        );
 
         // 使用 WinInet API 设置系统代理（参考 v2rayN 的实现）
         // 代理格式：127.0.0.1:端口（不带任何协议前缀）
@@ -391,12 +394,7 @@ impl WindowsPlatform {
             );
 
             // 刷新代理设置
-            InternetSetOptionW(
-                ptr::null_mut(),
-                INTERNET_OPTION_REFRESH,
-                ptr::null_mut(),
-                0,
-            );
+            InternetSetOptionW(ptr::null_mut(), INTERNET_OPTION_REFRESH, ptr::null_mut(), 0);
 
             tracing::info!("WinInet API: Proxy set successfully");
         }
@@ -493,12 +491,7 @@ impl WindowsPlatform {
             );
 
             // 刷新代理设置
-            InternetSetOptionW(
-                ptr::null_mut(),
-                INTERNET_OPTION_REFRESH,
-                ptr::null_mut(),
-                0,
-            );
+            InternetSetOptionW(ptr::null_mut(), INTERNET_OPTION_REFRESH, ptr::null_mut(), 0);
 
             tracing::info!("WinInet API: Proxy cleared successfully");
         }

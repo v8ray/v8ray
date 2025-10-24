@@ -490,7 +490,10 @@ impl XrayCore {
                     if result == 0 {
                         tracing::info!("SIGKILL sent successfully, process terminated");
                     } else {
-                        tracing::warn!("Failed to send SIGKILL (result: {}), process may have already exited", result);
+                        tracing::warn!(
+                            "Failed to send SIGKILL (result: {}), process may have already exited",
+                            result
+                        );
                     }
                 }
 
@@ -503,7 +506,10 @@ impl XrayCore {
                     const CREATE_NO_WINDOW: u32 = 0x08000000;
 
                     // Try graceful termination first
-                    tracing::info!("Attempting graceful termination of Xray process (PID: {})", pid);
+                    tracing::info!(
+                        "Attempting graceful termination of Xray process (PID: {})",
+                        pid
+                    );
                     match Command::new("taskkill")
                         .args(&["/PID", &pid.to_string(), "/T"])
                         .creation_flags(CREATE_NO_WINDOW)

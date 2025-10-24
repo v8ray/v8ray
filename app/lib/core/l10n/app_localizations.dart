@@ -254,6 +254,12 @@ abstract class AppLocalizations {
   /// **'Latency'**
   String get latency;
 
+  /// Test latency button label
+  ///
+  /// In en, this message translates to:
+  /// **'Test Latency'**
+  String get testLatency;
+
   /// Speed label
   ///
   /// In en, this message translates to:
@@ -896,13 +902,13 @@ abstract class AppLocalizations {
   /// **'Operation in progress...'**
   String get operationInProgress;
 
-  /// System proxy title
+  /// System proxy setting
   ///
   /// In en, this message translates to:
   /// **'System Proxy'**
   String get systemProxy;
 
-  /// Proxy settings title
+  /// Proxy settings section
   ///
   /// In en, this message translates to:
   /// **'Proxy Settings'**
@@ -1057,6 +1063,420 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to install Xray Core update'**
   String get xrayCoreUpdateInstallFailed;
+
+  /// Dashboard tab
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
+  String get dashboard;
+
+  /// Nodes tab
+  ///
+  /// In en, this message translates to:
+  /// **'Nodes'**
+  String get nodes;
+
+  /// Subscriptions tab
+  ///
+  /// In en, this message translates to:
+  /// **'Subscriptions'**
+  String get subscriptions;
+
+  /// Logs tab
+  ///
+  /// In en, this message translates to:
+  /// **'Logs'**
+  String get logs;
+
+  /// Connection info card title
+  ///
+  /// In en, this message translates to:
+  /// **'Connection Info'**
+  String get connectionInfo;
+
+  /// Current node card title
+  ///
+  /// In en, this message translates to:
+  /// **'Current Node'**
+  String get currentNodeInfo;
+
+  /// Proxy mode card title
+  ///
+  /// In en, this message translates to:
+  /// **'Proxy Mode'**
+  String get proxyModeInfo;
+
+  /// System status card title
+  ///
+  /// In en, this message translates to:
+  /// **'System Status'**
+  String get systemStatus;
+
+  /// Traffic statistics card title
+  ///
+  /// In en, this message translates to:
+  /// **'Traffic Statistics'**
+  String get trafficStatistics;
+
+  /// Quick actions card title
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Actions'**
+  String get quickActions;
+
+  /// Switch node button
+  ///
+  /// In en, this message translates to:
+  /// **'Switch Node'**
+  String get switchNode;
+
+  /// Node management page title
+  ///
+  /// In en, this message translates to:
+  /// **'Node Management'**
+  String get nodeManagement;
+
+  /// Subscription management page title
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription Management'**
+  String get subscriptionManagement;
+
+  /// Search input hint
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
+  /// Add node button
+  ///
+  /// In en, this message translates to:
+  /// **'Add Node'**
+  String get addNode;
+
+  /// Sort by label
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by'**
+  String get sortBy;
+
+  /// Filter by label
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by'**
+  String get filterBy;
+
+  /// Group by label
+  ///
+  /// In en, this message translates to:
+  /// **'Group by'**
+  String get groupBy;
+
+  /// All filter option
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
+
+  /// Available filter option
+  ///
+  /// In en, this message translates to:
+  /// **'Available'**
+  String get available;
+
+  /// Unavailable filter option
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable'**
+  String get unavailable;
+
+  /// Edit button
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// Delete button
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// Test button
+  ///
+  /// In en, this message translates to:
+  /// **'Test'**
+  String get test;
+
+  /// Subscription list section title
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription List'**
+  String get subscriptionList;
+
+  /// Subscription settings section title
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription Settings'**
+  String get subscriptionSettings;
+
+  /// Auto update interval setting
+  ///
+  /// In en, this message translates to:
+  /// **'Auto Update Interval'**
+  String get autoUpdateInterval;
+
+  /// Retry on failure setting
+  ///
+  /// In en, this message translates to:
+  /// **'Retry on Failure'**
+  String get retryOnFailure;
+
+  /// Node filter rules setting
+  ///
+  /// In en, this message translates to:
+  /// **'Node Filter Rules'**
+  String get nodeFilterRules;
+
+  /// Last update label
+  ///
+  /// In en, this message translates to:
+  /// **'Last Update'**
+  String get lastUpdate;
+
+  /// Node count label
+  ///
+  /// In en, this message translates to:
+  /// **'Node Count'**
+  String get nodeCount;
+
+  /// Auto update label
+  ///
+  /// In en, this message translates to:
+  /// **'Auto Update'**
+  String get autoUpdate;
+
+  /// Enabled status
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get enabled;
+
+  /// Disabled status
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get disabled;
+
+  /// Log level label
+  ///
+  /// In en, this message translates to:
+  /// **'Log Level'**
+  String get logLevel;
+
+  /// Clear logs button
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Logs'**
+  String get clearLogs;
+
+  /// Export logs button
+  ///
+  /// In en, this message translates to:
+  /// **'Export Logs'**
+  String get exportLogs;
+
+  /// Basic settings section
+  ///
+  /// In en, this message translates to:
+  /// **'Basic Settings'**
+  String get basicSettings;
+
+  /// Routing rules section
+  ///
+  /// In en, this message translates to:
+  /// **'Routing Rules'**
+  String get routingRules;
+
+  /// DNS settings section
+  ///
+  /// In en, this message translates to:
+  /// **'DNS Settings'**
+  String get dnsSettings;
+
+  /// Advanced settings section
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced Settings'**
+  String get advancedSettings;
+
+  /// Start on boot setting
+  ///
+  /// In en, this message translates to:
+  /// **'Start on Boot'**
+  String get startOnBoot;
+
+  /// Minimize to tray setting
+  ///
+  /// In en, this message translates to:
+  /// **'Minimize to Tray'**
+  String get minimizeToTray;
+
+  /// Auto connect setting
+  ///
+  /// In en, this message translates to:
+  /// **'Auto Connect'**
+  String get autoConnect;
+
+  /// Check for updates setting
+  ///
+  /// In en, this message translates to:
+  /// **'Check for Updates'**
+  String get checkForUpdates;
+
+  /// Notification settings section
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Settings'**
+  String get notificationSettings;
+
+  /// Connection status change notification
+  ///
+  /// In en, this message translates to:
+  /// **'Connection Status Change'**
+  String get connectionStatusChange;
+
+  /// Subscription update notification
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription Update'**
+  String get subscriptionUpdate;
+
+  /// Error notification setting
+  ///
+  /// In en, this message translates to:
+  /// **'Error Notification'**
+  String get errorNotification;
+
+  /// Local port setting
+  ///
+  /// In en, this message translates to:
+  /// **'Local Port'**
+  String get localPort;
+
+  /// Allow LAN setting
+  ///
+  /// In en, this message translates to:
+  /// **'Allow LAN'**
+  String get allowLan;
+
+  /// HTTP proxy setting
+  ///
+  /// In en, this message translates to:
+  /// **'HTTP Proxy'**
+  String get httpProxy;
+
+  /// HTTPS proxy setting
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS Proxy'**
+  String get httpsProxy;
+
+  /// PAC mode setting
+  ///
+  /// In en, this message translates to:
+  /// **'PAC Mode'**
+  String get pacMode;
+
+  /// TUN mode setting
+  ///
+  /// In en, this message translates to:
+  /// **'TUN Mode'**
+  String get tunMode;
+
+  /// TUN device setting
+  ///
+  /// In en, this message translates to:
+  /// **'TUN Device'**
+  String get tunDevice;
+
+  /// TUN network setting
+  ///
+  /// In en, this message translates to:
+  /// **'TUN Network'**
+  String get tunNetwork;
+
+  /// Running status
+  ///
+  /// In en, this message translates to:
+  /// **'Running'**
+  String get running;
+
+  /// Stopped status
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped'**
+  String get stopped;
+
+  /// Normal status
+  ///
+  /// In en, this message translates to:
+  /// **'Normal'**
+  String get normal;
+
+  /// Total upload label
+  ///
+  /// In en, this message translates to:
+  /// **'Total Upload'**
+  String get totalUpload;
+
+  /// Total download label
+  ///
+  /// In en, this message translates to:
+  /// **'Total Download'**
+  String get totalDownload;
+
+  /// Connection duration label
+  ///
+  /// In en, this message translates to:
+  /// **'Connection Duration'**
+  String get connectionDuration;
+
+  /// Hours unit
+  ///
+  /// In en, this message translates to:
+  /// **'hours'**
+  String get hours;
+
+  /// Minutes unit
+  ///
+  /// In en, this message translates to:
+  /// **'minutes'**
+  String get minutes;
+
+  /// Seconds unit
+  ///
+  /// In en, this message translates to:
+  /// **'seconds'**
+  String get seconds;
+
+  /// Never label
+  ///
+  /// In en, this message translates to:
+  /// **'Never'**
+  String get never;
+
+  /// Please add subscription hint
+  ///
+  /// In en, this message translates to:
+  /// **'Please add a subscription first'**
+  String get pleaseAddSubscription;
+
+  /// No subscriptions message
+  ///
+  /// In en, this message translates to:
+  /// **'No subscriptions'**
+  String get noSubscriptions;
 }
 
 class _AppLocalizationsDelegate

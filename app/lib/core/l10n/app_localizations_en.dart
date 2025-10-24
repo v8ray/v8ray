@@ -89,6 +89,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get latency => 'Latency';
 
   @override
+  String get testLatency => 'Test Latency';
+
+  @override
   String get speed => 'Speed';
 
   @override
@@ -529,4 +532,211 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get xrayCoreUpdateInstallFailed =>
       'Failed to install Xray Core update';
+
+  @override
+  String get dashboard => 'Dashboard';
+
+  @override
+  String get nodes => 'Nodes';
+
+  @override
+  String get subscriptions => 'Subscriptions';
+
+  @override
+  String get logs => 'Logs';
+
+  @override
+  String get connectionInfo => 'Connection Info';
+
+  @override
+  String get currentNodeInfo => 'Current Node';
+
+  @override
+  String get proxyModeInfo => 'Proxy Mode';
+
+  @override
+  String get systemStatus => 'System Status';
+
+  @override
+  String get trafficStatistics => 'Traffic Statistics';
+
+  @override
+  String get quickActions => 'Quick Actions';
+
+  @override
+  String get switchNode => 'Switch Node';
+
+  @override
+  String get nodeManagement => 'Node Management';
+
+  @override
+  String get subscriptionManagement => 'Subscription Management';
+
+  @override
+  String get search => 'Search';
+
+  @override
+  String get addNode => 'Add Node';
+
+  @override
+  String get sortBy => 'Sort by';
+
+  @override
+  String get filterBy => 'Filter by';
+
+  @override
+  String get groupBy => 'Group by';
+
+  @override
+  String get all => 'All';
+
+  @override
+  String get available => 'Available';
+
+  @override
+  String get unavailable => 'Unavailable';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get test => 'Test';
+
+  @override
+  String get subscriptionList => 'Subscription List';
+
+  @override
+  String get subscriptionSettings => 'Subscription Settings';
+
+  @override
+  String get autoUpdateInterval => 'Auto Update Interval';
+
+  @override
+  String get retryOnFailure => 'Retry on Failure';
+
+  @override
+  String get nodeFilterRules => 'Node Filter Rules';
+
+  @override
+  String get lastUpdate => 'Last Update';
+
+  @override
+  String get nodeCount => 'Node Count';
+
+  @override
+  String get autoUpdate => 'Auto Update';
+
+  @override
+  String get enabled => 'Enabled';
+
+  @override
+  String get disabled => 'Disabled';
+
+  @override
+  String get logLevel => 'Log Level';
+
+  @override
+  String get clearLogs => 'Clear Logs';
+
+  @override
+  String get exportLogs => 'Export Logs';
+
+  @override
+  String get basicSettings => 'Basic Settings';
+
+  @override
+  String get routingRules => 'Routing Rules';
+
+  @override
+  String get dnsSettings => 'DNS Settings';
+
+  @override
+  String get advancedSettings => 'Advanced Settings';
+
+  @override
+  String get startOnBoot => 'Start on Boot';
+
+  @override
+  String get minimizeToTray => 'Minimize to Tray';
+
+  @override
+  String get autoConnect => 'Auto Connect';
+
+  @override
+  String get checkForUpdates => 'Check for Updates';
+
+  @override
+  String get notificationSettings => 'Notification Settings';
+
+  @override
+  String get connectionStatusChange => 'Connection Status Change';
+
+  @override
+  String get subscriptionUpdate => 'Subscription Update';
+
+  @override
+  String get errorNotification => 'Error Notification';
+
+  @override
+  String get localPort => 'Local Port';
+
+  @override
+  String get allowLan => 'Allow LAN';
+
+  @override
+  String get httpProxy => 'HTTP Proxy';
+
+  @override
+  String get httpsProxy => 'HTTPS Proxy';
+
+  @override
+  String get pacMode => 'PAC Mode';
+
+  @override
+  String get tunMode => 'TUN Mode';
+
+  @override
+  String get tunDevice => 'TUN Device';
+
+  @override
+  String get tunNetwork => 'TUN Network';
+
+  @override
+  String get running => 'Running';
+
+  @override
+  String get stopped => 'Stopped';
+
+  @override
+  String get normal => 'Normal';
+
+  @override
+  String get totalUpload => 'Total Upload';
+
+  @override
+  String get totalDownload => 'Total Download';
+
+  @override
+  String get connectionDuration => 'Connection Duration';
+
+  @override
+  String get hours => 'hours';
+
+  @override
+  String get minutes => 'minutes';
+
+  @override
+  String get seconds => 'seconds';
+
+  @override
+  String get never => 'Never';
+
+  @override
+  String get pleaseAddSubscription => 'Please add a subscription first';
+
+  @override
+  String get noSubscriptions => 'No subscriptions';
 }

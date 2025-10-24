@@ -1,8 +1,8 @@
 {
   "arch": "64",
-  "binary_name": "xray",
+  "binary_name": "xray.exe",
   "extension": ".zip",
-  "os": "linux",
-  "url": "https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip",
+  "os": "windows",
+  "url": "https://github.com/XTLS/Xray-core/releases/latest/download/Xray-windows-64.zip",
   "version": "latest"
 }
